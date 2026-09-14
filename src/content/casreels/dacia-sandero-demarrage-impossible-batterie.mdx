@@ -1,0 +1,53 @@
+---
+title: "Dacia Sandero : Démarrage impossible avec batterie neuve"
+description: "Le démarreur refuse de tourner sur une Dacia/Renault ? Apprenez à lire le voyant rouge d'antidémarrage et à tester l'excitation du solénoïde (1.5 dCi)."
+pillar: "diagnostic"
+category: "casreels"
+system: "immo"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["multimetre", "scanner"]
+author: "DiagVault"
+published_date: 2024-06-22T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+**Véhicule :** Dacia Sandero / Renault Clio / Kangoo (1.5 dCi ou Essence)
+**Symptômes :** Le client tourne la clé, les voyants s'allument normalement, mais le démarreur ne fait aucun bruit (No-Crank). Pensant à une batterie déchargée, il la remplace. Le problème persiste. 
+
+Sur les véhicules du groupe Renault/Dacia, ce symptôme précis a deux grandes causes historiques : une désynchronisation de l'UCH (Antidémarrage) ou un fil de commande cassé sur le démarreur.
+
+<EditorialPrinciple />
+
+## L'Analyse N°1 : Le langage du voyant rouge
+
+Sur ces modèles, le petit voyant rouge rond au centre du tableau de bord est votre meilleur outil de diagnostic. Il vous donne directement le statut du système IMMO.
+
+<DiagnosticTree symptom="État du voyant avec le contact mis">
+  <li>**Le voyant s'éteint après 3 secondes :** Le système est parfait. La clé est reconnue, l'UCH a autorisé l'ECU Moteur à démarrer. La panne est mécanique ou électrique (côté démarreur).</li>
+  <li>**Le voyant clignote très rapidement :** La clé n'est pas reconnue. Soit la puce (transpondeur) est tombée de la clé, soit la bague réceptrice autour du Neiman est débranchée ou coupée.</li>
+  <li>**Le voyant reste allumé FIXE (Rouge continu) :** C'est le cas le plus grave. La clé est bien reconnue par l'habitacle (UCH), mais l'UCH n'arrive pas à communiquer avec l'ECU Moteur sous le capot ! Le réseau CAN est coupé, ou l'ECU moteur n'est plus alimenté (fusible ou relais principal HS).</li>
+</DiagnosticTree>
+
+## L'Analyse N°2 : L'excitation du Démarreur (Le fil blanc/jaune)
+
+Si le voyant rouge s'éteint correctement, le calculateur ordonne le démarrage, mais le démarreur ne reçoit pas l'ordre. 
+
+Sur les moteurs 1.5 dCi (K9K) notamment, le démarreur est situé bas derrière le moteur. Le petit fil de commande (borne 50, souvent blanc ou jaune) qui vient actionner le solénoïde du démarreur est très fin. Avec les vibrations du moteur diesel, la cosse Faston a tendance à se casser à l'intérieur de sa gaine, juste avant le démarreur.
+
+<TestStepCard step={1} title="Test de la commande du Solénoïde">
+  1. Localisez le démarreur (parfois accessible par en dessous).
+  2. Identifiez le petit fil (commande) branché sur le solénoïde.
+  3. Débranchez-le, et mettez votre multimètre en DC Volts (Pointe rouge dans le fil, pointe noire sur le châssis).
+  4. Demandez à quelqu'un de tourner la clé en position "Démarrage".
+  
+  **Résultat :** Si vous lisez **12 Volts**, le Neiman, les relais et les fusibles sont parfaits. Le fil n'est pas coupé. C'est le démarreur lui-même (solénoïde collé ou charbons usés) qui est mort. Si vous lisez **0 Volt**, le fil est coupé quelque part (ou tirez doucement dessus, il va vous rester dans la main s'il est cassé à ras de la cosse !).
+</TestStepCard>
+
+<ConfirmationBox>
+  **Test de dépannage rapide :** Si vous êtes coincé sur un parking et que vous voulez confirmer que le démarreur est bon, mettez le contact (voyant rouge éteint), point mort impératif (Frein à main serré), et utilisez un tournevis pour faire toucher le gros boulon (+12V permanent) du démarreur avec la petite cosse de commande. S'il démarre, le démarreur est hors de cause, c'est le circuit de commande qui est défaillant.
+</ConfirmationBox>

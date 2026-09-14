@@ -1,0 +1,56 @@
+---
+title: "Le moteur démarre puis cale immédiatement"
+description: "Diagnostic d'un moteur qui s'étouffe après le démarrage : Antidémarrage (VAG), prise d'air massive, ou vanne EGR bloquée ouverte."
+pillar: "diagnostic"
+category: "symptomes"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner", "machine_a_fumee"]
+author: "DiagVault"
+published_date: 2024-06-04T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+C'est un symptôme très précis : le moteur tourne, le carburant arrive, l'étincelle se fait, le moteur monte à 1000 Tr/min... puis s'éteint net au bout de 2 ou 3 secondes, comme si quelqu'un avait tourné la clé.
+
+Si le moteur tousse, broute et s'étouffe lentement, c'est généralement mécanique. S'il coupe de manière franche et répétitive, c'est souvent électronique.
+
+<EditorialPrinciple />
+
+## L'Hypothèse N°1 : L'Antidémarrage (Typique VAG)
+
+La majorité des véhicules du groupe VAG (Volkswagen, Audi, Seat, Skoda) ont une logique d'antidémarrage particulière. Contrairement à Renault ou PSA où le démarreur tourne mais le moteur ne se lance jamais, le groupe VAG **autorise le démarrage pendant 1 à 2 secondes** avant de couper l'injection si la clé n'est pas reconnue.
+
+<TestStepCard step={1} title="Vérification de l'Immo">
+  1. Regardez le tableau de bord (Combiné d'instruments). Y a-t-il un voyant de clé jaune clignotant ou le message "SAFE" / "Immobilizer active" ?
+  2. Si OUI, ne cherchez aucune panne moteur. La puce (transpondeur) de la clé est tombée, la bobine de lecture (bague autour du Neiman) est défectueuse, ou l'EEPROM du compteur est corrompue.
+  3. Essayez la deuxième clé. Si elle fonctionne, le transpondeur de la première clé est HS.
+</TestStepCard>
+
+## L'Hypothèse N°2 : La Prise d'Air Massive
+
+Si l'antidémarrage est OK, la deuxième cause la plus courante (surtout après une intervention sous le capot) est une durite d'air complètement déboîtée *après* le débitmètre (MAF).
+
+<DiagnosticTree symptom="Démarre, s'étouffe et cale">
+  <li>**Le mensonge du MAF :** Le débitmètre mesure l'air qui passe à travers lui. Si un tuyau est déboîté entre le débitmètre et le collecteur d'admission, le moteur aspire l'air par cette fuite (qui est plus facile à aspirer) plutôt que par le filtre à air. Le MAF mesure 0 g/s. L'ECU coupe l'essence car il croit que le moteur ne respire pas.</li>
+  <li>**Le Test (Débranchement MAF) :** Débranchez électriquement la prise du débitmètre (MAF). Essayez de démarrer. Si le moteur démarre et **tient le ralenti** avec un voyant moteur allumé, vous venez d'isoler la panne. En débranchant le MAF, le calculateur est passé en cartographie de secours (Alpha-N) et ignore l'air. Cherchez une grosse prise d'air, ou remplacez le MAF défectueux.</li>
+</DiagnosticTree>
+
+## L'Hypothèse N°3 : La Vanne EGR coincée ouverte
+
+C'est le cauchemar classique des moteurs diesel très kilométrés, mais cela arrive aussi sur l'essence. 
+La vanne EGR recycle les gaz d'échappement (dépourvus d'oxygène) dans l'admission. Normalement, elle est **toujours fermée au ralenti** et au démarrage, sinon le moteur s'étouffe avec ses propres gaz.
+
+Si un morceau de calamine bloque la soupape EGR en position ouverte, les gaz brûlés envahissent le moteur dès qu'il tente de stabiliser son ralenti, et il s'étouffe.
+
+<ConfirmationBox>
+  **Test de l'EGR bloquée :** 
+  Débrancher la prise électrique de l'EGR ne servira à rien si elle est bloquée *mécaniquement* par la suie. 
+  La solution de test ultime consiste à desserrer légèrement la bride de l'EGR et à insérer une fine plaque métallique (plaque d'obturation / blanking plate) pour bloquer physiquement le flux de gaz. 
+  Resserrez, démarrez. Si le moteur tient parfaitement le ralenti, votre vanne EGR est coincée. Démontez-la et nettoyez-la avec du décapant four ou remplacez-la.
+</ConfirmationBox>

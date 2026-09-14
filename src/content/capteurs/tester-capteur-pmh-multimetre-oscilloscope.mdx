@@ -1,0 +1,48 @@
+---
+title: "Mesure d'un PMH : Inductif (AC) vs Effet Hall (DC)"
+description: "Comment tester électriquement un capteur PMH au multimètre et à l'oscilloscope ? Différences entre le signal sinusoïdal 2 fils et le signal carré 3 fils."
+pillar: "diagnostic"
+category: "capteurs"
+system: "moteur"
+difficulty: "avance"
+risk: "moyen"
+requiredTools: ["multimetre", "oscilloscope"]
+author: "DiagVault"
+published_date: 2024-06-01T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Si votre valise de diagnostic confirme que le régime moteur est à `0 tr/min` au coup de démarreur, vous devez tester le composant physiquement. 
+La méthode de test change **totalement** selon la technologie du capteur. Regardez la prise de votre capteur PMH : a-t-il 2 fils ou 3 fils ?
+
+<EditorialPrinciple />
+
+## Capteur PMH Inductif (2 fils)
+
+Un capteur inductif génère sa propre électricité (Tension Alternative - AC Volts) grâce à un aimant et une bobine interne. Il n'est pas alimenté par la voiture.
+
+<DiagnosticTree symptom="Tests du Capteur 2 Fils">
+  <li>**Test de Résistance (Ohms) :** Débranchez le capteur. Mesurez la résistance entre ses deux broches. Vous devez trouver entre **200 et 1000 Ohms** (consultez la RTA). Si vous lisez "OL" (Infini), la bobine interne est coupée. Le capteur est mort.</li>
+  <li>**Test de Production (AC Volts) :** Laissez le capteur branché et "piquez" ses deux fils par l'arrière (Back-probing) avec votre multimètre réglé sur **Volts Alternatifs (VAC / V~)**. Lancez le démarreur. Vous devez lire un petit voltage qui "monte" (ex: **0.5V à 2.0V AC**). S'il reste à 0.0V, il ne produit rien.</li>
+  <li>**À l'Oscilloscope :** C'est le juge de paix. Vous obtiendrez une belle **Vague Sinusoïdale** qui grandit et s'accélère avec le régime moteur, avec une "dent manquante" très visible (pic inversé) qui marque le Point Mort Haut.</li>
+</DiagnosticTree>
+
+## Capteur PMH à Effet Hall (3 fils)
+
+Un capteur Hall contient une puce électronique. Il a besoin d'être alimenté par le calculateur (souvent en 5V) pour fonctionner. Ses 3 fils sont : Alimentation (+), Masse (-), et Signal.
+
+<TestStepCard step={1} title="Tests du Capteur 3 Fils">
+  **Attention :** Le test de résistance (Ohms) est strictement INTERDIT sur un capteur Effet Hall, vous allez griller sa puce interne avec la pile du multimètre !
+  
+  1. **Test des Alimentations :** Mettez le contact. Débranchez la prise du capteur. Au multimètre (DC Volts) côté faisceau, trouvez la masse (0V) et l'alimentation venant de l'ECU (**5V** ou parfois 12V). S'il manque le 5V, le faisceau ou l'ECU est en cause, pas le capteur !
+  2. **Test du Signal au Multimètre :** Rebranchez le capteur. Piquez le fil de signal (DC Volts). Lancez le démarreur. Le multimètre est trop lent pour voir le signal on/off rapide, il affichera donc une **moyenne : souvent autour de 2.5V**. S'il reste bloqué à 0V ou 5V pleins, le capteur ne "hache" pas le signal.
+  3. **Test à l'Oscilloscope :** C'est obligatoire pour un capteur Hall. Vous devez observer un signal **Carré (Digital)**, parfait, qui oscille de 0V à 5V. Si les "carrés" sont arrondis ou ne descendent pas à zéro franc, le capteur est défectueux.
+</TestStepCard>
+
+<ConfirmationBox>
+  **L'exception des 3 fils :** Méfiance ! Un capteur Inductif (2 fils) peut parfois posséder un 3ème fil. Ce 3ème fil n'est pas une alimentation, mais un simple **Blindage tressé** (Shield) relié à la masse pour bloquer les parasites. Observez bien le connecteur : si le 3ème fil part directement sur la carcasse en métal sans entrer dans le capteur, c'est un Inductif Blindé. Testez-le comme un 2 fils !
+</ConfirmationBox>

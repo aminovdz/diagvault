@@ -1,0 +1,20 @@
+---
+title: "Comment vérifier qu'un ECU est réellement HS avant de le remplacer"
+description: "Les 4 piliers du fonctionnement d'un module : Alimentation, Masse, Wake-up, et Réseau de communication."
+pillar: "programmation"
+category: "ecu"
+system: "ecu"
+difficulty: "expert"
+risk: "faible"
+requiredTools: ["multimetre", "oscilloscope"]
+author: "DiagVault"
+published_date: 2024-06-01T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+## Ne condamnez pas trop vite
+Avant de cloner un ECU, vérifiez le fil de Wake-up (Pin +12V après contact ou signal de réveil réseau). 30% des ECU remplacés en atelier ne sont pas défectueux, le problème était un faisceau oxydé ou un relais de gestion moteur fatigué.

@@ -1,0 +1,49 @@
+---
+title: "Test de Voltage d'un Réseau CAN High-Speed"
+description: "Pas de communication avec l'ECU ? Apprenez à lire les voltages CAN High (2.5V à 3.5V) et CAN Low (2.5V à 1.5V) au multimètre via la prise OBD."
+pillar: "diagnostic"
+category: "can"
+system: "can"
+difficulty: "avance"
+risk: "moyen"
+requiredTools: ["multimetre"]
+author: "DiagVault"
+published_date: 2024-06-20T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Lorsque votre valise de diagnostic refuse de communiquer avec le calculateur Moteur, l'ABS, ou la BVA (code U0100), le réseau de communication de la voiture (le CAN Bus) est probablement "planté". 
+Le réseau **CAN High-Speed (HS-CAN)** transporte les informations critiques à 500 kbps sur deux fils torsadés : le CAN High et le CAN Low.
+
+<EditorialPrinciple />
+
+## La Théorie : Le voltage miroir
+
+Pour résister aux parasites, le CAN-BUS utilise un signal différentiel. 
+<br /> * Au repos (Personne ne parle), les deux fils se maintiennent à une tension d'équilibre : **2.5 Volts**.
+<br /> * Quand un calculateur "parle", le CAN High monte à **3.5 Volts** et le CAN Low descend en miroir parfait à **1.5 Volts**.
+
+## Le Test du Voltage (Via la prise OBD-II)
+
+Le multimètre classique est trop lent pour voir les paquets de données (010101). Mais il est assez rapide pour faire une **moyenne mathématique**.
+
+<TestStepCard step={1} title="Test du HS-CAN sur prise OBD (Broches 6 et 14)">
+<br /> - Mettez le contact de la voiture (ON), moteur arrêté. Le réseau doit être "réveillé".
+<br /> - Mettez votre multimètre sur DC Volts. Pointe noire sur la broche 4 (Masse châssis) de la prise OBD.
+<br /> - Mettez la pointe rouge sur la **broche 6 (CAN High)**. Vous devez lire une moyenne d'environ **2.6V à 2.7V**.
+<br /> - Déplacez la pointe rouge sur la **broche 14 (CAN Low)**. Vous devez lire une moyenne d'environ **2.3V à 2.4V**.
+  
+  **Interprétation des Pannes :**
+<br /> * Si les deux broches affichent `12V` : Le faisceau CAN est en court-circuit au positif de la batterie.
+<br /> * Si les deux broches affichent `0V` : Le faisceau CAN est en court-circuit à la masse, ou le Gateway est grillé.
+<br /> * Si une broche affiche 2.6V et l'autre 0V : Un seul fil est coupé ou écrasé à la masse.
+<br /> * Si la somme des deux fils ne fait pas 5 Volts (ex: 3V + 3V), le réseau est corrompu.
+</TestStepCard>
+
+<ConfirmationBox>
+  **Le Plantage par Court-Circuit :** Les modules (ECU, ABS) sont branchés en "parallèle" sur ces deux fils. Si un seul module prend l'eau et met en court-circuit le CAN High et le CAN Low, TOUT le réseau tombe. Plus aucun module ne peut parler. La technique de sioux consiste à débrancher les calculateurs un par un jusqu'à ce que le voltage redevienne normal sur la prise OBD !
+</ConfirmationBox>

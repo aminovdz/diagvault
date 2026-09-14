@@ -1,0 +1,58 @@
+---
+title: "Comment tester un démarreur (Chute de tension)"
+description: "Le démarreur fait 'CLIC' mais le moteur ne tourne pas ? Apprenez le Voltage Drop Test pour différencier un démarreur mort d'un câble oxydé."
+pillar: "diagnostic"
+category: "actionneurs"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "moyen"
+requiredTools: ["multimetre"]
+author: "DiagVault"
+published_date: 2024-06-07T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Vous tournez la clé. Vous entendez un gros "CLAC" métallique sous le capot, mais le moteur refuse de tourner. Vos phares s'allument bien, et la batterie indique 12.6V au repos.
+90% des gens vont acheter un démarreur neuf. Et 30% d'entre eux réaliseront après le montage que le nouveau démarreur fait exactement le même "CLAC". Pourquoi ? À cause des câbles.
+
+<EditorialPrinciple />
+
+## Le Fonctionnement : Les deux circuits
+
+Le démarreur est un énorme moteur électrique (qui consomme entre 150 et 300 Ampères). Il possède deux bornes électriques distinctes :
+1. **La petite borne "S" (Solénoïde) :** C'est la commande. Quand vous tournez la clé, un petit fil envoie du 12V ici. Le solénoïde pousse le pignon et fait le "CLAC".
+2. **L'énorme borne "B+" (Batterie) :** C'est la puissance. Un câble très épais (comme un pouce) vient directement du `+` de la batterie et y est boulonné.
+
+Si le solénoïde fait "CLAC", la borne S fonctionne. Le problème, c'est que la puissance n'arrive pas au gros moteur. Est-ce le moteur interne qui est brûlé (Charbons HS), ou le gros câble B+ qui est pourri de l'intérieur ? 
+
+<TestStepCard step={1} title="Le Voltage Drop Test (Le Test ultime)">
+  Ce test génial permet de voir si l'électricité se "perd" dans le câble à cause de la rouille. Il se fait EN CHARGE, au moment exact de la panne.
+  
+  1. Prenez votre multimètre en position **DC Volts**.
+  2. Mettez la pointe **Rouge** sur le plot (+) direct de la batterie (Sur le plomb, pas sur la cosse).
+  3. Mettez la pointe **Noire** directement sur la grosse vis en laiton "B+" derrière le démarreur. (Loin sous la voiture !).
+  4. Demandez à un ami de tourner la clé et de la maintenir en position démarrage (Le moment du CLAC).
+  5. Lisez l'écran du multimètre.
+  
+  **Résultat :** 
+  - Si vous lisez entre **0.0V et 0.5V** : Le câble est parfait. L'électricité ne se perd pas. Le 12V arrive bien au démarreur en pleine force. C'est le démarreur lui-même (ou ses charbons) qui est mort. 
+  - Si vous lisez **3.0V, 5.0V ou pire 10.0V** : Vous venez de trouver la panne. 5 Volts se "perdent" dans le câble sous forme de chaleur à cause de la corrosion verte. Le démarreur ne reçoit que 7V pour travailler. Nettoyez vos cosses, ou changez le gros câble !
+</TestStepCard>
+
+## Le Test Côté Masse (Le Tressage oublié)
+
+Le démarreur n'a pas de fil de masse (-). Son corps métallique fait masse directement en touchant la boîte de vitesse, qui est elle-même reliée au châssis.
+
+<DiagnosticTree symptom="La Tresse de Masse">
+  <li>**Le Problème :** Si le gros câble tressé (Ground Strap) qui relie le bloc moteur au châssis de la voiture est rouillé ou arraché, le circuit ne peut pas se fermer. Le démarreur est bloqué.</li>
+  <li>**Le Test du Câble de Démarrage :** Prenez un gros câble de démarrage à pinces (Jumper Cable) noir. Branchez une pince directement sur le plot (-) de votre batterie. Accrochez l'autre pince directement sur une partie métallique propre du corps du démarreur (ou sur le bloc moteur en aluminium).</li>
+  <li>**L'Essai :** Tournez la clé. Si le démarreur se met à faire tourner le moteur avec une puissance fulgurante, votre démarreur est parfait. Vous avez juste une tresse de masse moteur arrachée ou totalement oxydée.</li>
+</DiagnosticTree>
+
+<ConfirmationBox>
+  **Ne pas oublier la vérification mécanique :** Un moteur qui a serré, qui a cassé sa courroie de distribution, ou qui est rempli d'eau (Hydrolock) refusera mécaniquement de tourner. Le démarreur fera ce même bruit de "CLAC" (le pignon s'engage mais bloque sur les dents de la couronne). Prenez une grosse clé à cliquet et essayez de faire tourner le vilebrequin à la main par la poulie d'accessoires. S'il est bloqué, le démarreur est hors de cause !
+</ConfirmationBox>

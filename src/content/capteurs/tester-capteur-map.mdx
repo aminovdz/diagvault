@@ -1,0 +1,56 @@
+---
+title: "Comment tester un capteur MAP"
+description: "Pression absolue du collecteur d'admission : apprenez à tester le capteur MAP avec un multimètre (test KOEO / KOER) ou une simple pompe à vide."
+pillar: "diagnostic"
+category: "capteurs"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["multimetre"]
+author: "DiagVault"
+published_date: 2024-06-02T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le capteur MAP (Manifold Absolute Pressure) mesure la pression de l'air à l'intérieur du collecteur d'admission. S'il ment au calculateur, le moteur manquera cruellement de puissance, consommera énormément, et crachera de la fumée noire.
+
+Ce capteur possède 3 fils : 
+1. La Masse (0V)
+2. L'Alimentation de référence (5V constants venant de l'ECU)
+3. Le **Fil de Signal** (celui qui nous intéresse, dont la tension varie selon la pression).
+
+<EditorialPrinciple />
+
+## Test N°1 : La cohérence à l'arrêt (KOEO)
+
+KOEO signifie *Key On, Engine Off* (Contact mis, Moteur coupé).
+
+<DiagnosticTree symptom="Pression Atmosphérique">
+  <li>**Le Principe :** Si le moteur est arrêté, la pression à l'intérieur du collecteur est exactement la même que la pression de la pièce où vous vous trouvez (La pression atmosphérique, environ 1 Bar / 1000 mbar).</li>
+  <li>**Test à la Valise :** Dans les données en direct, sans démarrer, le capteur MAP doit lire environ `100 kPa` ou `1000 mbar` (selon l'altitude de votre ville). S'il lit 50 kPa moteur coupé, le capteur est complètement déréglé (Offset). Jetez-le.</li>
+  <li>**Test au Multimètre :** Piquez le fil de signal avec votre multimètre (DC Volts). Moteur arrêté, la majorité des capteurs MAP (surtout essence) renvoient une tension très élevée, autour de **4.5 Volts**.</li>
+</DiagnosticTree>
+
+## Test N°2 : Le test du Vide au ralenti (KOER)
+
+KOER signifie *Key On, Engine Running* (Moteur tournant). 
+
+<TestStepCard step={1} title="L'aspiration du Moteur">
+  1. Démarrez le moteur et laissez-le au ralenti.
+  2. Un moteur essence fermé au ralenti génère un fort "Vide" (Dépression) dans le collecteur d'admission. La pression absolue chute radicalement.
+  3. Lisez votre multimètre branché sur le fil de signal.
+  4. La tension de **4.5V** doit s'effondrer immédiatement pour atteindre environ **1.0V à 1.5V**. 
+  
+  **Résultat :**
+  - Si la tension reste bloquée à 4.5V : Le petit trou d'entrée d'air du capteur est bouché par de la suie, ou la membrane interne est éclatée.
+  - Donnez un grand coup d'accélérateur : Le papillon s'ouvre, le vide disparaît instantanément (retour à la pression atmo). Votre multimètre doit flasher à **4.5V** le temps d'une seconde, puis retomber à **1.0V** quand le moteur revient au ralenti. C'est la preuve que la membrane est réactive !
+</TestStepCard>
+
+<ConfirmationBox>
+  **Le Test Pro (Pompe à Vide Manuelle) :**
+  Si vous doutez de l'étanchéité du moteur, retirez le capteur MAP. Branchez une petite pompe à vide manuelle (type Mityvac) sur le nez du capteur. Mettez le contact. Lisez le multimètre. Pendant que vous pompez pour créer du vide manuellement, la tension doit chuter progressivement (4V, 3V, 2V...). Si la tension saute ou est erratique, la piste carbone interne du capteur est usée.
+</ConfirmationBox>

@@ -1,0 +1,50 @@
+---
+title: "Comprendre les Fuel Trims (STFT et LTFT)"
+description: "P0171 (Pauvre) ou P0172 (Riche) ? Apprenez comment le calculateur utilise les corrections de carburant STFT et LTFT pour ajuster l'injection."
+pillar: "diagnostic"
+category: "livedata"
+system: "moteur"
+difficulty: "avance"
+risk: "moyen"
+requiredTools: ["scanner"]
+author: "DiagVault"
+published_date: 2024-06-28T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Les "Fuel Trims" (Ajustements de Carburant) sont la fenêtre la plus puissante sur la santé mécanique d'un moteur à essence. Ils représentent **les corrections mathématiques** que le calculateur (ECU) s'impose pour que le mélange Air/Essence reste toujours au ratio parfait de 14.7:1 (Stœchiométrique).
+
+L'ECU a une cartographie de base ("Base Map"). Il lit le débitmètre (Air) et calcule le temps d'ouverture des injecteurs. Ensuite, il regarde la sonde Lambda (Oxygène) pour voir le résultat de l'explosion. Si c'est trop pauvre, il doit corriger en rajoutant de l'essence.
+
+<EditorialPrinciple />
+
+## STFT (Short Term) et LTFT (Long Term)
+
+Il y a deux jauges de correction. Elles se lisent en pourcentage (%), de -25% à +25%.
+
+<DiagnosticTree symptom="La différence entre STFT et LTFT">
+  <li>**Le STFT (Short Term Fuel Trim - Court Terme) :** C'est le bras armé instantané. Il bouge frénétiquement chaque seconde. Il rajoute (+3%) ou enlève (-5%) du temps d'ouverture aux injecteurs en réaction directe à la sonde Lambda. S'il doit constamment rester à +10% pendant un certain temps, il va demander au LTFT d'apprendre cette dérive.</li>
+  <li>**Le LTFT (Long Term Fuel Trim - Long Terme) :** C'est la mémoire de l'ECU (La Base Map ajustée). Si le moteur a une fuite d'air, le LTFT "apprend" qu'il faut en permanence injecter +15% d'essence pour compenser. Il absorbe la correction. Ainsi, le STFT peut revenir danser autour de 0%.</li>
+  <li>**Le Total Trim :** La vraie correction totale du moteur à l'instant T est l'addition des deux. Total = LTFT + STFT. Un total parfait est entre -5% et +5%.</li>
+</DiagnosticTree>
+
+## Interpréter les pannes avec les Fuel Trims
+
+La limite de l'ordinateur est généralement fixée à **+25% ou -25%**. S'il doit corriger au-delà, il allume le voyant Check Engine.
+
+<TestStepCard step={1} title="Total positif (+15% à +25%) = Mélange Pauvre (P0171 / P0174)">
+  L'ECU rajoute massivement de l'essence car le mélange est trop pauvre (Trop d'air).
+<br /> - Moteur chaud, valise branchée, regardez la somme (LTFT + STFT).
+<br /> - Maintenez le régime à 3000 tr/min.
+<br /> - **Si les trims retombent vers 0% à 3000 tr/min :** Vous avez une prise d'air physique (Vacuum Leak) après le papillon (Durite PCV craquée, joint collecteur). L'air parasite est dilué dans la masse d'air à haut régime.
+<br /> - **Si les trims empirent à +25% à 3000 tr/min :** Le moteur s'étouffe par manque d'essence. (Pompe à essence HS, filtre bouché, injecteurs encrassés).
+</TestStepCard>
+
+<ConfirmationBox>
+  **Total négatif (-15% à -25%) = Mélange Riche (P0172 / P0175) :**
+  L'ECU retire frénétiquement de l'essence car il y en a beaucoup trop. Cela arrive lorsque la pression de la rampe est trop forte (Régulateur de pression bloqué fermé), ou qu'un injecteur "fuit" (le nez ne ferme plus et goutte en permanence). Cela peut aussi venir d'un MAF très encrassé qui surestime l'air entrant, poussant l'ECU à injecter trop de carburant.
+</ConfirmationBox>

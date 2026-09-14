@@ -1,0 +1,58 @@
+---
+title: "Ralenti instable : méthode de diagnostic complète"
+description: "Le moteur 'pompe' ou tremble au ralenti ? Comment isoler la cause entre une prise d'air, un papillon encrassé, ou un problème d'allumage avec vos Fuel Trims."
+pillar: "diagnostic"
+category: "symptomes"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner", "machine_a_fumee"]
+author: "DiagVault"
+published_date: 2024-06-02T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+import ValueTable from '../../components/article/ValueTable.astro';
+
+Le ralenti est le régime le plus instable et le plus difficile à maintenir pour un moteur. Le papillon des gaz est presque fermé, limitant l'aspiration de l'air à un mince filet. La moindre perturbation (air non compté, étincelle faible, compression asymétrique) se ressentira immédiatement par un tremblement de la caisse ou une aiguille compte-tours qui oscille.
+
+<EditorialPrinciple />
+
+## 1. La règle d'or des Fuel Trims (Ajustements Carburant)
+
+Ne touchez pas au moteur avant d'avoir lu les données du scanner. Les **Fuel Trims** vous diront immédiatement si le problème vient de l'air ou de l'allumage.
+
+<TestStepCard step={1} title="Lecture STFT et LTFT au ralenti">
+  Moteur chaud, laissez tourner au ralenti.
+  - **LTFT très positif (+15% à +25%) :** L'ECU injecte massivement de l'essence car le mélange est trop pauvre. **C'est une Prise d'Air (Vacuum Leak).** L'air entre dans l'admission *après* le débitmètre. L'aiguille du compte-tours "pompe" car l'ECU court constamment après ce ratio air/essence.
+  - **LTFT proche de zéro (± 5%) mais ralenti instable :** Le problème n'est pas lié au mélange global. Cherchez un raté d'allumage (bougie/bobine), une vanne EGR fuyarde, ou un défaut de compression sur un cylindre.
+</TestStepCard>
+
+## 2. Si vous soupçonnez une prise d'air (LTFT Positif)
+
+Si les Fuel Trims sont dans le rouge (+), vous devez trouver par où l'air pirate pénètre.
+
+<DiagnosticTree symptom="Prise d'Air (Vacuum Leak)">
+  <li>**Durites de dépression :** Inspectez visuellement le tuyau du Mastervac (servofrein), la ligne de purge canister (EVAP), et les reniflards d'huile (PCV).</li>
+  <li>**Le Test du Spray :** Moteur au ralenti, pulvérisez de brèves doses de nettoyant frein autour des joints du collecteur d'admission et de la base des injecteurs. Si le régime moteur monte d'un coup (ou si le STFT plonge en négatif sur le scanner), vous avez trouvé la fuite ! Le moteur vient d'aspirer votre produit combustible.</li>
+  <li>**La Machine à Fumée :** C'est l'outil ultime. Moteur éteint, injectez de la fumée sous basse pression (0.5 bar) dans l'admission. La moindre fuite aux joints de papillon ou de collecteur sera visible.</li>
+</DiagnosticTree>
+
+## 3. Le Papillon Motorisé Encrassé (Pas de code défaut)
+
+Un grand classique sur les moteurs essence qui calent en arrivant à un Stop ou dont le ralenti chute brusquement puis remonte.
+
+Au fil des années, les vapeurs d'huile (venant du PCV) et la poussière forment un dépôt de calamine noire autour du volet papillon. L'espace infime qui laissait passer l'air au ralenti se bouche. L'ECU doit ouvrir le papillon de plus en plus grand pour maintenir le moteur en vie, jusqu'à atteindre sa limite de régulation.
+
+<TestStepCard step={2} title="Nettoyage et Réapprentissage">
+  1. Démontez le conduit d'admission d'air.
+  2. Avec un chiffon doux (microfibre) et du nettoyant pour carburateur, nettoyez la bague de calamine noire à l'intérieur du corps de papillon. **Attention : ne forcez jamais le volet avec vos doigts sur un papillon électronique, vous risquez de casser les pignons en plastique.** Mettez le contact et demandez à un assistant d'appuyer sur la pédale d'accélérateur pour ouvrir le volet.
+  3. **L'étape critique :** Une fois propre, l'ECU ne sait pas que le papillon est nettoyé. Il continue de l'ouvrir en grand, provoquant un ralenti à 1500 tr/min. Utilisez votre scanner pour lancer la procédure de "Réapprentissage du boîtier papillon" (Throttle Body Adaptation).
+</TestStepCard>
+
+<ConfirmationBox>
+  **EGR bloquée ouverte (Diesel & Essence) :** Si votre ralenti est si instable que le moteur semble s'étouffer de lui-même et dégage une odeur âcre d'échappement, la vanne EGR ne se ferme probablement pas hermétiquement. Les gaz d'échappement étouffent la combustion. Sur un moteur diesel, débranchez la prise de la vanne EGR (si elle est électrique) ou bloquez le conduit d'air avec une plaque temporaire (blanking plate). Si le ralenti redevient parfait, la vanne est encrassée et reste coincée ouverte.
+</ConfirmationBox>

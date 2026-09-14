@@ -1,0 +1,53 @@
+---
+title: "Comment tester une sonde Lambda (O2)"
+description: "Sonde de réchauffage HS ou capteur figé ? Apprenez à tester la résistance de chauffage et les oscillations (0.1V - 0.9V) d'une sonde lambda classique."
+pillar: "diagnostic"
+category: "capteurs"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["multimetre", "scanner"]
+author: "DiagVault"
+published_date: 2024-06-04T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+La Sonde Lambda (Capteur d'oxygène ou O2 Sensor) analyse la quantité d'oxygène imbrûlé dans l'échappement. Les sondes modernes (Zirconium) à bande étroite possèdent généralement 4 fils : 
+- 2 fils de même couleur (souvent blancs) pour la résistance de chauffage.
+- 1 fil de signal (souvent noir).
+- 1 fil de masse du signal (souvent gris).
+
+<EditorialPrinciple />
+
+## Panne N°1 : Le circuit de chauffage (Heater Circuit)
+
+Pour qu'une sonde Lambda fonctionne, sa pointe doit atteindre 300°C minimum. Le calculateur envoie donc du 12V dans une résistance intégrée à la sonde pour la chauffer dès le démarrage. Si cette résistance grille, la valise affiche souvent le code **P0135**.
+
+<TestStepCard step={1} title="Test de la résistance (Ohms)">
+  C'est le composant qui casse le plus souvent.
+  1. Mettez le contact sur OFF. Débranchez le connecteur de la sonde.
+  2. Sur la prise *côté sonde*, trouvez les deux fils de même couleur (les deux blancs).
+  3. Prenez votre multimètre, réglez-le sur Ohms (Résistance). Touchez les deux broches correspondant aux fils blancs.
+  4. Vous devez trouver une faible résistance, généralement entre **2 et 15 Ohms** (selon le constructeur).
+  
+  **Résultat :** Si le multimètre affiche `OL` (Open Loop / Ligne Ouverte), la résistance interne est grillée comme une vieille ampoule. La sonde est morte, changez-la. (Inutile de tester le signal !).
+</TestStepCard>
+
+## Panne N°2 : Le Signal est figé ou lent
+
+Si la résistance de chauffage est bonne, le problème vient de la capacité chimique de la sonde à lire l'oxygène. Une sonde fatiguée par la calamine (ou le liquide de refroidissement, ou le silicone) devient "paresseuse".
+
+<DiagnosticTree symptom="Le test du signal (0.1V - 0.9V)">
+  <li>**Mise en place (Multimètre ou Valise) :** Moteur tournant et très chaud (Laissez-le tourner 5 minutes). Piquez le fil de signal (Noir) avec votre multimètre en DC Volts, ou regardez les Données en Direct (Live Data) sur votre scanner OBD.</li>
+  <li>**La Danse de la Sonde (Alternance) :** Une sonde AMONT (avant le catalyseur) saine au ralenti ne reste jamais fixe. Elle oscille frénétiquement (plusieurs fois par seconde) entre **0.1V (Pauvre) et 0.9V (Riche)**. Le calculateur passe son temps à ajouter/retirer de l'essence pour trouver l'équilibre parfait.</li>
+  <li>**Le Verdict (Sonde paresseuse) :** Si la tension reste figée à `0.45V`, la sonde est morte ou débranchée (c'est la tension de base de l'ECU). Si la tension met plus de 2 secondes à passer de 0.1 à 0.9V (elle est molle/lente), elle est encroûtée. L'ECU génèrera un code "Sonde Paresseuse" (Slow Response).</li>
+  <li>**Le Verdict (Fuite) :** Si la tension reste bloquée à `0.1V` sans jamais monter, ne blâmez pas tout de suite la sonde ! Vous avez peut-être une énorme **fuite d'échappement** ou d'admission, et la sonde dit la vérité : le mélange est atrocement pauvre.</li>
+</DiagnosticTree>
+
+<ConfirmationBox>
+  **Test de réaction forcée :** Moteur au ralenti, si la sonde reste figée vers le bas (0.2V), envoyez un pschitt bref de nettoyant frein dans l'admission d'air. Le mélange va devenir ultra-riche (le nettoyant brûle très bien). La tension de la sonde doit bondir instantanément à **0.9V** ! Si elle le fait, la sonde est parfaitement réactive, c'est votre moteur qui souffre d'un manque d'essence.
+</ConfirmationBox>

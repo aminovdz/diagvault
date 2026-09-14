@@ -1,0 +1,43 @@
+---
+import { getCollection, render } from 'astro:content';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+
+export async function getStaticPaths() {
+  const diagnosticEntries = await getCollection('diagnostic');
+  const capteursEntries = await getCollection('capteurs');
+  const actionneursEntries = await getCollection('actionneurs');
+  const electriciteEntries = await getCollection('electricite');
+  const canEntries = await getCollection('can');
+  const dtcEntries = await getCollection('dtc');
+  const livedataEntries = await getCollection('livedata');
+  const oscilloscopeEntries = await getCollection('oscilloscope');
+  const symptomesEntries = await getCollection('symptomes');
+  const casreelsEntries = await getCollection('casreels');
+  const ecuEntries = await getCollection('ecu');
+
+  const allEntries = [
+    ...diagnosticEntries,
+    ...capteursEntries,
+    ...actionneursEntries,
+    ...electriciteEntries,
+    ...canEntries,
+    ...dtcEntries,
+    ...livedataEntries,
+    ...oscilloscopeEntries,
+    ...symptomesEntries,
+    ...casreelsEntries,
+    ...ecuEntries
+  ];
+
+  return allEntries.map(entry => ({
+    params: { slug: `${entry.collection}/${entry.id}` },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+---
+<ArticleLayout frontmatter={entry.data} headings={headings}>
+  <Content />
+</ArticleLayout>

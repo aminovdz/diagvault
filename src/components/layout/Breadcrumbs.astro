@@ -1,0 +1,23 @@
+---
+export interface Props {
+  paths: { label: string; url: string }[];
+}
+const { paths } = Astro.props;
+---
+<nav aria-label="Breadcrumb" class="mb-6">
+  <ol class="flex items-center space-x-2 text-sm text-slate-400">
+    <li>
+      <a href="/" class="hover:text-white transition-colors">Accueil</a>
+    </li>
+    {paths.map((path, index) => (
+      <li class="flex items-center space-x-2">
+        <span>/</span>
+        {index === paths.length - 1 ? (
+          <span class="text-slate-200" aria-current="page">{path.label}</span>
+        ) : (
+          <a href={path.url} class="hover:text-white transition-colors">{path.label}</a>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>

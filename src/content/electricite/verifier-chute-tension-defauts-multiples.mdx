@@ -1,0 +1,62 @@
+---
+title: "Comment vérifier une chute de tension qui provoque des défauts multiples"
+description: "Oubliez le test de continuité (Bip) du multimètre ! Découvrez le test de Chute de Tension (Voltage Drop) en charge pour trouver les vraies pannes de faisceau."
+pillar: "diagnostic"
+category: "electricite"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["multimetre"]
+author: "DiagVault"
+published_date: 2024-06-18T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+C'est l'un des concepts les plus difficiles à maîtriser en diagnostic, mais aussi le plus puissant. Un technicien qui maîtrise le test de **Chute de Tension (Voltage Drop)** ne changera jamais un faisceau électrique pour rien.
+
+Si votre scanner affiche 5 ou 6 codes défauts simultanés du type *Circuit Haut* ou *Circuit Bas* sur des capteurs qui n'ont rien à voir entre eux (ex: Capteur de pression rail, PMH, et Température d'eau), ces capteurs partagent une alimentation (5V) ou une masse commune. 
+
+<EditorialPrinciple />
+
+## L'Erreur classique : Le test de Continuité (Le fameux "Bip")
+
+Imaginons qu'un fil de masse allant de l'ECU aux capteurs frotte contre la carrosserie. Sur ses 50 brins de cuivre internes, **49 sont coupés**. Le fil ne tient plus que par 1 seul brin de cuivre.
+
+Si vous débranchez les extrémités et testez au multimètre en mode "Bip" (Continuité) ou en Ohms (Résistance), **le multimètre va biper et afficher 0.2 Ohms !** Pourquoi ? Parce que le multimètre n'envoie qu'un infime courant (0.001 Ampère) pour tester le fil. Un seul brin de cuivre suffit pour laisser passer ce micro-courant. 
+
+Vous concluez "Le fil est bon". Vous changez les capteurs, l'ECU... et la panne est toujours là. Car dans la réalité, quand les capteurs exigent 2 Ampères pour fonctionner, le petit brin de cuivre agit comme un goulot d'étranglement géant. La tension s'effondre.
+
+## La Solution : Le Test de Chute de Tension (Circuit en charge)
+
+Pour voir si un fil (ou un relais, ou un fusible) est sain, il faut le tester **pendant qu'il travaille**, donc avec les composants branchés et allumés.
+
+<TestStepCard step={1} title="Test de la Masse Commune (Côté Négatif)">
+  1. Branchez tous les capteurs et l'ECU.
+  2. Mettez le contact (ON).
+  3. Mettez le multimètre en mode **DC Volts (Tension Continue)**.
+  4. Piquez la pointe noire du multimètre sur le Négatif (-) de la batterie.
+  5. Piquez la pointe rouge sur le fil de masse **à l'entrée du capteur**. (Back-probing avec une aiguille).
+  
+  **Interprétation :** 
+  - Si vous lisez **0.0V à 0.1V** : Le chemin vers la batterie est parfait. Le fil est gros et sain.
+  - Si vous lisez **1.5V, 3V, ou plus** : C'est une **Chute de Tension**. Le courant électrique "bute" contre la résistance du fil à moitié coupé ou du connecteur rouillé. Il s'accumule et crée cette tension parasite. Le capteur est donc privé de cette masse et tombe en panne.
+</TestStepCard>
+
+## Test du côté Positif (Alimentation 12V ou 5V)
+
+Le principe est exactement le même pour tester un fil d'alimentation qui relie la batterie à un composant (ex: un ventilateur ou une pompe).
+
+<DiagnosticTree symptom="Exemple : Le démarreur tourne lentement">
+  <li>**Mise en place :** Mettez la pointe rouge du multimètre sur le (+) de la batterie, et la pointe noire sur la grosse vis d'alimentation (+) du démarreur. (Vos deux pointes sont donc sur le circuit POSITIF).</li>
+  <li>**Lancement du test :** Actionnez le démarreur.</li>
+  <li>**Le Verdict :** Le fil de démarreur est énorme, il doit laisser passer 200A sans broncher. Si pendant le démarrage, le multimètre affiche **2.5 Volts**, cela signifie que 2.5V sont "gaspillés" et convertis en chaleur par ce seul câble ! Le câble est pourri de l'intérieur (vert-de-gris) ou les cosses sont oxydées. Le démarreur ne reçoit donc que 9.5V au lieu des 12V. Remplacer le démarreur ne servira à rien, il faut remplacer le câble !</li>
+</DiagnosticTree>
+
+<ConfirmationBox>
+  Rappelez-vous : **Un composant doit consommer la tension. Le fil ne doit rien consommer.** 
+  En mode Voltage Drop, tout fil, fusible, relais ou interrupteur doit afficher **moins de 0.2V** à ses bornes quand le circuit est allumé et en charge. S'il affiche plus, c'est lui le coupable !
+</ConfirmationBox>

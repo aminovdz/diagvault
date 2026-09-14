@@ -1,0 +1,58 @@
+---
+title: "Fiat Punto : P0420 et le piège du catalyseur"
+description: "Votre scanner affiche P0420 (Rendement Catalyseur) ? Arrêtez de changer les sondes Lambda au hasard. Voici le test graphique pour prouver que le cata est mort."
+pillar: "diagnostic"
+category: "casreels"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner"]
+author: "DiagVault"
+published_date: 2024-06-27T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+**Véhicule :** Fiat Punto / Panda / 500 (Moteurs Essence Fire 1.2 / 1.4)
+**Symptômes :** Voyant moteur jaune (MIL) allumé au tableau de bord. La voiture roule parfaitement, sans aucune perte de puissance. Le diagnostic OBD affiche le redoutable **P0420 : Rendement du système catalytique inférieur au seuil (Banc 1)**.
+
+L'erreur classique est de remplacer la sonde Lambda Aval (après le catalyseur). Le voyant s'éteint, puis se rallume 100 kilomètres plus tard.
+
+<EditorialPrinciple />
+
+## L'Analyse du Problème : Le Rôle des deux Sondes
+
+Un pot catalytique sert à brûler les gaz toxiques (Monoxyde de Carbone, Hydrocarbures) en utilisant l'Oxygène restant dans l'échappement.
+
+Pour vérifier que le catalyseur fait son travail, le calculateur (ECU) utilise deux sondes :
+- **Sonde 1 (Amont / Avant Cata) :** Elle oscille très vite entre 0.1V et 0.9V. Elle indique à l'ECU si le moteur tourne trop riche ou trop pauvre pour ajuster l'injection.
+- **Sonde 2 (Aval / Après Cata) :** Elle vérifie le travail du cata. Si le catalyseur stocke bien l'oxygène pour brûler les gaz, la tension de cette sonde doit être quasi-plate et stable (souvent autour de 0.6V ou 0.7V).
+
+Si le catalyseur est "vide" ou "mort", il ne stocke plus rien. Les gaz le traversent sans être traités. Résultat : la Sonde 2 voit exactement la même chose que la Sonde 1. L'ECU détecte cette tricherie et déclenche le P0420.
+
+<TestStepCard step={1} title="Le Test Graphique des Sondes (O2 Sensor Graphing)">
+  1. Branchez votre valise OBD. Moteur très chaud (Le cata ne fonctionne qu'à plus de 400°C).
+  2. Allez dans les Données en Direct (Live Data).
+  3. Sélectionnez **Tension Sonde O2 B1S1** (Amont) et **Tension Sonde O2 B1S2** (Aval).
+  4. Affichez-les sous forme de **Graphique (Courbes)**.
+  5. Maintenez le moteur à 2500 tr/min pendant 1 minute.
+  
+  **Le Résultat :** 
+  Si la courbe de la sonde 2 est une ligne plate : Le catalyseur est **BON**. Le code P0420 a peut-être été déclenché par une fuite d'échappement.
+  Si la courbe de la sonde 2 se met à osciller de haut en bas exactement comme la sonde 1 (elles dessinent les mêmes montagnes russes) : Le catalyseur est officiellement **MORT**. Il est incapable de lisser les gaz.
+</TestStepCard>
+
+## Pourquoi le Catalyseur est-il mort ?
+
+<DiagnosticTree symptom="Les causes de destruction d'un catalyseur">
+  <li>**Les ratés d'allumage (Misfires) :** Si les bougies ou les bobines sont vieilles, de l'essence imbrûlée part dans l'échappement. Elle s'enflamme à l'intérieur du catalyseur et fait fondre la céramique (Code P0300).</li>
+  <li>**La consommation d'huile :** Si les segments ou les joints de queues de soupapes fuient, l'huile brûlée encrasse les métaux précieux du catalyseur.</li>
+  <li>**L'âge :** Au-delà de 200 000 km, les métaux précieux (Platine, Palladium) perdent naturellement de leur efficacité chimique.</li>
+</DiagnosticTree>
+
+<ConfirmationBox>
+  Ne remplacez jamais un catalyseur sans avoir vérifié l'allumage (Bougies, Bobines). Si vous mettez un catalyseur neuf à 400€ sur un moteur qui fait des ratés (Misfires), le cata neuf fondra en moins d'une semaine !
+</ConfirmationBox>

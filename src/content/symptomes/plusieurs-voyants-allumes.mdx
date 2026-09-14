@@ -1,0 +1,52 @@
+---
+title: "Plusieurs voyants allumés simultanément : par où commencer ?"
+description: "Tableau de bord en sapin de Noël ? Ne paniquez pas et ne changez aucun capteur : lisez notre méthode diagnostique sur les masses et le réseau CAN."
+pillar: "diagnostic"
+category: "symptomes"
+system: "can"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["multimetre", "scanner"]
+author: "DiagVault"
+published_date: 2024-06-11T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+C'est la hantise de nombreux propriétaires : démarrer le véhicule et voir 4, 5 ou 6 voyants orange et rouges s'allumer en même temps (ABS, ESP, Check Engine, Direction Assistée, Frein de parking, Airbag). 
+
+**La règle d'or :** Il est statistiquement impossible que 6 composants vitaux tombent en panne mécanique à la même seconde. Vous avez affaire à un problème "Racine" : soit une chute de tension généralisée, soit le réseau de communication (CAN) qui est planté.
+
+<EditorialPrinciple />
+
+## Étape 1 : Le test de Tension Globale (Le plus rapide)
+
+Les calculateurs modernes (ECU, ABS, BCM) sont extrêmement sensibles aux variations de tension. S'ils ne reçoivent pas un 12V propre et stable, ils se mettent en sécurité et allument leur voyant respectif.
+
+<TestStepCard step={1} title="Test Batterie et Alternateur">
+  1. **Avant démarrage (Tension de repos) :** Prenez votre multimètre sur les bornes de la batterie. Si vous lisez moins de 11.8V, les calculateurs démarrent en sous-tension (Reset intempestif au coup de démarreur).
+  2. **Pendant le roulage (L'Alternateur) :** Si les voyants se sont allumés *pendant que vous rouliez*, l'alternateur a probablement cessé de charger, ou au contraire, son régulateur est devenu fou (Surtension à 16V ou 17V). Moteur tournant, vous devez avoir entre 13.5V et 14.8V. Si vous lisez 16V, coupez tout immédiatement ! Les calculateurs se protègent contre la surtension en se coupant (d'où les voyants).
+</TestStepCard>
+
+## Étape 2 : Le Scanner et les "U-Codes"
+
+Branchez votre valise de diagnostic et lancez un scan complet de tous les calculateurs du véhicule (Full Auto-Scan). Ne vous fiez pas au premier code venu, regardez la tendance globale.
+
+<DiagnosticTree symptom="Interprétation du Auto-Scan">
+  <li>**Cas A : Vous trouvez des U-Codes partout (ex: U0100, U0121).** Ces codes signifient "Perte de communication avec le module X". Le réseau (CAN Bus) est défaillant. Un module est probablement inondé d'eau, en court-circuit, et "tire" tout le réseau vers le bas. Les autres modules, devenus aveugles, allument leurs voyants d'erreur. Débranchez le module suspecté (ex: le bloc ABS souvent exposé à l'eau) et voyez si les autres voyants s'éteignent.</li>
+  <li>**Cas B : Tous les calculateurs accusent un seul capteur (ex: Capteur de vitesse de roue ARG).** L'ABS utilise ce capteur pour le freinage, l'ESP pour la stabilité, l'ECU Moteur pour le régulateur de vitesse, et le GPS pour le calcul de position. Si ce capteur est arraché, **4 modules différents** vont allumer un voyant ! Dans ce cas, concentrez-vous sur l'élément commun.</li>
+</DiagnosticTree>
+
+## Étape 3 : Le Défaut de Masse Châssis (Ground Issue)
+
+Les composants de la voiture partagent souvent le même point de masse (un gros boulon relié au châssis métallique). Si ce boulon est rouillé ou desserré, le courant ne peut plus retourner à la batterie.
+
+<ConfirmationBox>
+  **Test de Chute de Tension de Masse (Voltage Drop) :**
+  Mettez votre multimètre en mode DC Volts. Posez la pointe rouge sur le bloc moteur en métal (ou la carcasse de l'alternateur), et la pointe noire sur le plot Négatif (-) de la batterie.
+  Moteur tournant et avec des gros consommateurs allumés (Phares, Dégivrage arrière).
+  Si le multimètre affiche **plus de 0.2V (200mV)**, votre tresse de masse est oxydée ou cassée. Le courant cherche à revenir par d'autres chemins (via les calculateurs), créant un chaos électronique et l'allumage des voyants. Nettoyez vos points de masse avec une brosse métallique !
+</ConfirmationBox>

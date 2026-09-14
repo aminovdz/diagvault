@@ -1,0 +1,52 @@
+---
+title: "Test de l'Alimentation du Calculateur (ECU)"
+description: "Aucune communication OBD ? Découvrez comment tester les bornes 30 (Alimentation permanente) et 15 (Après-contact) d'un calculateur."
+pillar: "diagnostic"
+category: "electricite"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "moyen"
+requiredTools: ["multimetre"]
+author: "DiagVault"
+published_date: 2024-06-23T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Votre valise diagnostic dit : "Pas de communication avec l'unité de contrôle Moteur (ECU)". Avant d'envoyer le calculateur en réparation pour 500€, vous devez prouver qu'il reçoit bien du courant. Un ordinateur sans électricité ne peut pas parler.
+
+<EditorialPrinciple />
+
+## Les Trois Piliers d'un ECU
+
+Un ECU a besoin de trois choses pour s'éveiller :
+<br /> - Une (ou plusieurs) **Alimentation(s) Permanente(s)** directes batterie (Borne 30).
+<br /> - Une **Alimentation Après-Contact** (Borne 15) pour lui dire de se réveiller.
+<br /> - Des **Masses** parfaites (Borne 31) pour fermer le circuit.
+
+<DiagnosticTree symptom="Recherche de Schéma">
+  <li>Vous ne pouvez PAS deviner quelles broches tester sur une prise de 90 pins. Vous DEVEZ obtenir le schéma électrique (Wiring Diagram) spécifique à votre code moteur (via Autodata, Haynes Pro, ou Mitchell).</li>
+  <li>Identifiez les fils étiquetés "B+" ou "Batt" (Alimentation permanente, souvent des gros fils rouges).</li>
+  <li>Identifiez le fil étiqueté "Ignition", "IGN" ou "Acc" (Alimentation réveil 12V au contact).</li>
+</DiagnosticTree>
+
+## Le Test au Multimètre (En Charge)
+
+Tester la prise ECU débranchée avec un multimètre est dangereux : si le fil est presque cassé, le multimètre affichera 12V quand même (Tension à vide sans intensité), et vous ferez un faux diagnostic.
+
+<TestStepCard step={1} title="Test au Back-Probing (Prise branchée)">
+<br /> - Laissez la grosse prise enfoncée dans l'ECU.
+<br /> - Glissez délicatement une épingle fine (T-Pin) à l'arrière de la prise (côté fils) dans l'emplacement de l'Alimentation Permanente, sans abîmer le joint en silicone.
+<br /> - Reliez l'épingle à la pointe rouge de votre multimètre (DC Volts). Pointe noire sur la masse de la batterie.
+<br /> - Mettez le contact.
+  
+  **Résultats :**
+<br /> * Vous devez lire la tension parfaite de la batterie (ex: **12.5V**). Si la tension s'effondre à 6V ou 9V quand l'ECU "tire" du courant, c'est que votre fusible principal est fondu, ou qu'un fil est oxydé, ou que le "Relais Principal" (Main Relay / Relais d'injection) a ses contacts internes charbonnés.
+</TestStepCard>
+
+<ConfirmationBox>
+  Si le 12V permanent est bon, piquez le fil d'Alimentation Après-Contact. Tournez la clé. Le 12V doit apparaître instantanément. S'il n'y a rien, vérifiez le contacteur à clé (Neiman) ou l'antidémarrage qui empêche le réveil.
+</ConfirmationBox>

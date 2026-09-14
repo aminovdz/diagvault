@@ -1,0 +1,23 @@
+---
+export interface Props {
+  disclaimer?: boolean;
+}
+const { disclaimer = true } = Astro.props;
+---
+<div class="my-6 overflow-x-auto rounded-lg border border-slate-700">
+  <table class="w-full text-left border-collapse min-w-[600px]">
+    <thead>
+      <tr class="bg-slate-800 border-b border-slate-700">
+        <slot name="header" />
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-slate-700 bg-surface">
+      <slot />
+    </tbody>
+  </table>
+  {disclaimer && (
+    <div class="bg-slate-800/50 px-4 py-2 text-xs text-slate-400 italic border-t border-slate-700">
+      * Les valeurs exactes dépendent du constructeur, du modèle et du système concerné. Ces données sont fournies à titre indicatif. Consultez toujours la documentation technique officielle.
+    </div>
+  )}
+</div>

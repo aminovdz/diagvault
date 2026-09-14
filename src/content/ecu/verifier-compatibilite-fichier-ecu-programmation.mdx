@@ -1,0 +1,20 @@
+---
+title: "Comment vérifier la compatibilité d'un fichier ECU avant programmation"
+description: "HW Number, SW Number, Upgrades. Les règles absolues pour ne pas bricker un calculateur lors d'une écriture OBD ou Bench."
+pillar: "programmation"
+category: "ecu"
+system: "ecu"
+difficulty: "expert"
+risk: "faible"
+requiredTools: ["programmateur"]
+author: "DiagVault"
+published_date: 2024-06-01T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+## HW avant SW
+Le Hardware Number (Numéro Matériel, ex: Bosch EDC17C10) doit être **STRICTEMENT IDENTIQUE** lors d'un clonage ou d'une restauration. Le Software Number (Logiciel) peut différer s'il s'agit d'une mise à jour de la marque, mais croiser des HW brûlera le calculateur.

@@ -1,0 +1,59 @@
+---
+title: "Voiture ne démarre pas : par où commencer ?"
+description: "Méthodologie globale (No-Crank vs Crank-No-Start) pour aborder un véhicule en panne sans se perdre : batterie, IMMO, démarreur, carburant, allumage."
+pillar: "diagnostic"
+category: "symptomes"
+system: "moteur"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["multimetre", "scanner"]
+author: "DiagVault"
+published_date: 2024-06-03T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+import ValueTable from '../../components/article/ValueTable.astro';
+
+Arriver face à un véhicule qui refuse de démarrer est souvent stressant. Le client s'attend à une réponse rapide, mais le système moderne est complexe. Le secret des experts est de diviser la panne en deux grandes catégories immédiatement : le **No-Crank** (le démarreur ne tourne pas) et le **Crank, No-Start** (le démarreur tourne, mais le moteur ne démarre pas).
+
+<EditorialPrinciple />
+
+## L'Étape 0 : La Batterie
+
+La batterie est l'élément qui génère le plus de faux diagnostics. Un relais qui claque frénétiquement en tournant la clé n'est pas un démarreur HS, c'est une batterie vide.
+
+<TestStepCard step={1} title="Tension au repos et en charge">
+  - **Tension au repos :** Prenez un multimètre. Si la batterie affiche moins de 12.0V, elle est déchargée (12.6V = 100%, 12.0V = ~25%).
+  - **Le Test Ultime (Voltage Drop) :** Laissez votre multimètre sur la batterie et demandez à quelqu'un d'essayer de démarrer. Si la tension chute sous les **9.5 Volts**, la batterie est morte ou déchargée. Si elle reste à 12.5V et que rien ne se passe, le démarreur (ou son circuit) est coupé.
+</TestStepCard>
+
+## Étape 1 : Le Démarreur ne tourne pas (No-Crank)
+
+Si le moteur n'est pas entraîné physiquement, la panne est purement électrique (circuit de puissance) ou de sécurité (Antidémarrage / Capteur de pédale).
+
+<DiagnosticTree symptom="No-Crank (Pas d'action démarreur)">
+  <li>**Sécurité de boîte / pédale :** Sur une boîte auto, assurez-vous d'être bien sur "P" ou "N". Sur une boîte manuelle, l'ECU exige souvent que la pédale d'embrayage soit enfoncée. Si le capteur de pédale est cassé, le démarreur ne se lancera jamais. Regardez son statut en Live Data avec votre scanner.</li>
+  <li>**Tresse de masse moteur :** Un démarreur tire 200 Ampères. Ce courant doit revenir par la masse du moteur (le gros câble tressé). Prenez un câble de démarrage (pince croco), reliez le (-) de la batterie directement à un gros boulon métallique du bloc moteur. Essayez de démarrer. Si ça marche, la tresse d'origine est oxydée/coupée.</li>
+  <li>**Excitation du démarreur (Borne 50) :** Mettez un multimètre sur le petit fil arrivant au démarreur. Lors de la tentative de démarrage, vous devez avoir 12V. Si OUI : le solénoïde du démarreur est HS (remplacer le démarreur). Si NON : relais de démarreur, Neiman, ou blocage ECU.</li>
+</DiagnosticTree>
+
+## Étape 2 : Le Démarreur tourne mais le moteur ne "pète" pas (Crank, No Start)
+
+Ici, le démarreur fait son travail. Le moteur tourne mécaniquement. Il manque donc l'un des 3 éléments vitaux de la combustion : **L'air/compression, l'étincelle, ou le carburant.**
+
+Mais avant de salir vos mains, vérifiez l'électronique de contrôle :
+
+<TestStepCard step={2} title="L'Antidémarrage (IMMO) et le PMH">
+  1. **Voyant IMMO :** Regardez le tableau de bord. Le petit cadenas ou point rouge s'éteint-il ? S'il clignote rapidement ou reste fixe, la clé n'est pas reconnue. Le calculateur moteur est verrouillé. Ne cherchez pas de panne mécanique !
+  2. **Capteur PMH (Crankshaft Sensor) :** Branchez le scanner, allez dans Live Data, sélectionnez RPM (Régime Moteur). Actionnez le démarreur. Vous devez lire environ 200 Tr/min. Si vous lisez 0 Tr/min, le calculateur est "aveugle", il ne commandera ni injection ni allumage.
+</TestStepCard>
+
+<ConfirmationBox>
+  **Test d'Isolement Rapide : Le Start-Pilote (Nettoyant frein)**
+  Si le PMH est OK et l'IMMO débloqué, ouvrez la boîte à air. Mettez un court pschitt de nettoyant frein dans l'admission pendant que quelqu'un actionne le démarreur. 
+  - *Le moteur démarre 2 secondes puis cale ?* Vous avez un problème de **CARBURANT** (Pompe de gavage HS, injecteurs coupés). L'étincelle et la compression vont très bien !
+  - *Il ne se passe rien ?* Vous avez un problème d'**ALLUMAGE** (Bobines non alimentées, ECU HS) ou de **COMPRESSION** (Courroie de distribution cassée).
+</ConfirmationBox>

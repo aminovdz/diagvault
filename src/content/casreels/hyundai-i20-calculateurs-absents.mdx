@@ -1,0 +1,53 @@
+---
+title: "Hyundai i20 : ECU absent et démarrage impossible"
+description: "Contact mis, pas de voyant moteur, et valise incapable de lire l'ECU sur une Hyundai/Kia ? Le test ultra-rapide du Main Relay pour diagnostiquer la panne."
+pillar: "diagnostic"
+category: "casreels"
+system: "ecu"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["multimetre"]
+author: "DiagVault"
+published_date: 2024-06-28T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+**Véhicule :** Hyundai i20 / i30, Kia Rio / Ceed
+**Symptômes :** Le client tourne la clé. Le démarreur tourne très bien, mais le moteur ne démarre pas. Au tableau de bord, vous remarquez que le **voyant Check Engine ne s'allume pas du tout** à la mise du contact. 
+En branchant la valise de diagnostic, vous ne pouvez communiquer avec aucun calculateur moteur. L'ABS répond, mais affiche : "Perte de communication avec l'ECM/PCM".
+
+<EditorialPrinciple />
+
+## L'Analyse du Problème : Le syndrome de l'ECU endormi
+
+Un ECU qui ne répond pas au scanner OBD et qui n'allume pas son propre voyant "Check Engine" au tableau de bord n'est pas forcément mort. À 95%, il est simplement privé d'électricité (Alimentation ou Masse).
+
+Sur les véhicules du groupe Hyundai/Kia, la distribution de la puissance vers l'ECU moteur est gérée par le **Relais Principal (Main Relay)**, situé dans la boîte à fusibles sous le capot moteur.
+Avec les années et les vibrations, les contacts internes de ce relais charbonnent (s'oxydent) ou la bobine interne se coupe.
+
+<TestStepCard step={1} title="Le Test du Relais Principal (Main Relay)">
+  1. Ouvrez le capot et retirez le couvercle de la boîte à fusibles.
+  2. Regardez le schéma sous le couvercle et localisez le relais marqué **MAIN RELAY** ou **ENG MAIN**.
+  3. Mettez un doigt sur ce relais. Demandez à un collègue de mettre et de couper le contact à plusieurs reprises.
+  4. Vous devez sentir un "Clic" physique sous votre doigt à chaque coup de clé.
+  
+  **Résultat :** S'il n'y a aucun clic, le relais n'est pas commandé (ou sa bobine est morte). S'il y a un clic mais que l'ECU reste muet, les contacts de "puissance" à l'intérieur du relais sont brûlés. Il clique, mais l'électricité ne passe pas.
+</TestStepCard>
+
+## La Solution : Le Swap de Relais (Test gratuit)
+
+Inutile de sortir le multimètre pour votre premier contrôle, les constructeurs asiatiques utilisent souvent des relais standardisés.
+
+<DiagnosticTree symptom="La méthode du Swap">
+  <li>**Étape 1 : Trouver un jumeau.** Dans la même boîte à fusibles, trouvez un relais strictement identique (même taille, même couleur, mêmes broches). Le relais du Klaxon (HORN) ou des phares (HEADLAMP) est généralement un candidat parfait.</li>
+  <li>**Étape 2 : L'échange.** Retirez le relais du klaxon et mettez-le à la place du Main Relay. Mettez le Main Relay suspect à la place du klaxon.</li>
+  <li>**Étape 3 : Le Verdict.** Mettez le contact. Si le voyant Check Engine s'allume et que la voiture démarre au quart de tour, vous avez trouvé votre panne en 3 minutes. Testez le klaxon : il ne marchera plus ! </li>
+</DiagnosticTree>
+
+<ConfirmationBox>
+  Si après avoir échangé les relais l'ECU reste désespérément muet, vérifiez immédiatement la **grosse tresse de masse** noire qui relie la batterie au bloc moteur et à la carrosserie (souvent située sous le bac à batterie sur les Hyundai). Un coup de brosse métallique et de papier de verre sur la cosse de masse résout souvent les pannes électriques les plus folles.
+</ConfirmationBox>

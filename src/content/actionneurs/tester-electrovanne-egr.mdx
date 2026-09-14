@@ -1,0 +1,51 @@
+---
+title: "Tester une Vanne EGR (Électrovanne ou Motorisée)"
+description: "Vanne EGR bloquée ? Codes P0400 à P0404. Apprenez à tester la bobine, le capteur de recopie, et à vérifier mécaniquement l'étanchéité."
+pillar: "diagnostic"
+category: "actionneurs"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["multimetre", "scanner"]
+author: "DiagVault"
+published_date: 2024-06-08T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+La vanne EGR (Exhaust Gas Recirculation) réinjecte des gaz d'échappement dans l'admission pour abaisser la température de combustion. En s'encrassant de suie, elle se bloque souvent, causant pertes de puissance, fumées noires, et codes défaut P0400, P0401, ou P0404.
+
+Avant de changer la pièce à 300€, il faut savoir si la panne est Électrique (Moteur d'EGR grillé) ou Mécanique (Soupape coincée par 2 millimètres de goudron durci).
+
+<EditorialPrinciple />
+
+## Test N°1 : Le Test d'Actionnement (Valise)
+
+Une vanne EGR moderne (5 broches) contient deux éléments : Un petit moteur électrique qui pousse la soupape, et un "capteur de recopie" (Potentiomètre) qui lit la position exacte de la soupape pour le dire à l'ordinateur.
+
+<DiagnosticTree symptom="Activation Forcée à la Valise">
+  <li>**Mise en place :** Mettez le contact sans démarrer le moteur (KOEO). Branchez votre scanner OBD. Allez dans les tests d'actionneurs (Active Tests / Actuation).</li>
+  <li>**Action :** Ordonnez à la vanne EGR de s'ouvrir à 50% puis à 100%. Mettez la tête sous le capot. Vous devez entendre distinctement le moteur électrique de l'EGR grogner, puis un claquement métallique quand la soupape se referme brutalement (grâce à son ressort de rappel).</li>
+  <li>**Le Capteur de Recopie :** Pendant le test, regardez la "Position EGR" dans les données en direct. Si vous commandez "100%" et que le capteur lit "15%", la soupape est grippée ou le capteur de recopie a les pistes usées. L'ECU génèrera un P0404 (Erreur de performance).</li>
+</DiagnosticTree>
+
+## Test N°2 : Le blocage mécanique (Le test du calage)
+
+Si le moteur électrique semble fonctionner, il faut prouver que la soupape est étanche lorsqu'elle est fermée. Une EGR qui reste entre-ouverte d'un millimètre au ralenti fera caler le moteur.
+
+<TestStepCard step={1} title="Le Test de la Plaque (Condamnation temporaire)">
+  Si le moteur démarre très mal ou fume noir au ralenti, et que vous soupçonnez la vanne de fuir les gaz d'échappement vers l'admission.
+  1. Démontez les deux vis qui relient le tuyau d'EGR au collecteur d'admission.
+  2. Glissez temporairement un petit morceau de tôle fine (découpé dans une canette de soda par exemple) sans percer de trou au milieu. Ce sera notre bouchon.
+  3. Resserrez les vis. La vanne est maintenant totalement bouchée.
+  4. Démarrez le moteur.
+  
+  **Résultat :** Si le moteur retrouve instantanément un ralenti parfait et régulier, vous avez prouvé que la vanne EGR ne fermait plus de façon étanche. Démontez-la, et nettoyez le siège de la soupape au décapant four pour retirer la calamine, ou remplacez-la. Retirez la tôle après le test !
+</TestStepCard>
+
+<ConfirmationBox>
+  **Test Électrique (Multimètre) :** Si la valise n'arrive pas à faire bouger l'EGR du tout. Débranchez la vanne. Trouvez les 2 broches du moteur électrique (voir schéma). Mesurez la résistance. Une bobine saine d'EGR lit souvent entre **4 et 12 Ohms**. Si vous lisez OL (Infini), le petit moteur a fondu de l'intérieur, remplacez le corps complet.
+</ConfirmationBox>

@@ -1,0 +1,55 @@
+---
+title: "Viergisation (Virginizing) d'un BSI PSA : Méthode EEPROM"
+description: "Comment remettre un BSI d'occasion Peugeot/Citroën à l'état neuf d'usine en remplissant son EEPROM avec des FF, pour permettre son recodage."
+pillar: "programmation"
+category: "immo"
+system: "bsi"
+difficulty: "avance"
+risk: "eleve"
+requiredTools: ["programmateur", "fer_a_souder", "outil_diag_constructeur"]
+author: "DiagVault"
+published_date: 2024-05-21T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+
+Le BSI (Boîtier de Servitude Intelligent) chez PSA contient l'antidémarrage, le kilométrage (synchronisé avec le compteur), et le code PIN. Vous ne pouvez pas simplement monter un BSI d'occasion de la casse : le moteur refusera de démarrer et si le BSI d'occasion a plus de kilomètres que votre voiture, le compteur prendra définitivement le kilométrage le plus élevé.
+
+Pour réutiliser un BSI d'occasion, la solution la plus sûre est la **viergisation** (Virginizing).
+
+<EditorialPrinciple />
+
+## Qu'est-ce qu'un "Vierge" ?
+Viergiser un module consiste à effacer son historique d'apprentissage pour que l'outil de diagnostic constructeur (Diagbox) le considère comme une pièce neuve sortie du magasin (Brand New). 
+
+### Le risque du kilométrage
+**Règle d'or PSA :** Le kilométrage est stocké à la fois dans le BSI et dans le combiné d'instruments (Dash). À la mise du contact, le réseau compare les deux. **La valeur la plus haute écrase toujours la plus basse**. Un BSI mal viergisé transformera votre voiture de 50 000 km en voiture de 350 000 km en une fraction de seconde.
+
+---
+
+## Procédure pas à pas (Exemple BSI Valeo Johnson Controls - EEPROM 95160)
+
+<TestStepCard step={1} title="Extraction de l'EEPROM">
+  1. Ouvrez le BSI d'occasion avec précaution (les cartes sont souvent superposées et soudées par des broches de jonction, soyez délicat).
+  2. Localisez la puce EEPROM 8 broches (ex: `95160` ou `95256`).
+  3. Mettez du flux et dessoudez la puce à l'air chaud.
+</TestStepCard>
+
+<TestStepCard step={2} title="Lecture et Sauvegarde de l'ORI">
+  Placez la puce dans votre programmateur (ex: XGecu T48). 
+  Sélectionnez le composant (ST M95160), lisez son contenu et sauvegardez immédiatement le fichier `.bin` sous le nom `BSI_DONNEUR_ORI.bin`. C'est votre filet de sécurité.
+</TestStepCard>
+
+<TestStepCard step={3} title="Remplissage en FF (Hex Editor)">
+  Ouvrez le fichier `.bin` avec un éditeur hexadécimal (HxD).
+  - Pour la plupart des BSI PSA classiques, la procédure de vierge consiste à sélectionner **absolument toutes les données** (Ctrl+A) et à les remplacer par des octets `FF` (Fill with FF).
+  - Sauvegardez le fichier sous `BSI_VIERGE.bin`.
+  - Écrivez ce fichier Vierge dans la puce via le programmateur.
+  - Ressoudez la puce sur le BSI.
+</TestStepCard>
+
+<ConfirmationBox>
+  Une fois le BSI monté dans le véhicule, vous constaterez que le compteur affiche un trait ou le kilométrage d'origine, et que les vitres ne marchent plus : **c'est normal**. Le BSI est vide ! Vous devez maintenant lancer Diagbox, aller dans "Pièce de rechange", sélectionner "Remplacement BSI", et suivre la procédure d'apprentissage avec le **Code PIN original** de la voiture.
+</ConfirmationBox>

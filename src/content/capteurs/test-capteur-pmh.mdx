@@ -1,0 +1,51 @@
+---
+title: "Symptômes et Diagnostic d'un Capteur PMH (CKP) HS"
+description: "Démarrage impossible à chaud ? Compte-tours à zéro ? Découvrez les symptômes d'un capteur PMH défectueux et comment le valider à la valise OBD."
+pillar: "diagnostic"
+category: "capteurs"
+system: "moteur"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["scanner"]
+author: "DiagVault"
+published_date: 2024-05-15T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le capteur Point Mort Haut (PMH), aussi appelé capteur de vilebrequin (Crankshaft Position Sensor - CKP), est le chef d'orchestre de votre moteur. S'il ne parle pas, l'ECU ne sait pas quand injecter l'essence ni quand allumer les bougies. Résultat : **le moteur ne démarre pas.**
+
+<EditorialPrinciple />
+
+## Les Symptômes d'un Capteur PMH HS
+
+La panne d'un capteur PMH est rarement franche au début. Elle commence souvent par des coupures thermiques (à chaud) avant la mort définitive.
+
+<DiagnosticTree symptom="Reconnaître un capteur PMH défaillant">
+  <li>**Le Démarrage impossible à chaud :** C'est le grand classique. Vous roulez 30 min. Vous vous arrêtez faire le plein. Vous tournez la clé : le démarreur tourne dans le vide, impossible de démarrer. Vous attendez 1 heure (le moteur refroidit), il redémarre au quart de tour. La bobine de cuivre interne du capteur se coupe sous l'effet de la chaleur (dilatation).</li>
+  <li>**Les Coupures en roulant (Calage soudain) :** Vous roulez à 90 km/h, le moteur se coupe net, sans ratés préalables, comme si vous aviez tourné la clé. </li>
+  <li>**L'Aiguille du Compte-tours morte :** Pendant que vous lancez le démarreur (qui tourne à environ 250-300 tr/min), l'aiguille de votre compte-tours reste plantée à 0. (Attention, ce n'est pas vrai sur 100% des voitures modernes, mais c'est un excellent indice sur les véhicules d'avant 2010).</li>
+</DiagnosticTree>
+
+## Le Test à la Valise (Données en Direct)
+
+Avant de sortir les outils et de vous glisser sous la voiture, votre valise de diagnostic peut confirmer la mort du capteur en 30 secondes.
+
+<TestStepCard step={1} title="Le Test du régime moteur (RPM) au démarreur">
+  1. Branchez votre valise OBD.
+  2. Allez dans l'ECU Moteur -> **Données en Direct (Live Data)**.
+  3. Sélectionnez le paramètre **"Régime Moteur" (Engine Speed / RPM)**.
+  4. Moteur coupé, la valeur est à `0 Tr/min`.
+  5. Tournez la clé et **maintenez le démarreur activé** pendant 4 à 5 secondes. Regardez l'écran.
+  
+  **Résultat :** 
+  - Si l'écran affiche environ `250 à 300 Tr/min` pendant que le démarreur tourne, **le capteur PMH FONCTIONNE**. L'ECU voit la rotation. Cherchez la panne ailleurs (pompe à essence, antidémarrage).
+  - Si l'écran reste bloqué à `0 Tr/min` alors que le démarreur hurle, **le capteur PMH est mort** (ou son faisceau est coupé). L'ordinateur est aveugle.
+</TestStepCard>
+
+<ConfirmationBox>
+  **L'inspection visuelle obligatoire :** Avant d'acheter un capteur neuf, démontez l'ancien (souvent tenu par une vis de 10mm face au volant moteur). Sur les capteurs magnétiques, il est très fréquent de trouver de la **limaille de fer** ou une épaisse couche de graisse accumulée sur le nez du capteur, ce qui brouille totalement son signal. Un simple coup de chiffon résout parfois la panne !
+</ConfirmationBox>

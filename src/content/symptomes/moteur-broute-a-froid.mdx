@@ -1,0 +1,53 @@
+---
+title: "Moteur qui broute à froid uniquement : le piège des joints"
+description: "Diagnostic d'un moteur instable le matin mais qui tourne parfaitement à chaud : prise d'air thermique, bougies de préchauffage ou capteurs."
+pillar: "diagnostic"
+category: "symptomes"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner", "machine_a_fumee"]
+author: "DiagVault"
+published_date: 2024-06-06T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Un moteur qui claque, tremble ou menace de caler au premier démarrage matinal, mais qui se lisse et devient silencieux une fois l'aiguille de température au milieu, est un grand classique. Le diagnostic varie énormément selon qu'il s'agit d'un moteur Essence ou Diesel.
+
+<EditorialPrinciple />
+
+## Essence : La Prise d'Air Thermique (Vacuum Leak)
+
+C'est de loin la cause numéro 1 sur les moteurs essence vieillissants. Les joints toriques du collecteur d'admission sont en caoutchouc. Après 10 ans de cycles chaud/froid, ce caoutchouc durcit et s'aplatit.
+
+**La physique de la panne :** Le matin, à froid, le joint durci laisse passer de l'air non mesuré par le débitmètre. Le mélange devient trop pauvre, le moteur broute (misfires). En chauffant, le bloc moteur et le joint se dilatent. Le caoutchouc vient sceller la fuite, et le moteur se remet à tourner parfaitement !
+
+<TestStepCard step={1} title="Preuve par les Fuel Trims">
+  1. Branchez votre scanner **avant** le premier démarrage du matin.
+  2. Mettez le moteur en route et observez immédiatement le `STFT` (Short Term Fuel Trim) dès le passage en Closed Loop.
+  3. S'il grimpe immédiatement à **+15% ou +20%**, l'ECU voit le mélange très pauvre et rajoute de l'essence.
+  4. Laissez chauffer. Si le STFT redescend progressivement vers **0%** à mesure que la température de l'eau (ECT) monte, vous avez la confirmation absolue d'une prise d'air thermique. Changez les joints du collecteur d'admission.
+</TestStepCard>
+
+## Diesel : Le Préchauffage et les Injecteurs
+
+Un diesel moderne (Common Rail) peut démarrer même sans bougies de préchauffage jusqu'à environ 0°C grâce aux très hautes pressions d'injection. Cependant, sans préchauffage, la combustion initiale est incomplète.
+
+<DiagnosticTree symptom="Claquements et fumée blanche/grise à froid">
+  <li>**Bougies de préchauffage (Glow Plugs) :** Testez la résistance de chaque bougie au multimètre (doit être < 2 ohms). Si les bougies sont bonnes, vérifiez avec une ampoule ou au multimètre que le boîtier de préchauffage envoie bien du 12V (ou 5V PWM) aux bougies pendant les 30 premières secondes après le démarrage (Post-chauffage).</li>
+  <li>**Injecteurs qui "pissent" :** Un injecteur dont l'aiguille est usée pulvérise mal à froid (grosses gouttes au lieu d'un brouillard). Cela provoque un claquement métallique (Diesel knock) qui s'atténue quand la chambre de combustion chauffe. Vérifiez les corrections de débit d'injecteurs (Balancing Rates) au scanner à froid.</li>
+</DiagnosticTree>
+
+## Le Capteur de Température d'Eau (ECT)
+
+L'ECU a besoin de savoir qu'il fait froid pour ordonner un mélange très riche au démarrage (le fameux "Starter" électronique). Si la sonde de température ment, le moteur broutera.
+
+<ConfirmationBox>
+  **Test de cohérence thermique :** Le matin, mettez le contact sans démarrer le moteur. Lisez les valeurs de température sur le scanner : `Température d'eau (ECT)`, `Température d'air d'admission (IAT)`, et `Température d'huile`. 
+  Les trois valeurs doivent être **strictement identiques** (à 1 ou 2 degrés près) et correspondre à la température météo extérieure (ex: 8°C). 
+  Si l'ECT affiche 45°C alors qu'il a neigé cette nuit, la sonde est HS, et l'ECU refuse d'enrichir le mélange !
+</ConfirmationBox>

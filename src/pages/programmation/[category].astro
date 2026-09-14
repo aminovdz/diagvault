@@ -1,0 +1,60 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/layout/Breadcrumbs.astro';
+
+export async function getStaticPaths() {
+  const categories = ['ecu', 'eeprom', 'immo'];
+  return categories.map(category => ({
+    params: { category }
+  }));
+}
+
+const { category } = Astro.params;
+let entries: any[] = [];
+try {
+  const coll = await getCollection(category as any);
+  if (coll) entries = coll;
+} catch(e) {
+  // Ignorer
+}
+
+const paths = [
+  { label: 'Programmation', url: '/programmation' },
+  { label: category.charAt(0).toUpperCase() + category.slice(1), url: '#' }
+];
+---
+
+<BaseLayout title={`Programmation : ${category} - DiagVault`}>
+  <div class="max-w-4xl mx-auto">
+    <Breadcrumbs paths={paths} />
+    
+    <header class="mb-10">
+      <h1 class="text-4xl md:text-5xl font-heading font-bold text-white mb-4 capitalize">
+        Programmation : {category.replace('_', ' ')}
+      </h1>
+      <p class="text-xl text-slate-400">
+        Tutoriels de clonage, adaptation, viergisation et réparation.
+      </p>
+    </header>
+
+    <div class="grid gap-4">
+      {entries.length > 0 ? (
+        entries.map(entry => (
+          <a href={`/programmation/${category}/${entry.id}`} class="block p-6 bg-surface border border-slate-800 rounded-xl hover:border-accent-programmation transition-colors group">
+            <h2 class="text-xl font-bold text-white mb-2 group-hover:text-accent-programmation transition-colors">{entry.data.title}</h2>
+            <p class="text-slate-400 text-sm mb-4">{entry.data.description}</p>
+            <div class="flex gap-2 text-xs">
+              <span class="px-2 py-1 bg-slate-800 text-slate-300 rounded border border-slate-700 capitalize">Niveau: {entry.data.difficulty}</span>
+              <span class="px-2 py-1 bg-slate-800 text-slate-300 rounded border border-slate-700 capitalize">Risque: {entry.data.risk}</span>
+            </div>
+          </a>
+        ))
+      ) : (
+        <div class="p-8 bg-surface border border-slate-800 rounded-xl text-center">
+          <p class="text-slate-400">Aucun guide n'est encore disponible dans cette catégorie.</p>
+        </div>
+      )}
+    </div>
+  </div>
+</BaseLayout>

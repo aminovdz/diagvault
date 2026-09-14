@@ -1,0 +1,61 @@
+---
+title: "Démarrage difficile à froid : diagnostic pas à pas"
+description: "Démarrage difficile le matin ? Diagnostic de la perte de pression carburant, sonde de température ECT et préchauffage diesel."
+pillar: "diagnostic"
+category: "symptomes"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["multimetre", "scanner"]
+author: "DiagVault"
+published_date: 2024-06-08T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+import ValueTable from '../../components/article/ValueTable.astro';
+
+Un démarrage difficile à froid (après une nuit complète d'arrêt) indique généralement que le moteur manque de deux choses : **un apport massif de carburant initial** (le "Starter"), ou **une température de chambre suffisante** (surtout pour le Diesel).
+
+<EditorialPrinciple />
+
+## L'Hypothèse 1 : Le Mensonge du Capteur ECT (Température d'eau)
+
+Pour qu'un moteur froid démarre, le calculateur (ECU) doit injecter presque **le double** de carburant par rapport à un moteur chaud, car l'essence se condense sur les parois froides des cylindres au lieu de rester en vapeur.
+
+Comment l'ECU sait-il qu'il fait froid ? Il lit la sonde de température de liquide de refroidissement (ECT / Coolant Temp).
+
+<TestStepCard step={1} title="Vérification de Cohérence Thermique (Live Data)">
+  Ne touchez pas au moteur le matin. Branchez d'abord le scanner et mettez le contact (sans démarrer).
+  Regardez ces 3 valeurs :
+  - **Température du Liquide de Refroidissement (ECT)**
+  - **Température de l'Air d'Admission (IAT)**
+  - **Température de l'Huile (si disponible)**
+  
+  S'il a fait 5°C cette nuit, ces trois capteurs doivent afficher environ 5°C. 
+  Si la sonde ECT affiche **60°C**, elle ment. L'ECU croit que le moteur est déjà chaud et refuse de faire le "starter". Conséquence : démarrage impossible ou très long, jusqu'à ce que les quelques gouttes d'essence finissent par prendre. **Changez la sonde ECT.**
+</TestStepCard>
+
+## L'Hypothèse 2 : Le Circuit de Carburant se désamorce (Diesel et Essence)
+
+Si le circuit de carburant laisse repartir l'essence (ou le gasoil) vers le réservoir pendant la nuit, la tuyauterie est pleine d'air le lendemain matin. Le démarreur doit tourner de longues secondes le temps que la pompe remplisse à nouveau tout le circuit.
+
+<DiagnosticTree symptom="Désamorçage Carburant">
+  <li>**Moteurs Essence :** La pompe immergée dans le réservoir possède un petit clapet anti-retour. Mettez le contact pendant 3 secondes, coupez. Refaites-le 3 fois de suite (cela force la pompe à pré-charger la rampe). Tentez de démarrer. Si ça démarre au quart de tour, le clapet anti-retour de la pompe est fatigué.</li>
+  <li>**Moteurs Diesel :** Inspectez les durites de gasoil transparentes (avant le filtre à gasoil ou la pompe haute pression). Si vous voyez des **bulles d'air**, le circuit aspire de l'air à l'arrêt à cause d'un joint torique usé (souvent sur le couvercle du filtre à gasoil ou sur les retours d'injecteurs).</li>
+</DiagnosticTree>
+
+## L'Hypothèse 3 : Bougies de Préchauffage et Boîtier (Spécifique Diesel)
+
+Un moteur Diesel démarre par auto-inflammation (l'air est compressé très fortement, ce qui le chauffe, enflammant le gasoil). S'il fait très froid dehors, le bloc de métal glacé absorbe la chaleur de la compression. Sans les bougies de préchauffage pour créer un point chaud incandescent (1000°C), le gasoil ne s'enflamme pas.
+
+<ConfirmationBox>
+  **Test au Multimètre :**
+  Débranchez le faisceau d'une bougie de préchauffage. Mettez le multimètre en mode Ohms (Résistance). Touchez la pointe de la bougie avec le fil rouge, et le bloc moteur avec le fil noir. 
+  - Résistance entre **0.5 et 1.5 Ohms** : La bougie est excellente.
+  - Résistance **Infinie (O.L)** ou très élevée (> 50 ohms) : La bougie est coupée intérieurement. Elle est morte.
+  
+  Si toutes les bougies sont bonnes (1 Ohm) mais que le démarrage est laborieux avec beaucoup de fumée grise, vérifiez que le **Boîtier/Relais de préchauffage** envoie bien du 12V aux bougies lorsque vous mettez le contact !
+</ConfirmationBox>

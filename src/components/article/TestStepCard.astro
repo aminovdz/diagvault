@@ -1,0 +1,18 @@
+---
+export interface Props {
+  step: number;
+  title: string;
+}
+const { step, title } = Astro.props;
+---
+<div class="my-6 border border-slate-700 rounded-lg overflow-hidden bg-surface">
+  <div class="bg-slate-800 px-4 py-3 flex items-center gap-3 border-b border-slate-700">
+    <div class="flex items-center justify-center bg-accent-diagnostic text-bg font-bold w-6 h-6 rounded-full text-sm">
+      {step}
+    </div>
+    <h3 class="text-white font-bold text-lg m-0">{title}</h3>
+  </div>
+  <div class="p-5 prose prose-invert max-w-none">
+    <slot />
+  </div>
+</div>

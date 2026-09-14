@@ -1,0 +1,54 @@
+---
+title: "Opel Corsa : Perte de puissance et EGR bloquée"
+description: "Défaut débitmètre (MAF) et perte de puissance totale sur moteur 1.3 CDTI ? Pourquoi changer le débitmètre est une erreur quand la vanne EGR est bloquée ouverte."
+pillar: "diagnostic"
+category: "casreels"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner"]
+author: "DiagVault"
+published_date: 2024-06-26T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+**Véhicule :** Opel Corsa / Astra, Fiat Punto (Moteurs 1.3 CDTI / Multijet)
+**Symptômes :** Le client signale un manque de puissance sévère (pas de turbo), une fumée noire à l'accélération, et un voyant moteur allumé. 
+À la valise, vous lisez un code défaut pointant sur le **Débitmètre d'air massique (MAF)** : *Signal hors tolérance (Valeur trop basse)*. 
+
+Le mécanicien remplace le débitmètre par un neuf (200€), efface le défaut, mais la voiture n'a toujours aucune puissance et le défaut revient au premier essai routier.
+
+<EditorialPrinciple />
+
+## L'Analyse du Problème : La physique du remplissage moteur
+
+Un moteur Diesel est une pompe à air géante. S'il avale 2 litres d'air par seconde, le débitmètre (situé juste après le filtre à air) lira précisément 2 litres par seconde. 
+
+La vanne EGR a pour rôle de réinjecter une partie des gaz d'échappement dans l'admission pour refroidir la combustion. **Quand l'EGR s'ouvre, elle prend la place de l'air frais**.
+Si l'EGR réinjecte 1 litre d'échappement par seconde, le moteur n'a plus la place que pour 1 litre d'air frais venant du filtre à air. Le débitmètre lira donc 1 litre. Et l'ECU sait calculer ça.
+
+<TestStepCard step={1} title="L'EGR bloquée ouverte par la suie">
+  Sur ces moteurs (1.3 CDTI / JTD), la suie obstrue la soupape mécanique de l'EGR. 
+  Même quand le calculateur commande à l'EGR de se fermer à 0% (par exemple lors d'une forte accélération), la soupape reste physiquement coincée ouverte à 50% !
+  
+  **La conséquence sur le capteur MAF :**
+  Lors de l'accélération, l'ECU s'attend à ce que le moteur aspire beaucoup d'air pur (car il croit avoir fermé l'EGR). Mais comme l'EGR est bloquée ouverte, le moteur se gave de gaz d'échappement. L'air pur n'arrive plus. Le Débitmètre lit une quantité d'air frais dramatiquement basse. L'ECU pense donc que le Débitmètre est cassé, alors qu'il dit l'absolue vérité !
+</TestStepCard>
+
+## La Solution : Le Test de la Plaque d'obturation (Blanking Plate)
+
+Inutile de changer d'autres capteurs. Il faut tester l'EGR sans pour autant la démonter complètement (ce qui est souvent très chronophage sur ces moteurs).
+
+<DiagnosticTree symptom="Confirmer la vanne EGR fautive">
+  <li>**L'Outil de Diagnostic (Live Data) :** Regardez les valeurs *Mass Air Flow (MAF)*. Au ralenti, EGR fermée, vous devriez lire environ 30 à 45 mg/coup (selon cylindrée). Si vous lisez entre 150 et 200 mg/coup, le moteur respire son propre échappement.</li>
+  <li>**Le Test du Bouchage :** Dévissez les deux boulons du tuyau en fer qui relie la vanne EGR au collecteur d'admission. Intercalez une fine plaque de métal (ou même une canette de soda découpée pour un test de 5 minutes) sans percer de trou au milieu, afin de boucher totalement le passage des gaz.</li>
+  <li>**Le Verdict :** Resserrez les boulons. Allez faire un tour. Si le véhicule retrouve ses 90 chevaux instantanément, l'EGR était bien coincée ouverte. La pression du turbo partait dans l'échappement !</li>
+</DiagnosticTree>
+
+<ConfirmationBox>
+  **Réparation finale :** Le test de la plaque a confirmé le diagnostic à 100%. Vous pouvez maintenant facturer au client le remplacement de la vanne EGR (ou un démontage complet pour nettoyage aux ultrasons), sans changer de pièces au hasard. N'oubliez pas de retirer la plaque si vous ne reprogrammez pas l'ECU (EGR OFF), sinon un code défaut de "Débit EGR insuffisant" apparaîtra.
+</ConfirmationBox>

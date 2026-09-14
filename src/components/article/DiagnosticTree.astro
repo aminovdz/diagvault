@@ -1,0 +1,15 @@
+---
+export interface Props {
+  symptom: string;
+}
+const { symptom } = Astro.props;
+---
+<div class="my-8 p-6 rounded-lg bg-surface border border-slate-700">
+  <h4 class="font-bold text-white mb-4 font-heading flex items-center gap-2">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-accent-diagnostic"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+    Arbre de Diagnostic : {symptom}
+  </h4>
+  <ul class="space-y-2 text-slate-300 ml-4 border-l-2 border-slate-700 pl-4">
+    <slot />
+  </ul>
+</div>

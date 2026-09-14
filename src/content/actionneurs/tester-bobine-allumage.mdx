@@ -1,0 +1,55 @@
+---
+title: "Comment tester une Bobine d'Allumage"
+description: "Moteur qui tremble ou code P0300 ? Apprenez le test d'étincelle (Spark Test) et le test de résistance pour diagnostiquer une bobine crayon défaillante."
+pillar: "diagnostic"
+category: "actionneurs"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "moyen"
+requiredTools: ["multimetre"]
+author: "DiagVault"
+published_date: 2024-06-06T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Sur les moteurs essence modernes (Technologie COP - *Coil On Plug*), chaque bougie possède sa propre bobine d'allumage plantée directement dessus. Leur rôle ? Transformer les 12 Volts de la batterie en **30 000 Volts** pour créer l'éclair de l'étincelle. 
+Quand une bobine lâche, le cylindre ne brûle plus l'essence : le moteur tourne sur 3 cylindres, vibre énormément, sent l'essence crue, et la valise affiche un code Misfire (**P0301, P0302...**).
+
+<EditorialPrinciple />
+
+## Test N°1 : Le test d'inversion (Le Swap)
+
+C'est la méthode de diagnostic la plus rapide, la plus fiable, et elle nécessite zéro outil !
+
+<TestStepCard step={1} title="Suivre le défaut à la trace">
+  Imaginons que la valise indique un **P0302** (Raté d'allumage Détecté Cylindre N°2).
+  1. Coupez le contact.
+  2. Débranchez et retirez la bobine du Cylindre 2 (La Suspecte).
+  3. Retirez la bobine du Cylindre 1 (La Saine).
+  4. Échangez-les de place. Mettez la suspecte sur le Cylindre 1, et la saine sur le Cylindre 2.
+  5. Effacez les codes avec la valise, démarrez, et allez rouler pour faire réapparaître le voyant.
+  
+  **Résultat :**
+  - Si la valise affiche maintenant un **P0301** : Le défaut a suivi la bobine. Vous êtes 100% sûr que cette bobine est morte. Changez-la.
+  - Si la valise affiche toujours un **P0302** : La bobine est innocente ! Le problème est resté sur le Cylindre 2 (Bougie morte, injecteur bouché, ou soupape grillée).
+</TestStepCard>
+
+## Test N°2 : Le Test Visuel de l'étincelle (Éclateur)
+
+Si le moteur refuse de démarrer du tout, le "Swap" est inutile. Il faut voir si la bobine génère bien une étincelle de 30 000V.
+
+<DiagnosticTree symptom="Génération Haute Tension">
+  <li>**Mise en sécurité :** Retirez le relais de la pompe à essence pour éviter d'inonder le moteur (ou de créer une explosion avec les vapeurs d'essence).</li>
+  <li>**Utilisation d'un Testeur d'Étincelle :** Retirez la bobine. Insérez un "Testeur d'allumage" réglable dans le nez en caoutchouc de la bobine. Reliez la pince croco du testeur à une bonne masse métallique du moteur. Réglez l'écartement sur 1 centimètre.</li>
+  <li>**Lancement du démarreur :** Demandez à un assistant de tourner la clé. Une bobine saine doit réussir à faire sauter un éclair **BLEU ET CLAQUANT** de 1 cm dans le testeur.</li>
+  <li>**Verdict :** Si l'étincelle est jaune, rachitique, ou s'il n'y a rien du tout, vérifiez que le connecteur de la bobine reçoit bien le 12V. Si le 12V est là, la bobine est grillée.</li>
+</DiagnosticTree>
+
+<ConfirmationBox>
+  **Pourquoi on ne teste plus la résistance (Ohms) ?**
+  La vieille méthode RTA disait de tester les enroulements primaire et secondaire au multimètre. Mais sur les bobines modernes à 3 ou 4 fils, le transistor de commande (l'Igniter) est intégré à l'intérieur de la tête de bobine. Vous ne pouvez plus atteindre la bobine interne avec vos pointes de touche. Les tests de résistance ne sont valables que sur les très anciennes bobines à 2 fils d'avant les années 2000. Fiez-vous au Swap et au testeur d'étincelle !
+</ConfirmationBox>

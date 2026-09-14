@@ -1,0 +1,66 @@
+---
+title: "Perte de puissance à l'accélération : hypothèses et tests"
+description: "Diagnostic d'un moteur qui s'effondre en charge : débitmètre, pression de carburant, géométrie turbo et catalyseur bouché."
+pillar: "diagnostic"
+category: "symptomes"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner", "multimetre"]
+author: "DiagVault"
+published_date: 2024-06-01T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+import ValueTable from '../../components/article/ValueTable.astro';
+
+Une perte de puissance à l'accélération (le moteur s'étouffe, plafonne, ou refuse de monter dans les tours en côte) est l'un des symptômes les plus complexes car il engage la totalité du système : l'air, le carburant, et l'échappement. 
+
+Avant d'accuser le turbo ou les injecteurs, il faut séparer le problème en 3 catégories fondamentales avec votre outil de diagnostic.
+
+<EditorialPrinciple />
+
+## Étape 1 : Mode Dégradé vs Restriction Mécanique
+
+La première question à se poser : **Est-ce l'ECU qui bride le moteur, ou le moteur qui n'arrive physiquement plus à respirer ?**
+
+<DiagnosticTree symptom="Perte de puissance ressentie">
+  <li>**Cas A : Le voyant moteur (MIL) est allumé ou clignote.** Le calculateur a détecté une anomalie grave (ex: surpression turbo) et coupe volontairement l'injection. C'est un *Limp Mode* (Mode dégradé). Lisez les codes DTC.</li>
+  <li>**Cas B : Aucun voyant, aucun code défaut.** L'ECU "pense" que tout va bien, mais le moteur s'étouffe. C'est ici que le vrai diagnostic commence : il y a un mensonge d'un capteur (MAF) ou une restriction mécanique (Cata bouché).</li>
+</DiagnosticTree>
+
+## Étape 2 : Vérification du Débitmètre (Air)
+
+Le calculateur injecte le carburant en fonction de l'air qu'il *croit* entrer. Si le débitmètre (MAF) est encrassé, il sous-estime l'air entrant. Résultat : l'ECU injecte très peu d'essence, le mélange est pauvre, le moteur n'a aucune puissance.
+
+<TestStepCard step={1} title="Test du Débitmètre en pleine charge (WOT)">
+  1. Branchez votre scanner et affichez le paramètre **Mass Air Flow (MAF)** en `g/s`.
+  2. Trouvez une route dégagée. En 2ème ou 3ème vitesse, écrasez la pédale d'accélérateur à 100% jusqu'à 4500 tr/min.
+  3. Lisez la valeur maximale enregistrée.
+  
+  **Règle empirique (Moteur Atmo) :** Vous devez obtenir environ 80% de la puissance en chevaux du moteur. (ex: Un moteur de 100 ch devrait aspirer environ 80 g/s).
+  **Règle empirique (Moteur Turbo) :** C'est presque le double.
+  Si votre lecture plafonne à 30 g/s, débranchez électriquement le MAF. Le moteur passera sur une cartographie de secours (Alpha-N). Si la puissance revient, votre MAF est mort ou le filtre à air est bouché.
+</TestStepCard>
+
+## Étape 3 : La Pression de Carburant (Essence & Diesel)
+
+Un moteur a besoin de beaucoup plus de carburant à 4000 tr/min en côte qu'au ralenti. Si la pompe de gavage ou la pompe haute pression fatigue, le moteur s'effondrera en charge.
+
+<TestStepCard step={2} title="Analyse de la pression sous charge">
+  - **Sur un Diesel Common Rail :** Affichez la `Pression Rail Demandée` vs `Pression Rail Réelle`. Lors d'une forte accélération, elle doit monter instantanément (ex: de 300 bars au ralenti à 1600 bars). Si la pression réelle plafonne à 800 bars, cherchez un injecteur fuyard (test des retours) ou un filtre à gasoil colmaté.
+  - **Sur une Essence Injection Indirecte :** Le scanner ne voit pas la pression. Branchez un manomètre sur la rampe. Donnez un coup d'accélérateur franc : la pression doit légèrement **monter** (ex: 3.5 bars). Si l'aiguille chute (2.0 bars), la pompe à essence du réservoir est en fin de vie.
+</TestStepCard>
+
+## Étape 4 : La Restriction d'Échappement (Catalyseur / FAP bouché)
+
+Si l'air entre bien et le carburant aussi, mais que les gaz brûlés ne peuvent pas sortir, le moteur s'étouffe avec ses propres gaz d'échappement.
+
+<ConfirmationBox>
+  **Test de la sonde Lambda :** Le moyen le plus rapide de diagnostiquer un échappement complètement bouché (sans outil spécialisé) est de dévisser et retirer complètement la sonde Lambda Amont (avant le catalyseur). 
+  *Attention, ce sera extrêmement bruyant !* 
+  Allez faire un tour. Si le véhicule retrouve subitement toute sa puissance et monte dans les tours sans s'étouffer, votre catalyseur (ou FAP) est colmaté et doit être remplacé.
+</ConfirmationBox>

@@ -1,0 +1,57 @@
+---
+title: "Voyant moteur allumé sans aucune perte de performance"
+description: "Le voyant moteur (MIL) est allumé mais la voiture roule parfaitement ? Diagnostic des systèmes antipollution : EVAP, Sonde Lambda Aval (P0420) et EGR fermée."
+pillar: "diagnostic"
+category: "symptomes"
+system: "moteur"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["scanner", "machine_a_fumee"]
+author: "DiagVault"
+published_date: 2024-06-10T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Un voyant moteur orange fixe (MIL - Malfunction Indicator Lamp) ne signifie pas systématiquement que le moteur est en danger. 
+S'il est allumé mais que le véhicule a 100% de sa puissance, ne broute pas, ne consomme pas plus et démarre au quart de tour, l'ECU a détecté un défaut **strictement lié aux émissions polluantes**.
+
+Les normes Euro et OBD-II exigent l'allumage immédiat du voyant si le véhicule risque de polluer 1.5 fois plus que sa norme d'homologation. 
+
+<EditorialPrinciple />
+
+## L'Hypothèse 1 : Efficacité du Catalyseur (P0420 / P0430)
+
+C'est l'un des codes les plus fréquents au monde. Le calculateur surveille l'état du pot catalytique grâce à la sonde Lambda située *après* le catalyseur (Sonde Aval / Sensor 2).
+
+<TestStepCard step={1} title="Vérification du P0420">
+  1. Si le scanner remonte le code P0420 (Efficacité du système catalytique en dessous du seuil).
+  2. Affichez les courbes des Sondes Lambda Amont (Sensor 1) et Aval (Sensor 2) moteur chaud à 2500 tr/min.
+  3. **Sensor 1** doit osciller rapidement (0.1V - 0.9V).
+  4. **Sensor 2** doit tracer une **ligne presque plate** autour de 0.6V (signe que le catalyseur "lisse" les gaz).
+  5. Si Sensor 2 ondule exactement comme Sensor 1, le catalyseur est complètement vide ou détruit à l'intérieur. Il ne filtre plus rien, mais le moteur respire parfaitement. D'où l'absence de perte de puissance !
+</TestStepCard>
+
+## L'Hypothèse 2 : Le système EVAP (Fuite de vapeurs d'essence)
+
+Spécifique aux moteurs essence, le système EVAP récupère les vapeurs du réservoir pour les brûler dans le moteur plutôt que de les relâcher dans l'atmosphère. 
+
+S'il y a une micro-fuite dans ce système, l'ECU allumera le voyant moteur (ex: P0455, P0456, P0442) mais le moteur n'aura aucune perte de puissance.
+
+<DiagnosticTree symptom="Défaut EVAP détecté">
+  <li>**Le Bouchon de Réservoir :** Dans 50% des cas d'un code de petite fuite EVAP (P0456), le client n'a pas bien fermé son bouchon d'essence, ou le joint torique du bouchon est craquelé. Le réservoir ne parvient pas à se mettre sous vide. Remplacez le bouchon et effacez le défaut.</li>
+  <li>**L'électrovanne de purge (Purge Valve) :** Située dans le compartiment moteur. Débranchez son tuyau côté admission, moteur tournant. Mettez votre doigt sur l'orifice de la vanne. Si vous sentez une aspiration (vide) alors que la vanne n'est pas commandée électriquement, elle fuit.</li>
+  <li>**Machine à fumée :** Si les deux éléments ci-dessus sont bons, injectez de la fumée sous basse pression dans la conduite EVAP. Cherchez la fumée près de la goulotte de remplissage ou du Canister (filtre à charbon souvent sous la voiture à l'arrière).</li>
+</DiagnosticTree>
+
+## L'Hypothèse 3 : Bougies de préchauffage (Certains Diesels Modernes)
+
+Sur les anciens diesels, une bougie de préchauffage HS n'allumait pas de voyant moteur (juste le voyant de préchauffage clignotant, voire rien du tout).
+
+<ConfirmationBox>
+  Sur les Diesels modernes (Norme Euro 5 et Euro 6), les bougies de préchauffage restent allumées **pendant le roulage** à faible charge pour garder la chambre de combustion très chaude et réduire les émissions de NOx et de fumées (Post-chauffage). 
+  Si une seule bougie est coupée, l'ECU allumera le voyant moteur (P0380, P0671, etc.) pour signaler un risque de pollution, même s'il fait 30°C dehors et que le moteur démarre très bien. Un simple test de résistance au multimètre confirmera la bougie fautive.
+</ConfirmationBox>

@@ -1,0 +1,57 @@
+---
+title: "Le démarreur tourne mais le moteur ne démarre pas (Crank, No Start)"
+description: "Méthode pas-à-pas pour diagnostiquer un véhicule dont le moteur est entraîné par le démarreur mais refuse de démarrer. Immunisation, RPM, ou Carburant ?"
+pillar: "diagnostic"
+category: "symptomes"
+system: "moteur"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["scanner", "multimetre"]
+author: "DiagVault"
+published_date: 2024-05-25T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+
+C'est la panne la plus effrayante pour un client, mais l'une des plus logiques à diagnostiquer pour un technicien. Le démarreur s'enclenche, le moteur tourne, mais il ne "pète" pas. 
+
+Un moteur a besoin de trois choses fondamentales pour démarrer : **Air/Compression**, **Carburant**, et **Étincelle (ou haute pression pour le Diesel)**. Mais avant de vérifier cela, il faut vérifier l'électronique de contrôle !
+
+<EditorialPrinciple />
+
+## L'ordre logique du diagnostic
+
+N'allez pas démonter une bougie ou une pompe à carburant sans avoir éliminé les blocages électroniques évidents. L'ECU refuse souvent de démarrer le moteur volontairement.
+
+<TestStepCard step={1} title="Le voyant Antidémarrage (IMMO)">
+  Mettez le contact. Observez le voyant clé ou le petit point rouge clignotant au tableau de bord.
+  - S'il reste fixe ou clignote rapidement pendant la tentative de démarrage : l'antidémarrage bloque le calculateur. Inutile de chercher une panne mécanique, c'est un problème de reconnaissance de clé ou de BCM/BSI.
+  - S'il s'éteint : passez à l'étape 2.
+</TestStepCard>
+
+<TestStepCard step={2} title="Le Régime Moteur (RPM) en Live Data">
+  Branchez le scanner OBD. Allez dans les Live Data de l'ECU Moteur et trouvez **RPM (Engine Speed)**.
+  Actionnez le démarreur.
+  - **RPM = 0** : L'ECU est "aveugle". Il ne sait pas que le moteur tourne, donc il ne commandera NI l'allumage NI les injecteurs. Vérifiez le **Capteur PMH (CKP)** et son câblage.
+  - **RPM = 150 à 250 Tr/min** : L'ECU voit bien le moteur tourner. Le PMH est bon. Passez à l'étape 3.
+</TestStepCard>
+
+<TestStepCard step={3} title="Essence ou Étincelle ? (Test du Start-Pilote / Nettoyant frein)">
+  Injectez une brève pulvérisation de Start-Pilote (ou nettoyant frein) dans l'admission d'air tout en actionnant le démarreur.
+  - **Le moteur tousse et essaie de démarrer (ou démarre 2 secondes)** : Votre allumage est PARFAIT (l'étincelle a enflammé le gaz). Vous avez un **problème de carburant** (Pompe HS, relais, injecteurs non pilotés).
+  - **Le moteur tourne dans le vide, sans aucun effet** : Vous n'avez pas d'allumage ou pas de compression (distribution cassée).
+</TestStepCard>
+
+## Élimination des dernières hypothèses
+
+<DiagnosticTree symptom="Démarrage impossible avec RPM à 200 Tr/min et Voyant IMMO éteint">
+  <li>**Moteur Essence (Démarre au Start-Pilote)** : Contrôlez la pression de la pompe de gavage au manomètre et le relais de pompe. Si la pression est bonne, vérifiez l'alimentation (12V) des injecteurs.</li>
+  <li>**Moteur Diesel (FPR / Pression de Rail)** : Regardez la pression de rail (Fuel Rail Pressure) en Live Data. Elle DOIT atteindre ~250-300 bars au démarreur. Si elle reste à 20 bars, les injecteurs ne s'ouvriront jamais. Vérifiez les retours d'injecteurs et le régulateur IMV.</li>
+</DiagnosticTree>
+
+<ConfirmationBox>
+  Dans plus de 60% des cas d'un moteur Diesel récent qui tourne sans démarrer (avec PMH OK), le coupable est **un seul injecteur qui fuit en retour**. L'ECU demande 300 bars pour autoriser le démarrage, mais la pompe n'arrive pas à pressuriser la rampe car la pression s'échappe par l'injecteur fuyard. Un kit d'éprouvettes de retour d'injecteur confirmera cette panne en 10 secondes (voir la section Actionneurs).
+</ConfirmationBox>

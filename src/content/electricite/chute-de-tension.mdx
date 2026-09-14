@@ -1,0 +1,56 @@
+---
+title: "La Chute de Tension (Voltage Drop Test)"
+description: "Oubliez le test de continuité (Ohms) ! La chute de tension est le seul moyen de trouver un fil oxydé ou un faux contact sous charge électrique réelle."
+pillar: "diagnostic"
+category: "electricite"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["multimetre"]
+author: "DiagVault"
+published_date: 2024-06-22T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le plus gros piège en électricité automobile est d'utiliser le mode "Continuité" (Le petit Bip) ou Ohmmètre pour tester un fil. 
+Un fil de cuivre composé de 100 brins, dont 99 sont cassés, fera "Bipper" le multimètre. Il laissera passer le micro-ampère du multimètre sans problème. Mais si vous essayez de faire passer les 20 Ampères d'un phare ou d'un démarreur, le seul petit brin restant va fondre, ou l'ampoule s'allumera très faiblement.
+
+**Le test de chute de tension (Voltage Drop Test)** mesure ce qui se passe quand on force le courant à traverser un câble malade.
+
+<EditorialPrinciple />
+
+## La Règle d'Or : Tester "En Charge"
+
+Pour mesurer une chute de tension, le circuit doit impérativement être fermé et l'accessoire (Ampoule, Moteur) **doit être allumé**. Si l'accessoire est éteint (aucun courant ne coule), la chute de tension sera toujours de Zéro !
+
+<TestStepCard step={1} title="Méthode de la Chute de Tension">
+  Prenons l'exemple d'une ampoule de phare (12V) qui éclaire très faiblement (jaune), alors que la batterie est neuve.
+  
+<br /> - Allumez le phare (Laissez-le allumé, même s'il brille mal).
+<br /> - Réglez votre multimètre sur **DC Volts** (PAS en Ohms !).
+<br /> - Mettez la pointe **Rouge** sur la borne (+) de la Batterie.
+<br /> - Mettez la pointe **Noire** directement sur l'arrière de la prise (+) de l'ampoule.
+<br /> - Vous mesurez maintenant le câble. Pas la batterie, pas l'ampoule, juste le câble (avec ses fusibles et relais).
+  
+  **Le Verdict :**
+<br /> * Si vous lisez **0.1V à 0.3V** : Le câble est parfait.
+<br /> * Si vous lisez **2.5V, 5V ou plus** : Le courant est en train de "lutter" pour traverser une résistance (câble pourri, relais calciné, cosse oxydée). 5 Volts sont transformés en chaleur dans le câble. C'est votre panne.
+</TestStepCard>
+
+## Trouver la fuite centimètre par centimètre
+
+Le test de chute de tension permet de localiser exactement où se trouve le mauvais contact.
+
+<DiagnosticTree symptom="La méthode de l'entonnoir">
+  <li>Imaginons que la mesure du câble entier entre la batterie (+) et l'ampoule lise une perte énorme de **4.5V**.</li>
+  <li>Laissez la pointe rouge sur la batterie. Déplacez la pointe noire juste après le relais. Si vous lisez toujours 4.5V, le problème est avant.</li>
+  <li>Déplacez la pointe noire juste avant le relais. Si vous lisez 0.1V. La panne se trouve EXACTEMENT DANS le relais ! Ses contacts internes sont brûlés.</li>
+</DiagnosticTree>
+
+<ConfirmationBox>
+  La chute de tension s'applique aussi au circuit de Masse (-). Une ampoule qui reçoit un 12V parfait ne s'allumera pas si son câble de retour vers le pôle négatif est rouillé sur la carrosserie. Mettez la pointe noire sur le (-) de la batterie, la pointe rouge sur le fil de masse de l'ampoule. Si vous lisez autre chose que 0V, votre masse est défectueuse.
+</ConfirmationBox>

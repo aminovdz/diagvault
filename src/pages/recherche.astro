@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SearchResults from '../components/search/SearchResults.tsx';
+---
+<BaseLayout title="Recherche - DiagVault">
+  <div class="py-12">
+    <h1 class="text-3xl font-heading font-bold text-white mb-8 text-center">Recherche Technique</h1>
+    <SearchResults client:idle />
+  </div>
+</BaseLayout>

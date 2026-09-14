@@ -1,0 +1,49 @@
+---
+title: "Skoda Octavia : Clé non reconnue après dépannage batterie"
+description: "Démarrage aux pinces avec des étincelles ? Si le voyant IMMO clignote et le moteur coupe après 2 secondes, votre EEPROM est probablement corrompue."
+pillar: "diagnostic"
+category: "casreels"
+system: "immo"
+difficulty: "avance"
+risk: "moyen"
+requiredTools: ["scanner", "programmateur"]
+author: "DiagVault"
+published_date: 2024-06-21T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+**Véhicule :** Skoda Octavia / VW Golf / Seat Leon
+**Symptômes :** Le client a oublié ses phares. La batterie s'est vidée. Un voisin est venu l'aider avec des câbles de démarrage (pinces). Il y a eu un petit arc électrique au branchement. Désormais, le démarreur tourne, le moteur démarre, puis **cale immédiatement après 2 secondes**. Le voyant de clé (SAFE / Immobilizer) clignote au tableau de bord. La deuxième clé ne marche pas non plus.
+
+<EditorialPrinciple />
+
+## L'Analyse du Problème : Le Dump EEPROM Corrompu
+
+Sur la majorité des véhicules du groupe VAG, le système d'antidémarrage (IMMO) n'est pas dans un boîtier séparé. Il est directement intégré dans l'ordinateur du **Combiné d'Instruments (Le Compteur / Dashboard)**.
+
+Le code PIN, le code de sécurité (CS) de la clé et l'identifiant du véhicule (MAC) sont stockés dans une petite puce mémoire de la taille d'un ongle située derrière les aiguilles du compteur : l'**EEPROM**.
+
+<TestStepCard step={1} title="L'effet du pic de tension (Voltage Spike)">
+  1. Lorsqu'on branche des pinces de démarrage sur une batterie totalement vide (0V) reliée à une batterie pleine et moteur tournant (14V), l'appel de courant est violent.
+  2. Un arc électrique se crée au niveau des pinces, générant une surtension très courte (Spike).
+  3. Si, par malheur, le microcontrôleur du tableau de bord était *exactement* en train d'écrire ou de rafraîchir une donnée dans l'EEPROM au moment du pic de tension, l'écriture échoue.
+  4. Les données IMMO sont corrompues (modifiées par erreur). La clé (qui, elle, n'a pas changé) n'est plus reconnue par le tableau de bord devenu amnésique.
+</TestStepCard>
+
+## La Solution : Reprogrammation ou Réadaptation
+
+Inutile de changer la batterie ou de tester le démarreur. Si le message "SAFE" est là, c'est un problème logiciel pur.
+
+<DiagnosticTree symptom="Résolution du problème IMMO">
+  <li>**Étape 1 : Lire les données au scanner avancé.** Un scanner classique ne suffit pas. Il faut un outil capable de lire l'EEPROM via OBD (ex: VVDI, Autel IM, ODIS, Abrites). Si l'outil parvient à lire l'EEPROM, vous verrez souvent que le Code PIN (PIN Code) a été remplacé par des lettres incohérentes, ou le nombre de clés enregistrées est passé à "0".</li>
+  <li>**Étape 2 : L'Apprentissage des clés (Si données saines).** Parfois, l'EEPROM a juste "oublié" l'association. Si vous avez le code PIN de la voiture, vous pouvez lancer une procédure de "Key Learning" pour réapprendre les anciennes clés au tableau de bord.</li>
+  <li>**Étape 3 : Restauration d'un Dump.** Si la puce est totalement corrompue (illisible), la réparation avancée (hors concessionnaire) consiste à démonter le compteur, lire l'EEPROM au programmateur de table (Bench), la nettoyer (Vierge) avec un logiciel Hexadécimal, et la recoder avec les données extraites de l'ECU Moteur (qui contient une sauvegarde du code de sécurité).</li>
+</DiagnosticTree>
+
+<ConfirmationBox>
+  **Comment bien démarrer aux pinces (Best Practice) :** Pour éviter de griller des EEPROM, ne branchez jamais la dernière pince négative (-) directement sur la borne de la batterie ! Branchez-la sur le bloc moteur (une pièce métallique) le plus loin possible de la batterie. Cela dissipera l'arc électrique dans la masse métallique du moteur plutôt que de l'envoyer violemment dans le réseau des calculateurs.
+</ConfirmationBox>

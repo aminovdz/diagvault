@@ -1,0 +1,52 @@
+---
+title: "CAN-BUS : Résistance (60 Ohms) et Trame Oscilloscope"
+description: "Techniques expertes pour analyser l'intégrité d'un réseau CAN. Test des résistances terminales (120 Ohms) et analyse des trames à l'oscilloscope."
+pillar: "diagnostic"
+category: "can"
+system: "can"
+difficulty: "expert"
+risk: "eleve"
+requiredTools: ["multimetre", "oscilloscope"]
+author: "DiagVault"
+published_date: 2024-06-21T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Si les tensions du réseau CAN sont incohérentes, ou si les communications sont instables (défauts U-codes intermittents), il faut vérifier l'intégrité physique de la ligne et la propreté du signal.
+
+<EditorialPrinciple />
+
+## Test N°1 : La Résistance Terminale (60 Ohms)
+
+Pour éviter que le signal ne "rebondisse" aux extrémités du réseau (phénomène de réflexion), les ingénieurs soudent deux résistances de "Terminaison" de **120 Ohms** aux deux extrémités physiques du réseau (souvent dans l'ECU Moteur d'un côté, et dans la BSI/Gateway de l'autre). 
+Deux résistances de 120 Ohms branchées en parallèle donnent une résistance totale de **60 Ohms**.
+
+<TestStepCard step={1} title="Test sur la prise OBD (Broches 6 et 14)">
+  Attention, ce test se fait **IMPERATIVEMENT BATTERIE DEBRANCHEE**. L'Ohmmètre grille s'il y a du courant.
+<br /> - Débranchez la cosse Négative de la batterie. Attendez 2 minutes.
+<br /> - Mettez votre multimètre sur Ohms (Ω).
+<br /> - Insérez vos pointes dans les **broches 6 (CAN H) et 14 (CAN L)** de la prise OBD-II.
+  
+  **Résultats :**
+<br /> * **60 Ohms** : Le réseau est physiquement en parfait état. Les deux extrémités sont connectées.
+<br /> * **120 Ohms** : Une des deux résistances est manquante ! Soit le fil est coupé en plein milieu du véhicule, soit l'ECU qui contient la résistance est débranché ou grillé.
+<br /> * **0 Ohm (Bip Continu)** : Les deux fils CAN High et CAN Low se touchent (Court-circuit entre eux). Le faisceau est fondu ou écrasé sous une vis.
+</TestStepCard>
+
+## Test N°2 : L'Oscilloscope (Le juge de paix)
+
+Quand la résistance et les voltages sont bons, mais que les calculateurs n'arrivent pas à se comprendre, le signal est parasité ou déformé (Capacitance trop élevée).
+
+<DiagnosticTree symptom="Analyser la Trame">
+  <li>**Branchement :** Moteur tournant. Canal 1 (Jaune) de l'oscilloscope sur Broche 6 (CAN H). Canal 2 (Bleu) sur Broche 14 (CAN L). Masses sur le châssis. Base de temps réglée sur 10 ou 20 microsecondes (µs).</li>
+  <li>**Analyse visuelle :** Vous devez voir une trame parfaitement rectangulaire, en miroir absolu. Quand le jaune monte d'un cran, le bleu descend exactement de la même hauteur au même instant (Tension différentielle).</li>
+  <li>**Défauts :** Si les angles des rectangles sont complètement arrondis (comme une bosse de chameau), le réseau est parasité, ou il y a trop de résistance dans les fils. Si une trame descend au-delà de 0V, un calculateur a un grave problème de masse.</li>
+</DiagnosticTree>
+
+<ConfirmationBox>
+  Une technique experte consiste à configurer l'oscilloscope avec un canal Mathématique (A - B), soit CAN H moins CAN L. Le résultat doit toujours donner une impulsion parfaite de **2.0 Volts** (les petits bruits et parasites s'annulant mutuellement).
+</ConfirmationBox>

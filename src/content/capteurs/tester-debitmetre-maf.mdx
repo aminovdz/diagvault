@@ -1,0 +1,51 @@
+---
+title: "Comment tester un débitmètre (MAF)"
+description: "Défaut débitmètre d'air (Mass Air Flow) ? Testez le signal au multimètre ou faites le test WOT à la valise avant d'acheter une pièce neuve inutilement."
+pillar: "diagnostic"
+category: "capteurs"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["multimetre", "scanner"]
+author: "DiagVault"
+published_date: 2024-06-03T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le Débitmètre d'Air Massique (MAF) est situé juste après le filtre à air. Son rôle est de peser précisément la masse d'air qui entre dans le moteur pour que le calculateur ajuste l'injection d'essence. Un MAF fatigué cause des trous à l'accélération, une surconsommation, et parfois un code P0101 ou P0171.
+
+<EditorialPrinciple />
+
+## Test N°1 : La vérification du signal au Multimètre
+
+La majorité des capteurs MAF modernes renvoient un signal analogique (Tension en Volts) ou parfois numérique (Fréquence en Hertz). Concentrons-nous sur le MAF analogique classique (ex: Bosch 4 ou 5 fils).
+
+<TestStepCard step={1} title="Mesure du fil de Signal (Analogique)">
+  1. Identifiez le fil de signal (référez-vous au schéma électrique). Les autres fils sont : +12V (Batterie), +5V (Sonde de température IAT), Masses.
+  2. Piquez le fil de signal avec la pointe rouge de votre multimètre (en DC Volts), pointe noire sur la batterie (-).
+  3. Mettez le contact (Moteur coupé). La tension de "repos" doit être très stable, souvent autour de **1.00 Volt** (très précisément, ex: 1.02V. Si vous lisez 1.20V au repos sur un MAF Bosch, il est déréglé !).
+  4. Démarrez le moteur, laissez au ralenti. L'air entre, la tension monte à environ **1.3V à 1.5V**.
+  5. Donnez un coup d'accélérateur violent. La tension doit grimper instantanément à **3.5V ou 4.0V**, puis retomber. 
+  
+  *Si la tension réagit très lentement (lags) ou ne dépasse jamais 2.5V, le fil chaud du débitmètre est encroûté de saleté (ou le capteur est HS).*
+</TestStepCard>
+
+## Test N°2 : Le test de pleine charge (WOT) à la valise
+
+C'est la méthode reine pour tester la capacité totale d'un débitmètre sans se salir les mains. On l'appelle le **WOT Test** (Wide Open Throttle - Papillon grand ouvert).
+
+<DiagnosticTree symptom="La Règle du Kilogramme">
+  <li>**Mise en place :** Branchez la valise OBD. Affichez les données en direct du Débitmètre (Mass Air Flow) en **Grammes par Seconde (g/s)**. Prenez la route avec un passager qui lit l'écran.</li>
+  <li>**Le Test :** Mettez-vous en 2ème ou 3ème vitesse à bas régime (1500 tr/min). Appuyez sur l'accélérateur à fond (Pédale au plancher) et laissez le moteur monter jusqu'à la zone rouge. Le moteur est en capacité respiratoire maximale.</li>
+  <li>**Le Verdict (Moteurs Atmosphériques) :** La règle mathématique empirique dit qu'un moteur atmo en pleine charge doit aspirer environ 0.8 g/s par cheval-vapeur, ou pour faire très simple : **1 g/s pour chaque 10 cm³ de cylindrée**.
+  *Exemple : Un moteur 2.0L (2000 cm³) doit afficher au moins **160 à 180 g/s** à la zone rouge.* </li>
+  <li>**Le Verdict (Moteurs Turbo) :** Un moteur turbo avale beaucoup plus d'air. Si le MAF plafonne à 70 g/s sur un 2.0L TDI de 140ch en pleine charge, il sous-estime dramatiquement l'air entrant. Soit le MAF est mort, soit le filtre à air est totalement bouché !</li>
+</DiagnosticTree>
+
+<ConfirmationBox>
+  **Ne jetez pas un MAF encrassé !** Avant de payer 150€ pour une pièce neuve, essayez un nettoyage. Utilisez EXCLUSIVEMENT un spray "Nettoyant pour Débitmètre" (MAF Cleaner) ou à défaut du Nettoyant Contact électronique. Ne soufflez jamais à l'air comprimé (vous casserez le fil de platine) et ne touchez jamais le capteur avec vos doigts ou un coton-tige.
+</ConfirmationBox>

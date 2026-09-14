@@ -1,0 +1,54 @@
+---
+title: "Citroën C3 : Ralenti instable et calage après changement batterie"
+description: "Votre Peugeot/Citroën cale après changement de batterie ? Découvrez l'impact de la perte des adaptatifs papillon et le réapprentissage."
+pillar: "diagnostic"
+category: "casreels"
+system: "moteur"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["scanner"]
+author: "DiagVault"
+published_date: 2024-06-23T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+**Véhicule :** Citroën C3 / Peugeot 208 / 206 (Moteurs Essence VTi, PureTech, TU)
+**Symptômes :** Le client a débranché sa batterie pour la remplacer ou faire des réparations. Depuis, la voiture démarre bien, mais dès qu'il lâche l'accélérateur pour s'arrêter à un Stop ou un feu rouge, l'aiguille du compte-tours plonge et **le moteur cale**. Le ralenti "pompe" sans arrêt entre 500 et 1200 tr/min. Aucun voyant moteur n'est allumé.
+
+<EditorialPrinciple />
+
+## L'Analyse du Problème : La mémoire adaptative (Adaptatifs)
+
+Ce symptôme est un grand classique, particulièrement sur les moteurs essence du groupe PSA. La cause n'est pas mécanique, elle est purement logicielle et liée au **Boîtier Papillon Motorisé**.
+
+Avec les années, les vapeurs d'huile (venant du reniflard) encrassent les bords du papillon. La crasse bouche le petit filet d'air qui permet au moteur de tenir le ralenti. 
+Pour éviter de caler, l'ECU (Calculateur) est intelligent : il "apprend" au fil du temps à ouvrir le papillon un tout petit peu plus (ex: 5% au lieu de 2% en sortie d'usine) pour compenser la saleté. Cette correction est stockée dans la **mémoire volatile (Keep Alive Memory)** de l'ECU.
+
+<TestStepCard step={1} title="Le piège du débranchement de batterie">
+  1. Vous débranchez la batterie pendant 30 minutes.
+  2. L'ECU perd son alimentation et "oublie" ces fameuses valeurs d'apprentissage (Adaptatifs).
+  3. Au redémarrage, l'ECU applique les valeurs d'usine : il ouvre le papillon à 2%.
+  4. Sauf que votre papillon, lui, est toujours encrassé physiquement ! À 2% d'ouverture, l'air ne passe plus à cause de la crasse. Le moteur s'étouffe et cale.
+</TestStepCard>
+
+## La Solution en Deux Étapes
+
+Il ne sert à rien de changer des pièces. Il faut nettoyer le papillon et réapprendre à l'ECU les butées de ce dernier.
+
+<DiagnosticTree symptom="Procédure de Réparation">
+  <li>**Étape 1 : Le Nettoyage (Mécanique).** Démontez le manchon d'admission d'air. Avec un chiffon doux imbibé de nettoyant frein (ou nettoyant carburateur), essuyez la bague noire de calamine à l'intérieur du corps de papillon. **Attention :** Ne forcez jamais le volet avec les doigts, vous risquez de casser les engrenages internes. </li>
+  <li>**Étape 2 : Le Réapprentissage (Électronique).** Rebranchez tout. Si vous avez un scanner OBD, allez dans Fonctions Spéciales / Apprentissages / **Apprentissage Butées Papillon** et suivez les instructions.</li>
+</DiagnosticTree>
+
+<ConfirmationBox>
+  **La Méthode Manuelle (Sans Valise) :** 
+  Chez PSA, si vous n'avez pas de valise, une procédure manuelle fonctionne souvent pour réapprendre le papillon :
+  1. Débranchez la batterie 5 minutes. Rebranchez-la.
+  2. Mettez le contact (sans démarrer) et **ne touchez à rien pendant 30 secondes** (Vous entendrez le papillon faire des petits "clic-clac" sous le capot pour chercher ses butées min/max).
+  3. Coupez le contact et attendez 10 secondes.
+  4. Mettez le contact, démarrez sans accélérer. Laissez tourner au ralenti jusqu'à l'enclenchement du ventilateur moteur. Le problème sera résolu.
+</ConfirmationBox>

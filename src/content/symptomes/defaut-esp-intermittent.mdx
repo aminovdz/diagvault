@@ -1,0 +1,53 @@
+---
+title: "Défaut ESP intermittent : méthode de confirmation"
+description: "Voyant ESP qui s'allume en virage ou de manière aléatoire ? Découvrez le calibrage de l'angle de braquage (SAS) et le rôle critique du contacteur de frein."
+pillar: "diagnostic"
+category: "symptomes"
+system: "abs"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner"]
+author: "DiagVault"
+published_date: 2024-06-13T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+L'ESP (Electronic Stability Program) est une surcouche de l'ABS. Là où l'ABS empêche les roues de bloquer au freinage, l'ESP rattrape le véhicule en cas de dérapage.
+Pour savoir si la voiture dérape, l'ESP compare constamment deux choses : **Ce que veut le conducteur** (Angle du volant) et **Ce que fait réellement la voiture** (Capteur de lacet / G-Sensor).
+
+Un voyant ESP intermittent est rarement une grosse panne mécanique. C'est le plus souvent une incohérence de capteurs.
+
+<EditorialPrinciple />
+
+## L'Hypothèse 1 : La perte de calibrage du volant (SAS)
+
+Le capteur d'angle de braquage (Steering Angle Sensor - SAS) est situé derrière le volant. S'il n'est pas parfaitement calibré à 0° quand les roues sont droites, l'ESP "croit" que vous tournez en ligne droite. 
+
+<TestStepCard step={1} title="Test de Cohérence du SAS (Live Data)">
+  1. Branchez votre scanner, entrez dans le module ABS/ESP, et choisissez `Live Data` (Données en direct).
+  2. Sélectionnez **Steering Angle** (Angle de braquage).
+  3. Mettez vos roues parfaitement droites. Le scanner **doit afficher 0.0°** (± 1.5° maximum).
+  4. Si vous lisez 15° alors que le volant est droit, l'ESP se désactivera au-dessus de 30 km/h car il ne comprend pas pourquoi les roues tournent toutes à la même vitesse alors que vous êtes (selon lui) en plein virage !
+  
+  **La solution :** Les pertes de calibrage arrivent souvent après un remplacement de batterie ou une géométrie. Lancez la procédure `SAS Calibration` dans votre scanner, ou essayez la méthode manuelle : Moteur tournant, tournez le volant à fond à gauche, puis à fond à droite, puis revenez au centre. Roulez 20 mètres.
+</TestStepCard>
+
+## L'Hypothèse 2 : Le Contacteur de Pédale de Frein
+
+Aussi incroyable que cela paraisse, la cause numéro un des voyants ESP intermittents (notamment chez VAG, Mercedes et PSA) est le petit contacteur en plastique situé derrière la pédale de frein, qui coûte moins de 15€.
+
+<DiagnosticTree symptom="Voyant ESP s'allume au freinage">
+  <li>**Pourquoi ?** Le contacteur de frein moderne possède **deux circuits internes** (Redondance). Un circuit allume les feux stop, l'autre circuit prévient l'ECU Moteur et l'ESP que vous freinez.</li>
+  <li>**Le Problème :** Avec l'usure, les deux circuits se désynchronisent. L'ESP reçoit l'information que vous freinez (via le circuit 2), mais l'ABS voit que les feux stop ne sont pas allumés (circuit 1). Cette impossibilité logique désactive l'ESP par sécurité.</li>
+  <li>**Le Test :** Regardez les données en direct de l'ECU. Cherchez `Brake Switch 1` et `Brake Switch 2`. Appuyez très doucement sur la pédale. Les deux valeurs doivent changer d'état ("OFF" à "ON") *exactement* au même millimètre. S'il y a un décalage, remplacez le contacteur.</li>
+</DiagnosticTree>
+
+## L'Hypothèse 3 : Pneu dégonflé ou usure asymétrique
+
+<ConfirmationBox>
+  L'ESP surveille la vitesse de rotation de chaque roue au kilomètre/heure près. Si vous avez un pneu neuf à l'avant gauche et un pneu très usé (ou sous-gonflé) à l'avant droit, la roue usée (plus petite) tournera légèrement plus vite pour parcourir la même distance. Sur l'autoroute, cette différence de vitesse constante fera croire à l'ESP que la voiture est en glissade permanente, et il allumera le voyant. **Vérifiez toujours vos pressions avant de faire un diag ESP !**
+</ConfirmationBox>

@@ -1,0 +1,56 @@
+---
+title: "Batterie qui se décharge la nuit : diagnostic de consommation parasite"
+description: "Votre batterie est vide tous les matins ? Oubliez la vieille méthode de débrancher les fusibles. Découvrez le test de chute de tension (Millivolts)."
+pillar: "diagnostic"
+category: "symptomes"
+system: "bcm"
+difficulty: "avance"
+risk: "moyen"
+requiredTools: ["multimetre", "pince_amperemetrique"]
+author: "DiagVault"
+published_date: 2024-06-16T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Une batterie neuve qui se vide complètement en une nuit (ou en un week-end) signifie qu'un composant électronique refuse de "s'endormir" (Sleep Mode) après le verrouillage des portes, ou qu'un court-circuit consomme du courant en permanence (Courant de fuite ou Consommation Parasite).
+
+<EditorialPrinciple />
+
+## L'Erreur à ne plus commettre : Retirer les fusibles un par un
+
+Dans les années 90, on branchait un ampèremètre en série avec la batterie, et on retirait les fusibles un par un jusqu'à ce que la consommation chute.
+**Sur une voiture moderne, cette méthode ne fonctionne plus.** Pourquoi ? 
+Parce que retirer et remettre un fusible réveille le réseau CAN ! Le calculateur (BCM / BSI) détecte une coupure de courant, sort de son mode veille, réveille les autres modules, et votre consommation bondit à 3 Ampères. Vous tournez en rond.
+
+## Étape 1 : Préparation et Mise en Veille (Sleep Mode)
+
+Pour mesurer une fuite, la voiture doit être exactement dans l'état où elle passe la nuit.
+
+<TestStepCard step={1} title="Tromper la serrure du capot">
+  1. Ouvrez le capot moteur (et les portes si la boîte à fusibles est dans l'habitacle).
+  2. Avec un tournevis, **verrouillez manuellement les serrures** des portes ouvertes et du capot.
+  3. Verrouillez la voiture avec la télécommande. La voiture "croit" qu'elle est totalement fermée et sécurisée.
+  4. **Attendez au moins 30 minutes.** (Certains modules comme le GPS ou le BCM mettent 20 à 30 minutes pour sauvegarder leurs données et s'endormir totalement). 
+  5. Une voiture parfaitement endormie doit consommer **moins de 50 mA (0.05 A)**.
+</TestStepCard>
+
+## Étape 2 : Le Test de Chute de Tension (Millivolts)
+
+C'est la méthode approuvée par tous les constructeurs (Ford, VAG, Toyota). Elle permet de trouver le circuit coupable **sans débrancher aucun fusible**.
+
+<DiagnosticTree symptom="Mesure des fusibles au repos">
+  <li>**Le Principe :** Un fusible est un morceau de métal. S'il n'y a pas de courant qui passe, la tension à ses bornes est de 0V. S'il y a du courant qui passe, la résistance du métal crée une infime chute de tension (mesurable en millivolts).</li>
+  <li>**Le Test :** Mettez votre multimètre sur l'échelle la plus petite : **Millivolts (mV) DC**. Touchez avec vos deux pointes les deux petits ergots métalliques exposés **sur le dessus** d'un fusible (sans le retirer).</li>
+  <li>**L'Interprétation :** Lecture de 0.0 mV : Le circuit dort, aucun courant ne passe. Lecture de 1.2 mV (ou tout chiffre positif) : Du courant traverse ce fusible en ce moment même !</li>
+  <li>**Trouver le coupable :** Notez le numéro du fusible qui affiche des millivolts. Regardez dans le manuel du propriétaire (ou schéma électrique) ce qu'il alimente (ex: Amplificateur Audio, Module Bluetooth, Sièges électriques). Vous avez trouvé votre fuite !</li>
+</DiagnosticTree>
+
+## Alternative : La Pince Ampèremétrique
+
+<ConfirmationBox>
+  Si vous possédez une **Pince Ampèremétrique CC (Courant Continu)** capable de lire les milliampères (très sensible), vous pouvez enserrer le gros câble négatif de la batterie. Cela vous donnera la consommation totale exacte (ex: 450 mA = grosse fuite). Cependant, la pince ne vous dira pas *quel* circuit consomme. La méthode des fusibles en millivolts reste obligatoire pour isoler le composant.
+</ConfirmationBox>

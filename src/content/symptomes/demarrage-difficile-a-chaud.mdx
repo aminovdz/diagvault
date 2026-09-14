@@ -1,0 +1,53 @@
+---
+title: "Démarrage difficile à chaud : diagnostic pas à pas"
+description: "Démarre bien à froid mais difficilement à chaud ? Diagnostic de la perte de pression d'essence (injecteur fuyard) et du Vapor Lock."
+pillar: "diagnostic"
+category: "symptomes"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "moyen"
+requiredTools: ["multimetre", "scanner"]
+author: "DiagVault"
+published_date: 2024-06-07T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+C'est l'un des symptômes les plus déroutants pour les conducteurs. Un moteur froid nécessite pourtant beaucoup plus d'efforts pour démarrer qu'un moteur chaud. Si votre véhicule démarre mal uniquement à chaud (long temps de démarreur avant d'entendre le moteur se lancer), le problème est très souvent lié à une **perte de pression de carburant à l'arrêt** (Hot Soak issue).
+
+<EditorialPrinciple />
+
+## L'Hypothèse 1 : Le Moteur "Noyé" (Injecteur qui fuit)
+
+Sur un moteur essence, le circuit de carburant reste sous pression (environ 3 à 4 bars) même quand vous coupez le moteur, pour garantir un redémarrage instantané. Si un injecteur n'est plus étanche, il va goutter dans le cylindre pendant que vous faites vos courses.
+
+**Conséquence :** Le cylindre se remplit de vapeurs d'essence. Au moment de redémarrer 15 minutes plus tard, le mélange est tellement riche (trop d'essence, pas assez d'air) que la bougie n'arrive pas à l'enflammer. Vous devez tirer sur le démarreur de longues secondes pour évacuer ce trop-plein d'essence. En revanche, le matin (8h plus tard), l'essence a eu le temps de s'évaporer via les soupapes ouvertes, le moteur démarre mieux !
+
+<TestStepCard step={1} title="Test de la pédale au fond (Clear Flood Mode)">
+  1. Moteur chaud, après un arrêt de 15 minutes.
+  2. Avant de tourner la clé, appuyez sur la pédale d'accélérateur à **100% (jusqu'au plancher)** et maintenez-la.
+  3. Actionnez le démarreur.
+  
+  *Pourquoi ?* Sur presque toutes les voitures modernes, appuyer à fond sur l'accélérateur au démarrage active le mode "Clear Flood". L'ECU coupe totalement l'injection de carburant et ouvre le papillon en grand pour ventiler les cylindres. Si le moteur démarre subitement pendant ce test (ou tousse violemment en évacuant les vapeurs), vous avez la confirmation qu'un injecteur fuit à l'arrêt !
+</TestStepCard>
+
+## L'Hypothèse 2 : Le Vapor Lock et le clapet anti-retour
+
+Si la pression d'essence retombe à zéro à l'arrêt, l'essence située dans la rampe (au-dessus du moteur très chaud) va se mettre à bouillir. Des bulles de vapeur se forment dans la rampe d'injection (Vapor Lock). Au redémarrage, les injecteurs pulvérisent du vide (vapeur) au lieu de l'essence liquide. 
+
+<DiagnosticTree symptom="Chute de Pression Résiduelle">
+  <li>**Le Clapet Anti-retour de la pompe (Check Valve) :** Situé dans le réservoir, il empêche l'essence de redescendre. S'il fuit, la rampe se vide.</li>
+  <li>**Le Régulateur de Pression (FPR) :** S'il fuit par son tuyau de dépression, l'essence est aspirée directement dans l'admission.</li>
+  <li>**Le Test du Manomètre :** Branchez un manomètre sur la rampe d'injection. Moteur tournant : 3.5 bars. Coupez le moteur. La pression doit se maintenir à au moins 2.5 bars pendant 30 minutes. Si elle chute à zéro en 2 minutes, vous avez trouvé votre problème de démarrage à chaud. Pincez la durite de retour pour isoler si la fuite vient de l'avant (injecteurs) ou de l'arrière (pompe).</li>
+</DiagnosticTree>
+
+## L'Hypothèse 3 : Capteur PMH ou AAC à chaud
+
+Comme expliqué dans le guide des ratés à chaud, les capteurs à effet Hall ou inductifs (Point Mort Haut, Arbre à cames) peuvent se couper thermiquement.
+
+<ConfirmationBox>
+  Si le démarreur tourne mais que le scanner affiche un Régime Moteur (RPM) à `0 Tr/min` pendant que vous tentez de redémarrer à chaud, votre capteur PMH est mort. Laissez le capot ouvert 30 minutes pour refroidir la pièce, le signal reviendra.
+</ConfirmationBox>

@@ -1,0 +1,57 @@
+---
+title: "Consommation de carburant anormalement élevée : diagnostic avancé"
+description: "Surconsommation massive : le problème vient souvent d'une régulation électronique (ECT, Sonde Lambda paresseuse ou MAF défectueux) plutôt que des pneus."
+pillar: "diagnostic"
+category: "symptomes"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner", "multimetre"]
+author: "DiagVault"
+published_date: 2024-06-09T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+import ValueTable from '../../components/article/ValueTable.astro';
+
+Quand un client se plaint que son véhicule "boit" 3 à 4 litres au cent kilomètres de plus qu'avant, le problème n'est pas mécanique (filtre à air, pneus sous-gonflés). Un filtre à air bouché fait perdre de la puissance, mais les calculateurs modernes réduisent l'injection en conséquence. 
+
+Si le véhicule surconsomme massivement sans fumer noir de façon dramatique, **l'ECU (Calculateur) est volontairement en train d'injecter trop d'essence parce qu'un capteur lui ment.**
+
+<EditorialPrinciple />
+
+## L'Hypothèse 1 : Le Thermostat et la sonde de Température (ECT)
+
+Pour que l'ECU gère la consommation de manière optimale (Closed Loop), le moteur DOIT atteindre sa température de fonctionnement (généralement 90°C). 
+
+<TestStepCard step={1} title="Test de la température en roulant">
+  1. Branchez votre scanner OBD et affichez la `Température de Liquide de Refroidissement (ECT)`.
+  2. Prenez l'autoroute ou une voie rapide pendant 15 minutes.
+  3. Observez la température. Si elle stagne à **65°C ou 70°C**, votre thermostat mécanique (Calorstat) est bloqué en position ouverte ! 
+  
+  *Conséquence :* Le moteur n'est jamais assez chaud. L'ECU pense que le moteur est encore en phase de chauffe et reste en permanence sur une cartographie "Starter" riche. C'est la cause N°1 de surconsommation invisible.
+</TestStepCard>
+
+## L'Hypothèse 2 : La Sonde Lambda "Paresseuse" (Lazy O2 Sensor)
+
+Une sonde Lambda amont (avant catalyseur) usée ne meurt pas forcément d'un coup en allumant un voyant moteur. Elle devient *lente*. 
+Une sonde saine oscille entre pauvre (0.1V) et riche (0.9V) plusieurs fois par seconde. Si elle vieillit, elle se bloque souvent du côté "Pauvre" ou met plusieurs secondes à réagir. L'ECU, voyant un signal pauvre, compense en noyant le moteur d'essence (LTFT très positif).
+
+<DiagnosticTree symptom="Sonde Lambda au scanner">
+  <li>**Moteur chaud et au ralenti :** Affichez la tension de la Sonde O2 Bank 1 Sensor 1 sur un graphique (Graphe de tension en direct).</li>
+  <li>**Le Test du temps de réponse :** Donnez un grand coup d'accélérateur et relâchez brusquement. La tension doit grimper instantanément à 0.8V/0.9V (Riche) en accélération, puis chuter verticalement à 0.1V (Pauvre) à la décélération.</li>
+  <li>**Interprétation :** Si le graphique ressemble à de douces collines arrondies plutôt qu'à des pics pointus (dents de scie acérées), la sonde est "paresseuse". Elle réagit trop tardivement. Remplacez-la.</li>
+</DiagnosticTree>
+
+## L'Hypothèse 3 : Injecteurs Fuyards ou Pression trop élevée
+
+Si le système d'air (MAF) et les sondes Lambda disent la vérité, mais que le moteur tourne trop riche (Fuel Trims très négatifs : l'ECU essaie de retirer de l'essence mais n'y arrive pas), le carburant entre physiquement en trop grande quantité.
+
+<ConfirmationBox>
+  **Test de Pression Résiduelle :** 
+  Sur un moteur essence, branchez un manomètre sur la rampe. Si la pression est de 5 bars au lieu des 3.5 bars requis, le régulateur de pression (FPR) est mort ou la ligne de retour au réservoir est pincée. 
+  Si la pression est correcte moteur tournant, coupez le moteur. La pression doit se maintenir. Si elle chute à zéro en quelques minutes, vos injecteurs bavent et "pleurent" de l'essence dans le moteur même quand l'ECU demande de fermer.
+</ConfirmationBox>

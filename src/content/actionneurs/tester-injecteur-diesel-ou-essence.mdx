@@ -1,0 +1,55 @@
+---
+title: "Tester un Injecteur Essence (Indirect ou Direct)"
+description: "Ratés d'allumage (P0300) ? Découvrez comment utiliser la méthode du Noid Light et le test de résistance (Ohms) pour isoler un injecteur essence mort."
+pillar: "diagnostic"
+category: "actionneurs"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["multimetre"]
+author: "DiagVault"
+published_date: 2024-06-01T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Contrairement aux injecteurs Diesel Common Rail qui fonctionnent à 2000 bars et sous 100 Volts, les injecteurs Essence classiques (Injection indirecte MPI) fonctionnent sous 3 bars et en 12 Volts. Ils sont beaucoup plus simples à diagnostiquer en toute sécurité.
+
+Lorsqu'un cylindre ne donne plus (Code P0301 à P0304), après avoir vérifié la bougie et la bobine, l'injecteur est le principal suspect.
+
+<EditorialPrinciple />
+
+## Le Test Électrique : La Commande (Noid Light)
+
+Un injecteur essence a deux fils. Lorsque vous mettez le contact, il reçoit un **+12V permanent** via un fusible ou un relais principal. 
+Pour ouvrir l'injecteur, le calculateur (ECU) lui envoie une **Masse pulsée** par le deuxième fil, pendant seulement quelques millisecondes. 
+
+<DiagnosticTree symptom="La méthode de la lampe témoin">
+  <li>**Étape 1 : Vérifier le 12V.** Débranchez l'injecteur. Mettez le contact. Au multimètre, pointe noire sur la batterie (-), pointe rouge dans le connecteur du faisceau. L'une des deux fiches doit afficher 12V. S'il n'y a rien, vérifiez vos fusibles.</li>
+  <li>**Étape 2 : Vérifier la commande de l'ECU.** Vous ne pouvez pas voir l'ECU envoyer la masse avec un multimètre (c'est trop rapide). Utilisez une petite lampe témoin spéciale appelée **Noid Light** (ou une LED 12V). Branchez-la à la place de l'injecteur.</li>
+  <li>**Le Verdict :** Lancez le démarreur. Si la petite lampe **clignote rapidement**, le faisceau et l'ECU sont parfaits ! L'ordre arrive. Si elle reste éteinte, le fil de l'ECU est coupé (ou l'ECU lui-même a grillé son transistor de commande).</li>
+</DiagnosticTree>
+
+## Le Test de la Pièce : L'Injecteur
+
+Si la petite lampe a clignoté, l'ordre arrive bien. Le problème vient donc de la pièce (l'injecteur lui-même).
+
+<TestStepCard step={1} title="Test de la Résistance de la Bobine (Ohms)">
+  À l'intérieur de l'injecteur se trouve un petit électroaimant (bobine de cuivre).
+  1. Multimètre en mode **Ohms (Ω)**.
+  2. Touchez les deux broches métalliques sur l'injecteur débranché.
+  3. Lisez la valeur. Un injecteur essence haute impédance standard affiche entre **12 et 16 Ohms**. 
+  
+  **Interprétation :** 
+  - Si vous lisez **OL (Infini)** : Le fil de cuivre est cassé net à l'intérieur. L'injecteur est mort.
+  - Si vous lisez **3 Ohms** : L'isolant a fondu, la bobine est en court-circuit. L'injecteur est mort (et il risque de faire griller l'ordinateur !).
+  - Si vous lisez **14 Ohms** : La partie électrique est saine.
+</TestStepCard>
+
+<ConfirmationBox>
+  **Et si l'électrique est parfait ?** 
+  Si la commande arrive (la LED clignote) et que la résistance est parfaite (14 Ohms), mais que le cylindre ne donne toujours rien : la panne est **Mécanique**. L'injecteur est totalement bouché par les dépôts d'essence séchée (vernis). Un passage au bac à ultrasons ou un remplacement est nécessaire.
+</ConfirmationBox>

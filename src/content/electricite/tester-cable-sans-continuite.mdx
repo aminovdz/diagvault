@@ -1,0 +1,52 @@
+---
+title: "Trouver un Câble Coupé (Circuit Ouvert)"
+description: "Un câble caché dans la carrosserie est coupé ? Apprenez comment le localiser rapidement en le mettant à la masse ou en le pontant temporairement."
+pillar: "diagnostic"
+category: "electricite"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["multimetre"]
+author: "DiagVault"
+published_date: 2024-06-24T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Un capteur ne fonctionne plus. Vous testez le fil de signal entre le connecteur du capteur (sous le moteur) et le connecteur de l'ECU (sous le pare-brise). Le multimètre affiche `OL` (Ligne Ouverte). Le câble est cassé quelque part dans les méandres du faisceau géant de la voiture. 
+
+Faut-il tout éventrer ? Non.
+
+<EditorialPrinciple />
+
+## L'Astuce de la Masse Volante (Grounding the wire)
+
+Pour savoir quel fil est coupé, une astuce de vieux mécanicien permet d'aller très vite sans devoir tirer 3 mètres de câble pour relier votre multimètre.
+
+<TestStepCard step={1} title="Le Test de la Masse à l'ECU">
+<br /> - Débranchez la batterie.
+<br /> - Allez à la prise sous le capot (le Capteur). Avec un fil volant, reliez la broche du capteur directement au bloc moteur ou à la carrosserie (Masse solide).
+<br /> - Allez dans l'habitacle, à la prise de l'ECU.
+<br /> - Multimètre en Ohms (Continuité/Bip). Mettez une pointe sur la broche du faisceau qui correspond à ce capteur, et l'autre pointe sur une partie métallique nue sous le tableau de bord (Une masse locale).
+  
+  **Le Verdict :**
+<br /> * Si le multimètre bippe (0 Ohms) : Le fil est intact ! Il transporte votre masse volante depuis le bloc moteur jusqu'au tableau de bord.
+<br /> * S'il ne bippe pas : C'est confirmé, le fil est tranché physiquement. (Souvent dans les charnières de portes, ou écrasé sous la batterie).
+</TestStepCard>
+
+## Le Test du Pontage Extérieur (Bypass)
+
+Si vous confirmez qu'un fil est rompu au cœur d'un faisceau (Wiring Loom) gainé et scotché, le diagnostic pro demande un choix.
+
+<DiagnosticTree symptom="La réparation">
+  <li>**L'erreur du débutant :** Couper tout le scotch noir et la gaine thermorétractable sur 2 mètres pour trouver la cassure. C'est destructeur, très long, et risque de blesser d'autres câbles.</li>
+  <li>**La Méthode Bypass (Pontage) :** Prenez un fil électrique automobile propre (même section, type 18 AWG). Coupez le fil cassé à ras de la prise du capteur (Laissez 3 cm) et à ras de la prise de l'ECU. Soudez votre nouveau fil (avec gaine thermorétractable) directement entre les deux prises, et faites-le courir proprement par-dessus le faisceau d'origine à l'aide de colliers de serrage (Rilsan).</li>
+  <li>**Vérification :** Rebranchez tout, effacez les codes, testez le capteur. La réparation est invisible, propre, et vous a fait gagner 3 heures de travail.</li>
+</DiagnosticTree>
+
+<ConfirmationBox>
+  Une rupture de câble (Open Circuit) génère très souvent des codes défauts se terminant par **"Circuit High" (Signal trop haut)** sur les capteurs, car l'ECU, ne voyant plus la résistance du capteur, sature sa lecture interne à 5 Volts (son plafond maximal).
+</ConfirmationBox>

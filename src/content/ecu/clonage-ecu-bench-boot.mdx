@@ -1,0 +1,62 @@
+---
+title: "Clonage ECU : Différence entre OBD, Bench et Boot Mode"
+description: "Comprenez les différentes méthodes de lecture/écriture d'un calculateur moteur (ECU). Avantages, risques et outillage nécessaire."
+pillar: "programmation"
+category: "ecu"
+system: "ecu"
+difficulty: "avance"
+risk: "eleve"
+requiredTools: ["programmateur", "alimentation_labo"]
+author: "DiagVault"
+published_date: 2024-05-19T00:00:00.000Z
+pillarPage: true
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+
+Le remplacement d'un ECU moteur défectueux (grillé par une inversion de polarité ou une infiltration d'eau) nécessite de transférer les données de l'anti-démarrage (IMMO), du VIN, de la cartographie et du codage des injecteurs vers le calculateur d'occasion. C'est le **clonage**.
+
+<EditorialPrinciple />
+
+## Les 3 méthodes de lecture d'un ECU
+
+### 1. Mode OBD (On-Board Diagnostics)
+Lecture à travers la prise OBD2 du véhicule, sans démonter le calculateur.
+- **Ce qu'il fait** : Lit principalement la cartographie (Flash) pour le tuning/reprogrammation (Stage 1, DPF Off).
+- **Limites** : Ne lit presque **jamais** l'EEPROM (qui contient l'Immo).
+- **Conclusion** : Le mode OBD ne permet généralement pas de faire un clonage complet.
+
+### 2. Mode BENCH (Sur table, sans ouverture)
+L'ECU est démonté du véhicule et posé sur votre établi. Vous vous connectez directement sur les pins de la fiche externe (Alimentations, Masses, CAN-H, CAN-L, GPT1/GPT2).
+- **Ce qu'il fait** : Exploite une faille dans le microprocesseur (ex: Tricore) pour lire la mémoire **entière** (Flash Micro, Flash Externe, EEPROM) sans ouvrir le boîtier.
+- **Avantages** : Aucun risque d'abîmer le circuit imprimé ou de compromettre l'étanchéité. Full Backup possible (souvent appelé "Service Mode").
+- **Le standard actuel** : C'est la méthode à privilégier absolument.
+
+### 3. Mode BOOT / BDM (Sur table, boîtier ouvert)
+L'ECU doit être ouvert (décollage minutieux du couvercle). Il faut souder des fils ou utiliser des aiguilles sur le circuit imprimé.
+- **Ce qu'il fait** : Donne un accès matériel de bas niveau, idéal quand l'ECU est "brické" (planté logiciellement) et ne répond plus en Bench.
+- **Risques** : Extrêmement élevé. Glisser avec un tournevis lors de l'ouverture coupe des pistes. C'est l'opération de la dernière chance pour les vieux calculateurs (EDC16 en BDM) ou le sauvetage (Recovery).
+
+## Comment réaliser un clone en BENCH ?
+
+<TestStepCard step={1} title="Identifier l'ECU et préparer les outils">
+  Identifiez le modèle exact de l'ECU (ex: Bosch EDC17C60). Ouvrez le logiciel de votre programmateur (Flex, Kess3, Autotuner, KT200) et cherchez le schéma de câblage (Pinout). Préparez votre câble universel.
+</TestStepCard>
+
+<TestStepCard step={2} title="Lecture de l'ECU d'origine (ORI)">
+  Connectez les pins selon le schéma. Vérifiez deux fois vos branchements (un 12V au mauvais endroit détruira le microprocesseur).
+  Lancez un "Full Backup" ou "Read All". 
+  Sauvegardez les fichiers (Micro/Flash et EEPROM) dans un dossier bien nommé.
+</TestStepCard>
+
+<TestStepCard step={3} title="Écriture dans l'ECU donneur (DON)">
+  Débranchez l'ECU d'origine. Branchez l'ECU d'occasion (même référence matérielle stricte HW!).
+  Chargez le fichier EEPROM et le fichier Flash d'origine, puis cliquez sur "Write". 
+  Le programmateur s'occupe de la correction du Checksum.
+</TestStepCard>
+
+<ConfirmationBox>
+  Un clonage réussi dépend à 100% de la correspondance matérielle (HW - Hardware Number) entre l'ECU d'origine et le donneur. Si le numéro HW est différent, l'écriture de l'EEPROM risque de corrompre le donneur de façon irréversible (OTP - One Time Programmable zones). Prenez toujours un donneur avec des références identiques.
+</ConfirmationBox>

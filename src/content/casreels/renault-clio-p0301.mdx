@@ -1,0 +1,72 @@
+---
+title: "Renault Clio IV — P0301 : Raté cylindre 1 qui n'était pas la bobine"
+description: "Cas pratique de diagnostic sur un moteur qui tourne sur 3 cylindres. Quand échanger les bobines ne suffit pas, comment remonter jusqu'au faisceau électrique."
+pillar: "diagnostic"
+category: "casreels"
+brand: ["Renault"]
+model: ["Clio IV"]
+engine: ["1.2 TCe"]
+system: "moteur"
+dtc: ["P0301"]
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner", "multimetre", "oscilloscope"]
+author: "DiagVault"
+published_date: 2024-05-27T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+**Véhicule :** Renault Clio IV 1.2 TCe  
+**Symptôme :** Le moteur broute fortement, tourne sur 3 cylindres. Le voyant moteur clignote au tableau de bord (indiquant des ratés de combustion destructeurs pour le catalyseur).
+
+<EditorialPrinciple />
+
+## 1. Premières Hypothèses (Code P0301)
+Le code **P0301** indique "Raté d'allumage détecté au Cylindre 1". 
+
+<DiagnosticTree symptom="P0301 - Raté Cylindre 1">
+  <li>**Hypothèse 1 : Allumage** (Bougie, Bobine crayon, Câblage bobine) - *C'est le plus fréquent.*</li>
+  <li>**Hypothèse 2 : Carburant** (Injecteur N°1 bouché ou commande électrique coupée).</li>
+  <li>**Hypothèse 3 : Mécanique** (Soupape grillée, perte de compression).</li>
+</DiagnosticTree>
+
+## 2. L'erreur du "Parts Cannon" (Canon à pièces)
+Dans un garage précédent, le technicien a procédé au diagnostic classique :
+1. Remplacement de la bougie N°1 -> Toujours P0301.
+2. Inversion de la bobine N°1 avec la N°2 -> Le défaut **reste** sur le cylindre 1 (P0301 ne devient pas P0302).
+3. Remplacement de la bobine par une neuve -> Toujours P0301.
+
+*Le problème n'est donc ni la bougie, ni la bobine elle-même.*
+
+## 3. Diagnostic Avancé
+
+<TestStepCard step={1} title="Vérification de la commande d'allumage (Oscilloscope)">
+  Nous plaçons une sonde sur le fil de commande de la bobine N°1. Moteur tournant, il y a un signal de 5V franc de la part du calculateur (ECU). La bobine est donc bien pilotée.
+  *L'allumage est hors de cause.*
+</TestStepCard>
+
+<TestStepCard step={2} title="Vérification de l'Injecteur N°1">
+  Puisque le moteur ne tourne pas rond, testons la commande de l'injecteur N°1.
+  Mise en place de l'oscilloscope sur le fil de commande (mise à la masse) de l'injecteur.
+  **Résultat :** Une ligne plate à 12V. L'injecteur est alimenté, mais le calculateur (ou le faisceau) ne fait jamais chuter la tension à 0V pour l'ouvrir. L'injecteur ne s'ouvre pas, donc pas d'essence, donc P0301.
+</TestStepCard>
+
+<TestStepCard step={3} title="Calculateur ou Faisceau ? (Continuité sous charge)">
+  Test de continuité entre la broche de commande de l'injecteur 1 et la broche correspondante sur le gros connecteur de l'ECU. 
+  **Résultat au multimètre :** O.L (Ligne Ouverte). Le fil est coupé !
+</TestStepCard>
+
+## 4. Inspection Visuelle et Réparation
+
+En suivant le faisceau d'injection sous la boîte à air, nous constatons qu'une agrafe en plastique a cassé. Le faisceau s'est affaissé et a frotté pendant 60 000 km contre le support métallique de la culasse. 
+
+Le fil de commande de l'injecteur N°1 a été sectionné par l'abrasion.
+
+<ConfirmationBox>
+  **Réparation :** Soudure du fil sectionné, pose de gaine thermorétractable, et fixation du faisceau avec des colliers rilsan loin de la zone de frottement.
+  **Contrôle final :** Démarrage, le moteur tourne parfaitement sur 4 cylindres. Le Fuel Trim s'équilibre. Défaut P0301 effacé.
+</ConfirmationBox>

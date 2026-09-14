@@ -1,0 +1,55 @@
+---
+title: "Test de Compression Relative (Oscilloscope)"
+description: "Comment vérifier la santé mécanique des 4 cylindres en 10 secondes avec un oscilloscope et une pince ampèremétrique sans retirer une seule bougie."
+pillar: "diagnostic"
+category: "oscilloscope"
+system: "moteur"
+difficulty: "expert"
+risk: "moyen"
+requiredTools: ["oscilloscope", "pince_amperemetrique"]
+author: "DiagVault"
+published_date: 2024-06-29T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Prendre les compressions à l'ancienne avec un manomètre mécanique prend beaucoup de temps, surtout sur un V6 où l'accès aux bougies nécessite de démonter l'admission.
+Le Test de Compression Relative à l'oscilloscope est la méthode ultime du mécanicien moderne : il prouve la santé mécanique du moteur en **10 secondes, sans rien démonter.**
+
+<EditorialPrinciple />
+
+## La Théorie : L'Ampérage du Démarreur
+
+Le démarreur électrique force pour faire tourner le vilebrequin. 
+Quand un piston remonte vers son Point Mort Haut en phase de compression, l'air enfermé résiste (Compression). Le démarreur force plus, il **tire donc plus d'Ampères (Intensité)** sur la batterie.
+Si un piston a une soupape grillée ou des segments cassés, l'air s'échappe. Le piston remonte sans effort. Le démarreur force moins, l'ampérage chute.
+
+<TestStepCard step={1} title="Le Test à la Pince Ampèremétrique (600A)">
+<br /> - Mettez le moteur en sécurité : Débranchez les injecteurs ou le relais de la pompe à essence. Le moteur ne DOIT PAS démarrer, il doit juste tourner au démarreur.
+<br /> - Attachez une grosse pince ampèremétrique haute intensité (ex: 600A ou 1000A) autour du gros câble positif (B+) ou négatif de la batterie. (Attention au sens de la flèche de la pince, réglez l'oscilloscope sur Inversé si besoin).
+<br /> - Reliez la pince au Canal 1 de votre Oscilloscope. Réglez la base de temps sur **200ms/div** ou 500ms/div.
+<br /> - Lancez le démarreur pendant 5 secondes consécutives. Coupez.
+  
+  **Analyse de l'onde (Waveform) :**
+<br /> * Vous verrez une suite de "vagues" pointues (pics d'ampérage) très régulières, comme les dents d'une scie. Chaque pic correspond à un piston qui compresse.
+<br /> * **Moteur Sain :** Toutes les pointes sont parfaitement alignées à la même hauteur (ex: 180A à chaque pic). Les cylindres sont équilibrés.
+<br /> * **Moteur Cassé :** Si vous voyez un motif rythmique où un pic sur 4 manque à l'appel (ou est deux fois plus petit), ce cylindre n'a pas de compression mécanique (soupape tordue ou fondue).
+</TestStepCard>
+
+## Identifier le Cylindre Fautif (Synchronisation)
+
+Savoir qu'il y a un cylindre mort c'est bien, savoir LEQUEL c'est mieux.
+
+<DiagnosticTree symptom="La Sync sur le Cylindre 1">
+  <li>**Mise en place :** Prenez le Canal 2 de l'oscilloscope (avec une sonde atténuatrice ou une pince inductive d'allumage).</li>
+  <li>**Le signal :** Pincez le fil de commande de l'allumage (ou de l'injecteur) du **Cylindre Numéro 1**. Relancez le démarreur.</li>
+  <li>**Interprétation :** Le pic du Canal 2 (L'allumage du cylindre 1) va toujours apparaître juste avant ou sur un pic de compression du Canal 1. Vous venez de marquer le cylindre 1 sur le graphique !</li>
+  <li>**Le Compte :** Connaissant l'ordre d'allumage (ex: 1 - 3 - 4 - 2), il suffit de compter les vagues après le marqueur. Si la 3ème vague après le pic d'allumage du Cylindre 1 est manquante, et que l'ordre est 1-3-4-2... C'est le cylindre 4 qui est mort !</li>
+</DiagnosticTree>
+
+<ConfirmationBox>
+  La compression relative vous dit si les cylindres sont "égaux" entre eux. Mais si la courroie de distribution a décalé de 3 dents, TOUS les cylindres perdront leur compression en même temps. Les pics d'ampérage seront tous bas et réguliers. Si vous suspectez un problème général de distribution, utilisez un capteur de pression dans le cylindre (In-Cylinder Pressure Transducer) pour analyser l'ouverture exacte des soupapes.
+</ConfirmationBox>

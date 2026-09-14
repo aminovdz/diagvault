@@ -1,0 +1,57 @@
+---
+title: "Panne intermittente : comment la piéger"
+description: "Voiture qui cale aléatoirement une fois par semaine ? Apprenez à utiliser le Wiggle Test, l'oscilloscope (Trigger) et l'enregistreur de vol du scanner."
+pillar: "diagnostic"
+category: "symptomes"
+system: "moteur"
+difficulty: "avance"
+risk: "moyen"
+requiredTools: ["scanner", "oscilloscope"]
+author: "DiagVault"
+published_date: 2024-06-15T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+C'est la phrase que tous les techniciens redoutent : *"Elle a calé sur l'autoroute mardi, et depuis elle marche parfaitement bien. Le garage n'a rien trouvé à la valise."*
+
+Une panne qui ne se produit pas devant vous ne peut pas être diagnostiquée de manière classique. Si vous changez une pièce "au hasard", vous ne saurez jamais si vous avez réparé la voiture... jusqu'à ce que le client tombe à nouveau en panne. Voici les 3 méthodes professionnelles pour forcer la panne à se manifester.
+
+<EditorialPrinciple />
+
+## Méthode 1 : Le "Wiggle Test" (Le Test de la Secousse)
+
+90% des pannes intermittentes soudaines sont dues à un faux contact dans le faisceau électrique, souvent près d'un point chaud (moteur) ou d'une zone de frottement.
+
+<TestStepCard step={1} title="Secouer le faisceau moteur tournant">
+  1. Démarrez le véhicule et laissez-le au ralenti.
+  2. Ouvrez le capot. 
+  3. Prenez les gros faisceaux de câbles à pleine main (près de la batterie, de l'ECU, et derrière le moteur) et **secouez-les agressivement**, tordez-les, tirez dessus doucement.
+  4. Tapez fermement avec le manche d'un tournevis sur l'ECU, la boîte à fusibles (BSM), et les relais principaux.
+  
+  *Le but :* Reproduire les vibrations d'un nid-de-poule ou d'une accélération. Si le moteur tousse, a des ratés, ou cale net pendant que vous secouez un faisceau précis, vous venez de localiser le fil cassé ou le connecteur lâche (fretting corrosion).
+</TestStepCard>
+
+## Méthode 2 : L'Oscilloscope et le Trigger (Gâchette)
+
+Si le moteur coupe net en roulant, les suspects principaux sont les alimentations de l'ECU ou le capteur PMH (Point Mort Haut).
+
+<DiagnosticTree symptom="Utilisation avancée de l'Oscilloscope">
+  <li>**Le problème du multimètre :** Un multimètre rafraîchit son écran 2 à 3 fois par seconde. Si le fil du capteur PMH se coupe pendant 10 millisecondes, le multimètre ne verra rien. L'ECU, lui, verra la coupure et arrêtera le moteur.</li>
+  <li>**Le réglage du Trigger :** Branchez un oscilloscope sur le signal du PMH. Réglez un *Trigger* (déclencheur) de type "Drop-out" (Si le signal tombe à 0V pendant que le moteur tourne, l'écran gèle l'image). Laissez le moteur tourner. Dès que la micro-coupure se produit, l'oscilloscope fige la preuve de la coupure, même si vous regardiez ailleurs !</li>
+</DiagnosticTree>
+
+## Méthode 3 : Le Mode Enregistreur de Vol (Flight Recorder)
+
+Si la panne ne se produit qu'en roulant à 110 km/h, vous ne pouvez pas regarder votre scanner OBD en toute sécurité. 
+
+<ConfirmationBox>
+  La plupart des scanners professionnels (et même certains dongles OBD Bluetooth avancés) possèdent un mode "Flight Recorder" ou "Data Logging". 
+  **La méthode :**
+  1. Sélectionnez uniquement 4 ou 5 paramètres critiques (ex: RPM Moteur, Pression Carburant, Tension Batterie, Statut IMMO). Ne sélectionnez pas 40 paramètres, sinon le taux de rafraîchissement sera trop lent.
+  2. Lancez l'enregistrement et allez rouler avec le client jusqu'à ce que la panne se produise.
+  3. Rentrez à l'atelier, et repassez le graphique en arrière. Cherchez l'anomalie **qui précède** la chute de régime moteur. Si la pression d'essence tombe à 0 *avant* que les RPM ne chutent, vous avez un problème de pompe. Si les RPM tombent à 0 *avant* la pression d'essence, vous avez un problème de capteur PMH.
+</ConfirmationBox>

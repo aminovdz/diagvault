@@ -1,0 +1,41 @@
+---
+name: "OBD Breakout Box"
+brand: "Générique / CanTest"
+role: "diagnostic"
+description: "L'interface indispensable pour se brancher en sécurité sur le port OBD2 et vérifier les réseaux de communication (CAN, K-Line) avant de brancher un outil de diagnostic ou de programmation."
+niveauUtilisateur: "intermediaire"
+ceQuilPermet: ["Vérifier les alimentations (+12V permanent, +12V après contact) et les masses sur la prise OBD", "Mesurer la résistance de terminaison du CAN (Pin 6/14)", "Afficher l'activité du réseau avec des LEDs", "Fournir des points de mesure sécurisés pour l'oscilloscope"]
+ceQuilNePermetPas: ["Lire des codes défauts (ne contient aucun logiciel, n'est qu'un pont matériel)", "Reprogrammer un calculateur"]
+vehiculesConcernes: ["Tous les véhicules avec port OBD2 standard (depuis 2001)"]
+fonctionsPrincipales: ["Dérivation des 16 broches de l'OBD", "Affichage LED des tensions et de l'activité des protocoles", "Douille banane 4mm pour branchement oscilloscope/multimètre"]
+avantages: ["Évite d'endommager les pins fragiles du port OBD2 de la voiture en y insérant des pointes de multimètre", "Diagnostic visuel immédiat (LEDs)", "Pas cher et indispensable"]
+limites: ["Certains modèles bon marché ont des câbles trop courts", "Les LEDs ne remplacent pas une véritable analyse de trame à l'oscilloscope"]
+alternatives: ["Sondes back-probe directement sur l'arrière du port (inconfortable)"]
+ratings:
+  diagnostic: 5
+  programmation: 5
+  eeprom: 0
+  codage: 0
+  qualitePrix: 5
+verdict: "Tout technicien devrait avoir une Breakout Box. Brancher directement un programmateur OBD à 5000€ sur un port inconnu dont on ignore si l'alimentation est survoltée ou en court-circuit est suicidaire."
+---
+
+La **Breakout Box OBD2** (ou Boîte de dérivation) est un boîtier passif qui se branche entre la prise OBD2 du véhicule et votre scanner (ou programmateur). 
+
+## Pourquoi c'est le gilet pare-balles de vos outils coûteux
+
+Avant de brancher votre outil de diagnostic principal (Autel, Launch) ou pire, votre outil de chiptuning OBD (Kess, Autotuner, Flex), il y a un risque invisible : la voiture a pu être bricolée.
+
+Si le précédent propriétaire (ou mécanicien) a "volé" un +12V et l'a câblé par erreur sur la Pin de communication CAN-Low (Pin 14), brancher votre scanner officiel injectera 12V directement dans les processeurs de communication de votre outil, détruisant instantanément son électronique interne.
+
+## Utilisation pratique
+
+1. Branchez la Breakout Box sur la prise de la voiture.
+2. Regardez les LEDs :
+   - **Pin 16** (Battery+) : Doit être allumée en rouge (12V).
+   - **Pin 4 / 5** (Chassis Ground / Signal Ground) : Doivent être allumées ou signaler la masse.
+   - **Pin 6 / 14** (CAN H / CAN L) : Les LEDs scintillent rapidement ? Vous avez de l'activité réseau, le Gateway ou le BCM fonctionne !
+3. Sortez votre multimètre. Mesurez la tension entre 4 et 16 pour confirmer vos 12.6V.
+4. Coupez le contact. Mesurez la résistance entre 6 et 14 (doit être 60 ohms).
+
+Maintenant que vous êtes certain que le port OBD2 est sain et sans court-circuit, vous pouvez brancher votre scanner en toute confiance sur la prise femelle de la Breakout Box.

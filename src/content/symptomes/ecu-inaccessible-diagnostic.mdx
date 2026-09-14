@@ -1,0 +1,58 @@
+---
+title: "ECU inaccessible au diagnostic : les causes à éliminer"
+description: "Votre valise refuse de se connecter au calculateur moteur ? Découvrez les 4 contrôles vitaux : Prise OBD, Alimentations, Masses et Lignes CAN."
+pillar: "diagnostic"
+category: "symptomes"
+system: "ecu"
+difficulty: "avance"
+risk: "moyen"
+requiredTools: ["multimetre", "oscilloscope"]
+author: "DiagVault"
+published_date: 2024-06-17T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+C'est une impasse terrifiante : le véhicule ne démarre pas, vous branchez votre valise de diagnostic pour lire les codes défauts, et l'écran affiche *"Erreur de communication : Calculateur Moteur (ECM/ECU) non détecté"*. 
+
+Beaucoup concluent immédiatement : "L'ECU est mort, il faut le changer". **C'est une erreur qui coûte très cher.** Un ECU ne peut pas communiquer s'il n'est pas alimenté électriquement ou si ses "cordes vocales" (le réseau CAN) sont coupées.
+
+<EditorialPrinciple />
+
+## Étape 1 : Le test de la prise OBD2
+
+Avant d'accuser la voiture, vérifiez la porte d'entrée : la prise de diagnostic elle-même.
+
+<TestStepCard step={1} title="Vérification des broches vitales (Pinout OBD)">
+  Prenez votre multimètre (DC Volts). Mettez le contact. Sur la prise OBD2 femelle de la voiture :
+  - **Pin 16 (Alimentation Batterie) :** Mettez la pointe rouge dans le Pin 16 et la noire sur une masse châssis. Vous devez avoir **12V**. Si vous avez 0V, le fusible de la prise OBD est grillé (souvent partagé avec l'allume-cigare !). Votre scanner ne peut pas s'allumer.
+  - **Pin 4 et Pin 5 (Masses) :** Mettez la pointe rouge sur le (+) de la batterie et la noire dans le Pin 4, puis le Pin 5. Vous devez avoir **12V**. Si non, la masse de la prise est coupée.
+</TestStepCard>
+
+## Étape 2 : Le Réveil de l'ECU (Alimentations et Masses)
+
+Si la prise OBD est bonne mais que l'ECU moteur est le SEUL module qui ne répond pas (alors que l'ABS et l'Airbag répondent), il faut aller sonder le calculateur lui-même. Vous **devez** vous procurer le schéma électrique (Wiring Diagram) du véhicule.
+
+<DiagnosticTree symptom="L'ECU est-il alimenté ?">
+  <li>**Le +12V Permanent (Borne 30) :** L'ECU reçoit une alimentation directe de la batterie pour sa mémoire. Vérifiez ce fil au connecteur.</li>
+  <li>**Le +12V Après Contact (Borne 15) :** C'est le signal de réveil. Quand vous tournez la clé, l'ECU doit recevoir 12V sur ce fil. Sans lui, il reste endormi. C'est souvent la cause d'un ECU muet (Neiman défectueux ou fil coupé).</li>
+  <li>**Le Relais Principal (Main Relay / Relais Gestion Moteur) :** Dès qu'il reçoit le +12V après contact, l'ECU active son propre relais principal en lui envoyant une masse. Ce relais renvoie la "puissance" (12V) à l'ECU et aux capteurs. Si ce relais clique pas, l'ECU reste muet.</li>
+  <li>**Les Masses de l'ECU :** Posez la pointe noire sur le Négatif batterie, et la rouge sur les broches de masse de l'ECU (fil branché). Test de chute de tension : vous devez avoir moins de 0.1V.</li>
+</DiagnosticTree>
+
+## Étape 3 : Le Réseau CAN (CAN-H et CAN-L)
+
+Si l'ECU est parfaitement alimenté et que ses masses sont excellentes, mais qu'il ne parle toujours pas, ses lignes de communication sont peut-être sectionnées.
+
+<ConfirmationBox>
+  **Test du CAN au multimètre :** 
+  Débranchez la batterie. Sur la prise OBD2, mettez le multimètre en mode Ohms (Résistance) entre le **Pin 6 (CAN-High)** et le **Pin 14 (CAN-Low)**. 
+  Un réseau CAN en bonne santé doit afficher **60 Ohms**. 
+  - Si vous lisez **120 Ohms**, l'un des deux calculateurs d'extrémité (souvent l'ECU moteur ou le Tableau de bord) est débranché ou son fil est coupé net. Le circuit est ouvert.
+  - Si vous lisez **0 Ohms**, les deux fils CAN-H et CAN-L sont en court-circuit (ils se touchent). Le réseau est en panne totale.
+</ConfirmationBox>
+
+*Si, et seulement si, vos alimentations (12V), vos masses (< 0.1V) et votre résistance CAN sont parfaites, ALORS vous pouvez condamner l'ECU et le cloner.*

@@ -1,0 +1,57 @@
+---
+title: "VW Golf : Code P0171 (Mélange trop pauvre)"
+description: "Voyant moteur allumé et ralenti instable avec le code P0171 sur moteur Essence ? Apprenez à lire les Fuel Trims (STFT/LTFT) pour détecter une prise d'air."
+pillar: "diagnostic"
+category: "casreels"
+system: "moteur"
+difficulty: "avance"
+risk: "moyen"
+requiredTools: ["scanner", "machine_a_fumee"]
+author: "DiagVault"
+published_date: 2024-07-02T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+**Véhicule :** Volkswagen Golf / Polo / Skoda Fabia (Moteurs Essence 1.4 TSI, 1.2 TSI, 1.6 MPI)
+**Symptômes :** Voyant Check Engine allumé fixe. Le moteur tremble légèrement au ralenti (comme un très léger raté d'allumage), mais tourne parfaitement en pleine accélération sur autoroute.
+La valise affiche le fameux code **P0171 : Système trop pauvre (Ligne 1)**.
+
+<EditorialPrinciple />
+
+## L'Analyse du Problème : Qu'est-ce qu'un mélange pauvre ?
+
+L'ECU utilise la sonde Lambda amont pour analyser les gaz d'échappement. "Trop pauvre" signifie qu'il y a **trop d'air et pas assez d'essence** dans le moteur après la combustion. 
+
+Le calculateur essaie de corriger ça. Si vous allez dans les données en direct (Live Data), regardez le paramètre **LTFT (Long Term Fuel Trim - Ajustement de carburant à long terme)**. 
+- Une valeur de `0%` est parfaite.
+- Si le LTFT affiche `+25%`, cela signifie que l'ECU panique et injecte 25% d'essence *en plus* que prévu pour essayer d'équilibrer l'excès d'air. Quand le LTFT atteint la butée maximale (+25%), l'ECU allume le voyant et génère le P0171.
+
+<TestStepCard step={1} title="Le Test décisif : Accélérer à 3000 Tr/min">
+  Il faut savoir si cet excès d'air provient d'une **prise d'air externe** (Vacuum Leak) ou d'un **manque d'essence** (Filtre bouché, pompe faible).
+  1. Branchez la valise, affichez les Fuel Trims (STFT et LTFT).
+  2. Moteur au ralenti (800 tr/min), vous lisez un total de **+20%**.
+  3. Appuyez sur l'accélérateur et maintenez le régime moteur stable à **3000 tr/min** pendant 20 secondes.
+  4. Regardez les chiffres chuter ou monter.
+  
+  **Interprétation :**
+  - Si le total retombe vers `0%` à 3000 tr/min : C'est une **prise d'air (Vacuum Leak)**. Au ralenti, le papillon est fermé, la dépression est énorme dans le moteur qui "aspire" violemment l'air par le moindre trou. À 3000 tr/min, le papillon est ouvert, la fuite devient négligeable.
+  - Si le total reste à `+20%` ou pire, monte à `+30%` à 3000 tr/min : C'est un **manque de pression d'essence** (Pompe HS ou injecteurs bouchés). Plus le moteur a besoin de puissance, moins l'essence suit.
+</TestStepCard>
+
+## Trouver la fuite : La maladie de la PCV
+
+Sur le groupe VAG (mais aussi BMW, Mini et PSA), la prise d'air numéro 1 se trouve dans le séparateur d'huile (Valve PCV - Reniflard).
+
+<DiagnosticTree symptom="Diagnostic de la Valve PCV">
+  <li>**L'inspection de la membrane :** La valve PCV en plastique noir (souvent située sur le cache-culbuteur) possède une membrane en caoutchouc orange. Avec la chaleur et l'huile, elle se déchire. Le moteur aspire de l'air non-mesuré par le débitmètre directement à travers le trou de cette valve !</li>
+  <li>**Le test du Sifflement :** Moteur au ralenti, posez votre doigt sur le petit trou de mise à l'air libre de la valve PCV. Si vous sentez une violente aspiration et que le ralenti moteur redevient stable immédiatement, la membrane est déchirée. Changez le bloc PCV.</li>
+  <li>**La Machine à Fumée (Test ultime) :** Si la PCV est saine, branchez une machine à fumée sur le collecteur d'admission. La fumée révèlera souvent un joint de collecteur craquelé (très fréquent sur le 1.4 TSI 122ch) ou un tuyau d'assistance au freinage (Mastervac) fendu dans sa gaine annelée.</li>
+</DiagnosticTree>
+
+<ConfirmationBox>
+  Une dernière cause classique du P0171 : Vérifiez que le client n'a pas roulé au bioéthanol E85 sans reprogrammation ! Le E85 est moins énergétique que le Sans Plomb. Pour rouler, l'ECU doit injecter 30% de volume en plus, il atteint immédiatement sa limite de correction (+25%) et allume le voyant de mélange pauvre.
+</ConfirmationBox>

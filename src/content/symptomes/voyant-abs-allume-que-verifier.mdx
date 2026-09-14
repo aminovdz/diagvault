@@ -1,0 +1,47 @@
+---
+title: "Voyant ABS allumé : que vérifier avant de scanner ?"
+description: "Le voyant ABS s'allume au tableau de bord ? Avant de brancher la valise, 3 vérifications visuelles rapides : capteurs de roues, cibles et fusibles de pompe."
+pillar: "diagnostic"
+category: "symptomes"
+system: "abs"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["multimetre"]
+author: "DiagVault"
+published_date: 2024-06-12T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le système ABS est avant tout un système de sécurité hydraulique géré électroniquement. Lorsqu'il détecte une anomalie, il se désactive par précaution (allumant le voyant), vous laissant avec un freinage classique sans assistance antiblocage.
+
+Beaucoup de mécaniciens branchent immédiatement le scanner et changent le composant indiqué (ex: "Défaut Capteur Roue AVG"). Pourtant, le capteur n'est souvent pas la vraie cause !
+
+<EditorialPrinciple />
+
+## Vérification 1 : L'environnement de la Roue
+
+Les capteurs de vitesse de roue (Wheel Speed Sensors) sont exposés à des conditions extrêmes : eau, boue, chaleur des freins et poussière métallique.
+
+<TestStepCard step={1} title="Inspection de la Cible et du Capteur">
+  - **La cible magnétique (bague ABS) :** Souvent intégrée au roulement de roue ou sous forme de couronne dentée sur le cardan. Si la couronne dentée est fissurée par la rouille, l'écartement change à chaque tour de roue. Le capteur lira une "variation de vitesse" absurde et le calculateur ABS allumera le voyant.
+  - **La limaille de fer :** Les capteurs ABS récents (magnéto-résistifs) sont de puissants aimants. La poussière de frein (métallique) finit par former une boule hérissée sur la pointe du capteur, ce qui brouille totalement le signal. Un simple coup de chiffon résout parfois un code défaut permanent !
+</TestStepCard>
+
+## Vérification 2 : Les Fusibles de Puissance
+
+L'ECU de l'ABS comporte souvent deux alimentations distinctes : une petite (5A ou 10A) pour la carte électronique, et une ou deux très grosses (30A à 50A) pour le moteur de la pompe hydraulique et les électrovannes.
+
+<DiagnosticTree symptom="Défaut Moteur Pompe ABS (ex: C0110)">
+  <li>**Les Maxi-Fusibles :** Regardez dans la boîte à fusibles sous le capot (et non dans l'habitacle). Les maxi-fusibles de 40A sont souvent vissés ou difficiles à voir. Vérifiez-les au multimètre. S'ils sont grillés, la pompe a probablement forcé à cause d'un vieux liquide de frein gorgé d'eau qui a grippé les tiroirs hydrauliques.</li>
+  <li>**Le Connecteur :** Le bloc ABS est souvent situé très bas dans le compartiment moteur. Débranchez la grosse prise (attention au loquet). Vérifiez s'il n'y a pas d'eau ou de liquide de lave-glace qui aurait coulé dedans, oxydant les broches de puissance.</li>
+</DiagnosticTree>
+
+## Vérification 3 : Le Niveau de Liquide de Frein
+
+<ConfirmationBox>
+  Un niveau de liquide de frein trop bas allumera généralement le voyant rouge "Frein" (!) mais sur certains modèles (notamment asiatiques), une alerte prolongée sur le flotteur du bocal de liquide de frein désactivera préventivement l'ABS/ESP et allumera tous les voyants associés. Vérifiez le bocal ! S'il est bas, vérifiez l'usure de vos plaquettes avant d'en rajouter (le niveau baisse car les pistons sortent).
+</ConfirmationBox>

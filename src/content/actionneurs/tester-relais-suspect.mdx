@@ -1,0 +1,57 @@
+---
+title: "Comment tester un Relais de voiture (4 et 5 broches)"
+description: "Pompe à essence muette ou compresseur de clim inactif ? Maîtrisez le fonctionnement des broches 85, 86, 30, 87 pour diagnostiquer n'importe quel relais."
+pillar: "diagnostic"
+category: "actionneurs"
+system: "moteur"
+difficulty: "debutant"
+risk: "moyen"
+requiredTools: ["multimetre"]
+author: "DiagVault"
+published_date: 2024-06-10T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Un relais est un simple interrupteur commandé à distance. Le calculateur (ECU) ne peut pas envoyer 20 Ampères pour allumer un ventilateur, il grillerait. Il envoie donc un tout petit courant (1 Ampère) pour "cliquer" un interrupteur robuste qui, lui, va transmettre les 20 Ampères au ventilateur.
+
+Comprendre les numéros standard (DIN) imprimés sous le relais est la clé du diagnostic :
+- **85 et 86** : La Bobine de Commande (Circuit basse puissance de l'ECU).
+- **30** : L'Entrée de Puissance Principale (Direct Batterie).
+- **87** : La Sortie de Puissance (Vers la pompe, le ventilo...).
+- *(87a sur un relais 5 broches : Une sortie normalement fermée).*
+
+<EditorialPrinciple />
+
+## Test N°1 : Le "Clic" et le Swap
+
+Avant d'utiliser un multimètre, servez-vous de vos oreilles et du panneau de fusibles.
+
+<DiagnosticTree symptom="Le diagnostic sans outils">
+  <li>**Le Test Auditif :** Posez votre doigt sur le relais suspect (Ex: Pompe à essence). Demandez à un ami de mettre le contact. Vous devez sentir un "Clic" physique sous votre doigt. S'il n'y a pas de clic, l'ECU ne l'alimente pas (broches 85/86 muettes) ou la bobine du relais est morte.</li>
+  <li>**Le Swap (Permutation) :** Repérez un relais identique dans la boîte (même taille, même couleur, même nombre de broches). Souvent, le relais du klaxon ou du désembuage fait l'affaire. Échangez-les. Si la voiture démarre, le relais était mort. Jetez-le.</li>
+</DiagnosticTree>
+
+## Test N°2 : Le Shunt (Le pontage de puissance)
+
+Si vous entendez le relais cliquer mais que la pompe à essence ne tourne pas, les contacts internes de puissance (30 et 87) sont peut-être calcinés.
+
+<TestStepCard step={1} title="Ponter le relais (Bypass)">
+  C'est le test préféré des électriciens auto pour forcer un circuit.
+  1. Retirez le relais de son support.
+  2. Sur la boîte à fusibles, repérez les trous correspondants aux **broches 30 et 87**.
+  3. Prenez un petit fil électrique épais dénudé aux deux bouts (ou un trombone déplié recouvert de plastique).
+  4. Insérez le fil dans le trou 30, et l'autre bout dans le trou 87.
+  
+  **Résultat :** Vous venez de fermer l'interrupteur vous-même. La pompe à essence (ou le ventilateur) doit se mettre à hurler **instantanément**, même sans le contact mis ! 
+  - Si l'élément s'allume avec votre pontage, mais pas avec le relais : Le relais a ses contacts de puissance brûlés.
+  - Si l'élément ne s'allume pas avec votre pontage : Le relais est bon. Le problème vient du faisceau coupé ou de la pompe elle-même qui est morte.
+</TestStepCard>
+
+<ConfirmationBox>
+  **Test de continuité au Multimètre (Sur Établi) :**
+  Réglez le multimètre sur Continuité (Bip). Touchez les broches 30 et 87. Il ne doit pas y avoir de bip. Prenez une pile 9V (ou deux petits fils venant de la batterie) et alimentez les broches 85 et 86. Le relais fait "Clic". Maintenez le contact électrique. Testez à nouveau les broches 30 et 87. Le multimètre doit bipper en continu et afficher moins de 0.5 Ohm. S'il affiche des Ohms qui fluctuent (ex: 20 Ohms), les lamelles internes sont carbonisées (charbonnées).
+</ConfirmationBox>

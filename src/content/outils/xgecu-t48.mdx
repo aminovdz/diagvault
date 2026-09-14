@@ -1,0 +1,40 @@
+---
+name: "XGecu T48 (TL866-3G)"
+brand: "XGecu"
+role: "eeprom_flash"
+description: "Le programmateur d'EEPROM universel abordable, digne successeur du célèbre TL866II Plus."
+niveauUtilisateur: "intermediaire"
+ceQuilPermet: ["Lire et écrire des EEPROM série (24Cxx, 93Cxx, 95Cxx, 25LC)", "Lire les mémoires Flash", "Tester des puces logiques (SRAM, TTL)", "Viergiser un BSI ou un ECU (via un logiciel tiers)"]
+ceQuilNePermetPas: ["Cloner un processeur Tricore/MPC en Bench", "Faire du diagnostic OBD", "Calculer le code PIN IMMO de lui-même"]
+vehiculesConcernes: ["Tous"]
+fonctionsPrincipales: ["Lecture/Ecriture EEPROM sur support (SOP8/DIP8)", "Lecture/Ecriture in-circuit (ICSP clip)"]
+avantages: ["Rapport qualité/prix imbattable", "Base de données de composants gigantesque", "Logiciel XGpro stable"]
+limites: ["Lecture sur circuit (pince) parfois capricieuse selon les alimentations parasites de la carte", "Ne lit pas les MCU automobiles complexes"]
+alternatives: ["Orange5", "UUPA"]
+ratings:
+  diagnostic: 0
+  programmation: 0
+  eeprom: 5
+  codage: 0
+  qualitePrix: 5
+verdict: "Si vous voulez commencer à réparer des BSI, faire des IMMO OFF ou viergiser des calculateurs pour un budget minime, le T48 avec un jeu d'adaptateurs SOP8 est l'outil indispensable à avoir sur votre établi."
+---
+
+Le **XGecu T48** est un programmateur de composants universel. Contrairement aux outils spécifiques de chiptuning (Flex, Kess), il est conçu pour l'électronique de base : la lecture des mémoires (puces à 8 pattes principalement).
+
+## Pourquoi l'utiliser en automobile ?
+
+Dans le domaine du diagnostic et de la programmation, l'EEPROM (Electrically Erasable Programmable Read-Only Memory) est la puce qui contient les données vitales et uniques de la voiture : code PIN de l'anti-démarrage, kilométrage, VIN, historique d'entretien.
+
+Lorsque l'on doit :
+- Extraire un code PIN pour reprogrammer une clé perdue.
+- Faire un "IMMO OFF" sur un vieux calculateur (ex: Bosch EDC15).
+- Cloner un boîtier BSI/UCH corrompu.
+
+L'opération nécessite très souvent de dessouder la puce EEPROM (ex: une 95160), de la placer dans l'adaptateur du T48, de lire son contenu (dump `.bin`), de le modifier avec un éditeur hexadécimal, puis de réécrire la puce.
+
+## Attention à la pince ICSP
+
+Bien que le T48 soit souvent vendu avec une pince pour lire l'EEPROM directement sur la carte sans dessouder (In-Circuit Serial Programming), cette pratique est risquée en automobile. Le courant envoyé par le programmateur peut alimenter le microprocesseur de la carte qui va alors perturber la lecture. 
+
+*Conseil de pro : Dessoudez toujours votre EEPROM à l'air chaud pour obtenir une lecture propre et sécurisée.*

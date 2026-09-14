@@ -1,0 +1,54 @@
+---
+title: "Kia Sportage : P0299 Pression Turbo Trop Faible"
+description: "Mode dégradé et manque de puissance sur CRDi ? Apprenez à tester la géométrie variable du turbo, le circuit de dépression et le capteur MAP."
+pillar: "diagnostic"
+category: "casreels"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner", "machine_a_fumee"]
+author: "DiagVault"
+published_date: 2024-06-29T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+**Véhicule :** Kia Sportage / Hyundai Tucson (Moteurs 1.7 et 2.0 CRDi)
+**Symptômes :** Le véhicule n'a aucune accélération au-delà de 2500 tr/min. Il est bloqué en "Limp Mode" (Mode dégradé). Un voyant moteur s'allume avec le code défaut OBD **P0299 : Pression de suralimentation trop basse (Underboost)**.
+
+Le calculateur s'attendait à recevoir 2.2 Bars de pression de turbo dans le collecteur d'admission, mais le capteur MAP (Manifold Absolute Pressure) ne lit que 1.4 Bar. Où est passée la pression ?
+
+<EditorialPrinciple />
+
+## L'Analyse du Problème : Les 3 Suspects du P0299
+
+Ce code ne signifie PAS que le turbo est mort. Il signifie qu'il y a une "fuite" ou un problème de "commande". L'air comprimé n'arrive pas au moteur.
+
+Il y a 3 grands coupables pour ce code :
+1. **La fuite physique (Boost Leak) :** L'air comprimé par le turbo s'échappe par une durite fendue ou un échangeur (Intercooler) percé avant d'arriver au moteur.
+2. **Le capteur MAP menteur :** Le turbo souffle fort, mais le capteur de pression est tellement encrassé par la suie (EGR) qu'il est devenu aveugle.
+3. **Le manque de commande (Géométrie Variable) :** Le turbo ne reçoit pas l'ordre de souffler fort, soit parce que son électrovanne de commande est cassée, soit parce que le mécanisme interne (aubes) est grippé par la calamine.
+
+<TestStepCard step={1} title="Test N°1 : L'Inspection Visuelle et Sonore">
+  Demandez à quelqu'un d'accélérer fortement (moteur tournant). 
+  - Si vous entendez un bruit de "souffle d'air" (comme un aspirateur inversé) sous le capot, c'est une durite de turbo éventrée. C'est la panne la plus fréquente sur le 1.7 CRDi. Inspectez minutieusement les grosses durites en caoutchouc noir, souvent fendues près des colliers de serrage.
+  - Si vous ne trouvez rien, branchez votre **Machine à Fumée** dans le circuit d'admission. La fumée sortira immédiatement par la moindre micro-fissure de l'échangeur (Intercooler).
+</TestStepCard>
+
+## Test de la commande du Turbo (La Dépression)
+
+Si le circuit d'air est étanche, il faut vérifier si le turbo est commandé.
+Sur beaucoup de Kia/Hyundai, la géométrie variable du turbo (Wastegate / VNT) est actionnée par un tuyau de vide (Dépression) via une petite poire métallique sur le turbo (Actuateur pneumatique).
+
+<DiagnosticTree symptom="Diagnostic de l'Actuateur de Turbo">
+  <li>**Actionneur Pneumatique :** Suivez le petit tuyau en caoutchouc qui arrive sur le turbo. Si ce tuyau est craquelé ou rongé par une martre, l'air entre, le "vide" disparaît, et le turbo reste au repos. P0299 garanti !</li>
+  <li>**Le Test du Mécanisme :** Moteur coupé, attrapez la tige métallique de l'actuateur sur le turbo avec vos doigts. Essayez de la pousser ou de la tirer d'environ 1 ou 2 centimètres. Elle doit être ferme (il y a un ressort) mais bouger de façon fluide, **sans aucun point dur**. Si elle est bloquée, le turbo est encrassé de suie à l'intérieur.</li>
+  <li>**Actionneur Électronique :** Sur les modèles plus récents, la commande est un petit moteur électrique fixé sur le turbo. À la mise du contact, vous devez voir la biellette descendre et remonter (Auto-test). Si elle ne bouge pas, le moteur électrique est HS ou ses pignons sont fondus.</li>
+</DiagnosticTree>
+
+<ConfirmationBox>
+  **Avant de changer le turbo :** Démontez systématiquement le capteur de pression MAP (sur le collecteur d'admission, tenu par 1 ou 2 vis) et nettoyez son petit trou de lecture avec du nettoyant frein. S'il est complètement obstrué par une pâte noire (mélange huile + suie EGR), il ne peut plus lire la pression.
+</ConfirmationBox>

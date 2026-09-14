@@ -1,0 +1,53 @@
+---
+title: "Code P0335 : Circuit du Capteur PMH A"
+description: "Le code P0335 empêche votre moteur de démarrer. Comment différencier un capteur de vilebrequin mort d'un faisceau électrique coupé."
+pillar: "diagnostic"
+category: "dtc"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "moyen"
+requiredTools: ["scanner", "multimetre"]
+author: "DiagVault"
+published_date: 2024-06-16T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le code **P0335 (Crankshaft Position Sensor 'A' Circuit)** signifie que le calculateur ne reçoit aucun signal compréhensible provenant du capteur Point Mort Haut (PMH / CKP). Sans ce signal, le calculateur refuse d'activer les injecteurs et l'allumage par sécurité. Le démarreur tourne dans le vide.
+
+<EditorialPrinciple />
+
+## Étape 1 : Le Test Visuel et Scanner
+
+Le problème n'est pas toujours le capteur lui-même.
+
+<DiagnosticTree symptom="Contrôles préalables">
+  <li>**Données en direct (RPM) :** Branchez la valise. Regardez la valeur "Régime Moteur". Lancez le démarreur. Si la valeur reste à `0 Tr/min`, le signal est totalement mort. Si la valeur saute anarchiquement (0, 4000, 250, 0), le signal est parasité.</li>
+  <li>**Limaille de fer :** Démontez le capteur (généralement 1 vis de 10mm). S'il est recouvert de limaille métallique magnétique, essuyez-le simplement et réessayez. La limaille bloque le champ magnétique.</li>
+  <li>**Inspection du connecteur :** L'huile, le liquide de refroidissement ou des cosses desserrées (Pin Fretting) sont les causes numéro 1 des faux contacts.</li>
+</DiagnosticTree>
+
+## Étape 2 : Le Test Électrique (Faisceau vs Capteur)
+
+Avant d'acheter le capteur, vérifiez que le faisceau électrique n'est pas coupé par un rongeur.
+
+<TestStepCard step={1} title="Vérification du faisceau (Pour capteur 3 fils / Hall)">
+<br /> - Mettez le contact sur ON.
+<br /> - Débranchez la prise du capteur PMH.
+<br /> - Prenez votre multimètre en position DC Volts (Pointe noire sur la masse batterie).
+<br /> - Testez les 3 broches du connecteur *côté voiture*.
+  
+  **Résultats attendus :**
+<br /> * Une broche doit donner **5V ou 12V** (Alimentation venant de l'ECU).
+<br /> * Une broche doit donner **0V ou quelques millivolts** avec une excellente continuité à la masse (Masse ECU).
+<br /> * Une broche (le Signal) donnera souvent un voltage de "référence" envoyé par l'ECU (souvent 5V ou 2.5V, parfois 0).
+  
+  *Si l'alimentation 5V manque, le problème vient des fils ou du calculateur. Changer le capteur ne servira à rien.*
+</TestStepCard>
+
+<ConfirmationBox>
+  **Le capteur à 2 fils (Inductif) :** S'il n'a que 2 fils, il n'a pas d'alimentation. Vous pouvez le tester en mesurant sa Résistance (Ohms). S'il affiche `OL` (Ligne Ouverte), la bobine interne a fondu, il est définitivement mort.
+</ConfirmationBox>

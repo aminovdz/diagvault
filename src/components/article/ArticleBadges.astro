@@ -1,0 +1,47 @@
+---
+export interface Props {
+  niveau: 'debutant' | 'intermediaire' | 'avance' | 'expert';
+  risque: 'faible' | 'moyen' | 'eleve';
+  systeme: string;
+  outils: string[];
+}
+
+const { niveau, risque, systeme, outils } = Astro.props;
+
+const riskColors = {
+  faible: 'bg-risk-faible/20 text-risk-faible border-risk-faible/30',
+  moyen: 'bg-risk-moyen/20 text-risk-moyen border-risk-moyen/30',
+  eleve: 'bg-risk-eleve/20 text-risk-eleve border-risk-eleve/30',
+};
+
+const levelColors = {
+  debutant: 'bg-slate-700 text-slate-300',
+  intermediaire: 'bg-blue-900/50 text-blue-300',
+  avance: 'bg-purple-900/50 text-purple-300',
+  expert: 'bg-red-900/50 text-red-300',
+}
+---
+<div class="flex flex-wrap gap-3 mb-6">
+  <span class={`px-2.5 py-1 rounded-md text-xs font-medium border ${levelColors[niveau]}`}>
+    Niveau : <span class="capitalize">{niveau}</span>
+  </span>
+  <span class={`px-2.5 py-1 rounded-md text-xs font-medium border ${riskColors[risque]}`}>
+    Risque : <span class="capitalize">{risque}</span>
+  </span>
+  <span class="px-2.5 py-1 rounded-md text-xs font-medium border bg-surface border-slate-700 text-slate-300">
+    Système : <span class="capitalize">{systeme.replace('_', ' ')}</span>
+  </span>
+</div>
+
+{outils && outils.length > 0 && (
+  <div class="mb-8 p-4 rounded-lg bg-surface border border-slate-800">
+    <h3 class="text-sm font-semibold text-white mb-2">Outils requis :</h3>
+    <div class="flex gap-2 flex-wrap">
+      {outils.map(outil => (
+        <span class="px-2 py-1 bg-slate-800 text-slate-300 text-xs rounded border border-slate-700 capitalize">
+          {outil.replace('_', ' ')}
+        </span>
+      ))}
+    </div>
+  </div>
+)}

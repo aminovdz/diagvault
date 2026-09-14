@@ -1,0 +1,50 @@
+---
+title: "Code P0171 : Système trop pauvre (Ligne 1)"
+description: "Défaut P0171 ? Découvrez les 3 causes principales (Prise d'air, Débitmètre, Pompe à essence) et comment utiliser les Fuel Trims pour le résoudre."
+pillar: "diagnostic"
+category: "dtc"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "moyen"
+requiredTools: ["scanner", "machine_a_fumee"]
+author: "DiagVault"
+published_date: 2024-06-15T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le code **P0171 (System Too Lean - Bank 1)** est l'un des codes les plus fréquents sur les moteurs essence. Il signifie que le calculateur (ECU) détecte un excès d'oxygène dans l'échappement via la sonde Lambda amont, et qu'il est arrivé à sa limite maximale de correction (+25% de carburant) pour tenter d'enrichir le mélange.
+
+En d'autres termes : **Le moteur respire trop d'air, ou ne reçoit pas assez d'essence.**
+
+<EditorialPrinciple />
+
+## Étape 1 : Lire les Fuel Trims
+
+Ne sortez aucun outil mécanique avant d'avoir lu les Données en Direct (Live Data).
+
+<TestStepCard step={1} title="Le Test d'accélération à 3000 tr/min">
+  Affichez le **LTFT** (Long Term Fuel Trim) et le **STFT** (Short Term Fuel Trim). Moteur au ralenti, leur somme est probablement autour de `+20%`.
+<br /> - Maintenez le régime moteur stable à **3000 tr/min** pendant 15 secondes.
+<br /> - Si le total (LTFT + STFT) retombe vers **0% ou 5%** : C'est une prise d'air (Vacuum Leak). À haut régime, le papillon est ouvert, la dépression chute, l'air parasite devient négligeable.
+<br /> - Si le total reste bloqué à **+20%** ou empire à **+30%** : C'est un manque de pression d'essence ou un débitmètre défectueux. Plus le moteur tourne vite, plus il manque d'essence.
+</TestStepCard>
+
+## Étape 2 : C'est une Prise d'Air
+
+Si le test précédent a confirmé la prise d'air, vous devez trouver par où l'air "non mesuré" par le débitmètre s'infiltre.
+
+<DiagnosticTree symptom="Où chercher la fuite ?">
+  <li>**Le Test Fumée :** Branchez une machine à fumée dans l'admission. Cherchez la fuite. C'est la méthode la plus rapide et infaillible.</li>
+  <li>**La Valve PCV :** La membrane du reniflard (PCV) est souvent déchirée. Moteur tournant, si le petit trou de mise à l'air de la valve "aspire" votre doigt, elle est morte.</li>
+  <li>**Durite de Mastervac (Brake Booster) :** Vérifiez le gros tuyau qui va de l'admission à votre assistance de freinage. S'il est fendu, le P0171 est garanti.</li>
+  <li>**Joints de Collecteur :** Les joints toriques sèchent avec les années et laissent passer l'air.</li>
+</DiagnosticTree>
+
+<ConfirmationBox>
+  **Et si ce n'est pas une prise d'air ?** 
+  Si les Fuel Trims restent hauts à 3000 tr/min, vérifiez la pression d'essence avec un manomètre (souvent la pompe de gavage dans le réservoir est fatiguée, ou le filtre est colmaté). Si la pression est parfaite, nettoyez le Débitmètre (MAF). Un MAF sale sous-estime l'air entrant, poussant l'ECU à injecter trop peu de carburant.
+</ConfirmationBox>

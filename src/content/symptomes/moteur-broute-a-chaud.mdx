@@ -1,0 +1,53 @@
+---
+title: "Moteur qui broute à chaud uniquement : hypothèses et diagnostic"
+description: "Le véhicule fonctionne parfaitement à froid mais se met à trembler ou rater une fois à température. Diagnostic des bobines, PMH et sondes Lambda."
+pillar: "diagnostic"
+category: "symptomes"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner", "oscilloscope"]
+author: "DiagVault"
+published_date: 2024-06-05T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Un moteur qui tourne "comme une horloge" au démarrage le matin, mais qui commence à brouter, perdre de la puissance ou caler après 20 minutes de route est un cas typique de **défaillance thermique**. 
+
+La chaleur dilate les matériaux (métal, plastique, cuivre). Si un composant électronique ou mécanique possède une micro-fissure, cette dernière s'ouvre avec la chaleur et coupe le circuit.
+
+<EditorialPrinciple />
+
+## Hypothèse 1 : La Bobine d'Allumage (L'ennemi N°1)
+
+Les bobines crayons (COP) sont encastrées directement dans la culasse, la zone la plus chaude du moteur. L'isolant interne se dégrade avec le temps. 
+
+<TestStepCard step={1} title="Suivi des Misfires (Ratés) en direct">
+  1. Branchez votre scanner OBD et accédez aux Live Data de l'ECU Moteur.
+  2. Cherchez les compteurs de ratés d'allumage : `Misfire Counter Cyl 1`, `Cyl 2`, etc.
+  3. Laissez le moteur chauffer. Dès qu'il commence à brouter, observez quel compteur s'incrémente. 
+  
+  *Astuce de Pro :* Vous pouvez accélérer le processus de diagnostic en utilisant un décapeur thermique (à basse température) pour souffler délicatement de l'air chaud sur les bobines. Si le moteur se met instantanément à brouter, vous avez trouvé la bobine fautive.
+</TestStepCard>
+
+## Hypothèse 2 : Le Capteur PMH (Crankshaft) Inductif
+
+Un capteur PMH (Point Mort Haut) inductif est composé d'une bobine de fil de cuivre très fin. Avec les années, le fil peut se fragiliser. À froid, le contact se fait. À chaud, le fil se dilate, se sépare de quelques microns, et le signal est perdu. Le moteur subit des micro-coupures ou cale net.
+
+<DiagnosticTree symptom="Moteur coupe net à chaud, puis redémarre 30 min plus tard">
+  <li>**Validation à l'oscilloscope :** Piquez le fil du signal du capteur PMH. Laissez le moteur chauffer. Lorsque la panne se produit, observez si l'onde sinusoïdale s'effondre avant même que le régime moteur (mécanique) ne chute.</li>
+  <li>**Le Test du choc thermique :** Si le moteur refuse de redémarrer à chaud, versez une petite bouteille d'eau froide ou un spray givrant directement sur le capteur PMH. S'il redémarre instantanément après avoir été refroidi, le capteur est HS.</li>
+</DiagnosticTree>
+
+## Hypothèse 3 : Boucle Ouverte vs Boucle Fermée (Sonde Lambda)
+
+À froid, le calculateur ignore la sonde Lambda (il est en *Open Loop*) et injecte de l'essence selon une carte préprogrammée. Au bout de quelques minutes, lorsque la sonde est chaude, l'ECU passe en *Closed Loop* et commence à ajuster le mélange en se basant sur ses lectures.
+
+<ConfirmationBox>
+  **Test de la Boucle Fermée :**
+  Si le broutage commence *exactement* au moment où le scanner indique le passage de "Open Loop" à "Closed Loop", le problème vient de la régulation de carburant. Soit la sonde Lambda amont ment (et force l'ECU à appauvrir le mélange), soit le capteur MAF dérive à chaud. Lisez vos Fuel Trims (STFT) à ce moment précis pour confirmer la dérive.
+</ConfirmationBox>

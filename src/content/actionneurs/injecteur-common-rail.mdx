@@ -1,0 +1,55 @@
+---
+title: "Diagnostic Avancé : Injecteurs Diesel Common Rail"
+description: "Comment différencier et tester un injecteur Solénoïde classique d'un injecteur Piézoélectrique. Attention, une erreur au multimètre peut les détruire !"
+pillar: "diagnostic"
+category: "actionneurs"
+system: "moteur"
+difficulty: "avance"
+risk: "eleve"
+requiredTools: ["multimetre", "oscilloscope", "kit_retour_injecteur"]
+author: "DiagVault"
+published_date: 2024-05-20T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Les moteurs Diesel modernes fonctionnent avec des pressions de carburant gigantesques (de 1600 à 2500 Bars). L'injecteur n'est plus une simple pièce mécanique qui s'ouvre sous la pression : c'est un actionneur électronique commandé à la microseconde par le calculateur.
+
+Avant de sortir le multimètre, vous DEVEZ savoir quelle technologie équipe votre moteur : **Solénoïde (Électromagnétique)** ou **Piézoélectrique**. 
+
+<EditorialPrinciple />
+
+## Comment différencier un Solénoïde d'un Piézo ?
+
+Si vous appliquez 12V par erreur sur un injecteur Piézo pour le "tester", il va rester bloqué ouvert à vie et noyer le moteur.
+
+<DiagnosticTree symptom="Identification de la technologie">
+  <li>**Par la marque :** Delphi et Denso fabriquent majoritairement des Solénoïdes. Siemens/VDO fabriquent majoritairement des Piézos. Bosch fabrique les deux (Génération 1 à 3 en Solénoïde, Génération 4+ en Piézo).</li>
+  <li>**Par la prise de retour de gasoil :** Si le petit tuyau de retour de fuite (au-dessus de l'injecteur) possède une agrafe métallique ou est vissé fermement (sous pression de 10 bars), c'est souvent un Piézo. Si c'est un simple tuyau en caoutchouc emboîté, c'est un Solénoïde.</li>
+  <li>**Par le test de Résistance (Multimètre) :** Moteur coupé, débranchez l'injecteur. Au multimètre (en Ohms). Si vous lisez entre **0.2 et 1.5 Ohms**, c'est un Solénoïde (Bobine de cuivre). Si vous lisez **plus de 150 000 Ohms (150 kΩ)** ou l'infini, c'est un Piézoélectrique (Cristaux de quartz).</li>
+</DiagnosticTree>
+
+## Le Test du Solénoïde (Bobine)
+
+L'injecteur électromagnétique classique utilise une bobine de cuivre pour soulever la soupape interne.
+
+<TestStepCard step={1} title="Test d'Isolement (Court-circuit à la masse)">
+  La panne la plus sournoise est le court-circuit à la carcasse. L'isolant du cuivre fond à l'intérieur.
+  1. Débranchez l'injecteur.
+  2. Mettez le multimètre sur Mégohms (MΩ) ou sur l'échelle de résistance la plus haute.
+  3. Mettez une pointe du multimètre sur l'une des deux broches de l'injecteur.
+  4. Mettez l'autre pointe sur la **carcasse en métal** de l'injecteur (grattez un peu la crasse pour toucher le métal pur).
+  
+  **Résultat :** Vous devez impérativement lire **OL (Ligne Ouverte / Infini)**. S'il y a la moindre lecture (ex: 3 MΩ ou pire, 10 Ohms), le courant électrique fuit dans le bloc moteur. L'ECU détectera ce court-circuit et se coupera immédiatement par sécurité (Coupure moteur en roulant).
+</TestStepCard>
+
+## Le Test du Piézoélectrique
+
+L'injecteur Piézoélectrique fonctionne comme un condensateur. Il se charge (s'allonge) et se décharge (se rétracte) à une vitesse fulgurante.
+
+<ConfirmationBox>
+  **Alerte Danger :** Ne débranchez **JAMAIS** un injecteur Piézoélectrique pendant que le moteur tourne ! Si vous le débranchez au moment exact où l'ECU lui a envoyé sa tension d'ouverture (entre 100V et 200V), l'injecteur va conserver cette charge électrique. Il restera grand ouvert. Le cylindre va se remplir de gasoil sous 2000 bars. Au tour de vilebrequin suivant, le moteur fera un "Hydro-lock" : la bielle va se tordre et le moteur sera détruit instantanément.
+</ConfirmationBox>

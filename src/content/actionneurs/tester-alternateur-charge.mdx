@@ -1,0 +1,51 @@
+---
+title: "Comment tester un Alternateur"
+description: "Voyant batterie allumé ? Testez votre alternateur au multimètre sous contrainte. Découvrez le test du voltage à vide et avec consommateurs allumés."
+pillar: "diagnostic"
+category: "actionneurs"
+system: "moteur"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["multimetre"]
+author: "DiagVault"
+published_date: 2024-06-05T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le voyant rouge de la batterie vient de s'allumer sur votre tableau de bord. Contrairement à une idée reçue tenace, ce voyant ne signifie pas "la batterie est morte", il signifie : **"La batterie ne se recharge plus, vous roulez sur les réserves"**. Le grand coupable est presque toujours l'alternateur.
+
+<EditorialPrinciple />
+
+## Test N°1 : La tension à vide
+
+L'alternateur est un générateur de courant. Quand le moteur tourne, il doit fournir plus de voltage que la batterie elle-même (qui fait 12.6V au repos) pour réussir à la recharger.
+
+<TestStepCard step={1} title="Mesure du Voltage (DC Volts)">
+  1. Réglez votre multimètre sur **20V DC**.
+  2. Moteur arrêté : Mettez la pointe rouge sur le + de la batterie, la noire sur le -. Une batterie en bonne santé lit environ **12.5V**.
+  3. Démarrez le moteur (Assurez-vous que les phares, la clim et la radio sont **éteints**).
+  4. Laissez tourner au ralenti et reprenez la mesure.
+  
+  **Résultat Attendu :** La tension doit monter et se stabiliser entre **13.8V et 14.5V**. 
+  - Si vous lisez 12.2V ou si ça continue de descendre, l'alternateur ne charge absolument rien.
+  - Si vous lisez 15.5V ou plus, le régulateur de tension de l'alternateur est grillé (Surcharge !). C'est très dangereux pour les calculateurs.
+</TestStepCard>
+
+## Test N°2 : Le test Sous Contrainte (Load Test)
+
+Beaucoup d'alternateurs fatigués (diodes internes grillées ou charbons usés) arrivent à fournir 14V à vide, mais s'effondrent lamentablement dès qu'on leur demande de fournir de l'énergie.
+
+<DiagnosticTree symptom="La mise sous stress">
+  <li>**Mise en place :** Moteur toujours tournant, multimètre branché sur la batterie (qui indique ~14V).</li>
+  <li>**Activation des consommateurs :** Allumez tout ce qui consomme de l'électricité dans la voiture. Les feux de route (Pleins phares), la climatisation à fond, le dégivrage de la lunette arrière, les sièges chauffants.</li>
+  <li>**Le Verdict :** Regardez le multimètre. Il est normal que la tension chute d'un seul coup à l'allumage. Mais l'alternateur doit réagir (en augmentant son champ magnétique via le régulateur) et faire remonter la tension au-dessus de **13.5V** dans les 2 secondes. Si la tension s'effondre à 12.5V et n'arrive jamais à remonter, l'alternateur n'a plus aucune "force" (Ampérage insuffisant). Il doit être remplacé.</li>
+</DiagnosticTree>
+
+<ConfirmationBox>
+  **L'Avertissement des Smart Alternators (Véhicules modernes) :**
+  Sur les voitures post-2015 avec Start&Stop, l'alternateur est "intelligent". Pour économiser du carburant, l'ordinateur de bord peut décider de désactiver totalement l'alternateur lors d'une forte accélération, ou si la batterie est déjà pleine à 100%. Il est donc normal de lire parfois **12.5V moteur tournant**. Pour forcer un alternateur intelligent à se déclencher, allumez les pleins phares, et il repassera immédiatement à 14.4V.
+</ConfirmationBox>

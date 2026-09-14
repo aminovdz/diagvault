@@ -1,0 +1,66 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs from '../components/layout/Breadcrumbs.astro';
+import ArticleBadges from '../components/article/ArticleBadges.astro';
+import { generateSchemaOrg } from '../utils/seo';
+
+const { frontmatter, headings } = Astro.props;
+const { 
+  title, 
+  description, 
+  difficulty, 
+  risk, 
+  system, 
+  requiredTools,
+  category
+} = frontmatter;
+
+const schema = generateSchemaOrg('TechArticle', frontmatter);
+
+const paths = [
+  { label: 'Diagnostic', url: '/diagnostic' },
+  { label: category || 'Article', url: `/diagnostic/${category || ''}` },
+  { label: title, url: '#' }
+];
+---
+
+<BaseLayout title={`${title} - DiagVault`} description={description} schema={schema}>
+  <div class="max-w-4xl mx-auto">
+    <Breadcrumbs paths={paths} />
+    
+    <header class="mb-10">
+      <h1 class="text-3xl md:text-5xl font-heading font-bold text-white mb-6">{title}</h1>
+      <p class="text-xl text-slate-400 mb-6">{description}</p>
+      
+      <ArticleBadges 
+        niveau={difficulty} 
+        risque={risk} 
+        systeme={system} 
+        outils={requiredTools} 
+      />
+    </header>
+
+    <div class="flex flex-col md:flex-row gap-8">
+      <!-- Article Content -->
+      <article class="flex-1 prose prose-invert prose-headings:font-heading prose-headings:text-white prose-a:text-accent-diagnostic hover:prose-a:text-white prose-table:border-collapse max-w-none">
+        <slot />
+      </article>
+
+      <!-- Sidebar -->
+      <aside class="w-full md:w-64 shrink-0">
+        <div class="sticky top-24 bg-surface border border-slate-800 p-5 rounded-lg">
+          <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-4">Sommaire</h3>
+          <ul class="space-y-2 text-sm text-slate-400">
+            {headings.filter(h => h.depth > 1 && h.depth < 4).map(h => (
+              <li class={`${h.depth === 3 ? 'ml-3' : ''}`}>
+                <a href={`#${h.slug}`} class="hover:text-accent-diagnostic transition-colors line-clamp-2">
+                  {h.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </div>
+</BaseLayout>

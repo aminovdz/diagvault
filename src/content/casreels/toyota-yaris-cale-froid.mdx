@@ -1,0 +1,53 @@
+---
+title: "Toyota Yaris : Démarrage et calage à froid"
+description: "Votre Yaris cale tous les matins au premier démarrage mais tourne parfaitement à chaud ? Comment diagnostiquer l'actuateur de ralenti et le capteur MAF."
+pillar: "diagnostic"
+category: "casreels"
+system: "moteur"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["scanner"]
+author: "DiagVault"
+published_date: 2024-06-30T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+**Véhicule :** Toyota Yaris / Aygo (Moteurs essence VVT-i 1.0 et 1.3)
+**Symptômes :** Tous les matins à froid, le moteur démarre au quart de tour, mais le régime s'effondre immédiatement et le moteur cale. Si le conducteur maintient l'accélérateur enfoncé pendant 2 minutes, le moteur chauffe un peu et tient enfin son ralenti. Le reste de la journée, la voiture fonctionne parfaitement. Aucun voyant moteur allumé.
+
+Beaucoup soupçonnent un problème de bougies, de bobines ou de pompe à essence. En réalité, c'est un simple problème de "respiration".
+
+<EditorialPrinciple />
+
+## L'Analyse du Problème : Le Starter Automatique (Fast Idle)
+
+Quand un moteur est froid, l'essence se condense sur les parois en métal glacé du collecteur. Pour ne pas caler, le calculateur doit injecter beaucoup plus d'essence, et par conséquent, **faire entrer beaucoup plus d'air** (c'est le rôle du Starter ou *Choke* d'autrefois).
+
+Sur ces moteurs Toyota, l'air supplémentaire à froid passe par une petite dérivation gérée par la valve **IACV (Idle Air Control Valve)** ou directement par l'entrebâillement du boîtier papillon motorisé.
+Avec les vapeurs d'huile (PCV), une boue noire se forme. À chaud, cette boue est molle. À froid (après une nuit de stationnement), cette boue fige et agit comme de la super-glue. La petite valve de ralenti reste collée fermée. Le moteur étouffe.
+
+<TestStepCard step={1} title="L'Intervention : Nettoyage et Réapprentissage">
+  1. Démontez la grosse durite d'admission d'air noire qui arrive sur le moteur.
+  2. Vous voyez le papillon des gaz en laiton. Pulvérisez du nettoyant pour carburateur sur un chiffon propre.
+  3. Ouvrez le papillon (mettez le contact et demandez à un collègue d'appuyer sur l'accélérateur, **ne forcez pas le volet à la main** s'il est motorisé).
+  4. Nettoyez toute la crasse noire sur la tranche du volet et dans le conduit.
+  5. Remontez tout, et laissez le moteur tourner au ralenti 10 minutes pour que l'ECU réapprenne la bonne position.
+</TestStepCard>
+
+## Le Suspect N°2 : Le Débitmètre (MAF) encrassé
+
+Si le boîtier papillon est propre comme un sou neuf mais que la voiture cale toujours à froid, le capteur MAF de Toyota est très sensible à la saleté.
+
+<DiagnosticTree symptom="Contrôle du Capteur MAF">
+  <li>**Le Phénomène :** Le petit fil de platine (résistance chauffante) du débitmètre se couvre d'une pellicule grise (poussière + vapeur d'huile). À froid, cette couche l'isole thermiquement de l'air entrant. L'ECU croit qu'il rentre 2 grammes d'air au lieu de 4. Il n'injecte pas assez d'essence.</li>
+  <li>**Le Test (Scanner) :** Branchez la valise. À froid, contact mis (moteur à l'arrêt), regardez la valeur MAF. Elle doit être à 0.0 g/s. Au ralenti (si vous arrivez à le tenir à l'accélérateur), un moteur 1.0L doit lire environ **1.5 à 2.0 g/s**. Si vous lisez moins de 1.0 g/s, le capteur est aveugle.</li>
+  <li>**La Solution :** Démontez les deux vis cruciformes du capteur MAF sur la boîte à air. Pulvérisez généreusement du "Nettoyant Contact" ou "Nettoyant Frein" sur la petite goutte d'ambre et les fils métalliques cachés au fond du tube. Laissez sécher à l'air libre (Ne touchez jamais avec un coton-tige !).</li>
+</DiagnosticTree>
+
+<ConfirmationBox>
+  Un test rapide pour innocenter la pompe à essence : Si le moteur cale, mais redémarre instantanément sans difficulté lorsqu'on remet un coup de clé, la pompe à essence est parfaite (la pression est bien là). Un problème d'essence obligerait le démarreur à tourner longtemps avant de réamorcer.
+</ConfirmationBox>

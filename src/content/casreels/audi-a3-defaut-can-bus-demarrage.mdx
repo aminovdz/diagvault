@@ -1,0 +1,50 @@
+---
+title: "Audi A3 : Défaut CAN Bus intermittent au démarrage"
+description: "Démarrage difficile, sapin de Noël au tableau de bord et U-codes réseau uniquement au coup de démarreur ? Le piège de la tresse de masse moteur chez VAG."
+pillar: "diagnostic"
+category: "casreels"
+system: "can"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["multimetre"]
+author: "DiagVault"
+published_date: 2024-06-20T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+**Véhicule :** Audi A3 / VW Golf (Plateforme PQ35 ou MQB)
+**Symptômes :** De temps en temps, le démarreur peine (comme si la batterie était vide). Au même instant, le tableau de bord affiche "Défaut ESP", "Défaut Airbag", et les essuie-glaces donnent un coup tout seuls. Le scanner trouve des dizaines de U-codes (Perte de communication CAN). Pourtant, la batterie est neuve !
+
+<EditorialPrinciple />
+
+## L'Analyse du Problème : La physique du Démarreur
+
+Un démarreur de moteur Diesel demande environ **250 à 300 Ampères** pour vaincre la compression. Ce courant gigantesque part du (+) de la batterie, traverse le démarreur, et **doit retourner au (-) de la batterie**.
+Pour ce trajet de retour, le courant ne passe pas par un fil classique, il passe par la **carcasse en métal du moteur**, puis traverse une énorme tresse en cuivre (la Tresse de Masse Moteur) boulonnée entre la boîte de vitesses et le châssis de la voiture.
+
+<TestStepCard step={1} title="Le trajet de secours (La Catastrophe)">
+  1. Avec les années, l'eau et le sel de la route rongent la tresse de masse reliant le moteur au châssis. Elle s'oxyde ou se coupe sous la gaine.
+  2. Vous tournez la clé. Le démarreur aspire 300A, mais ce courant ne peut plus retourner à la batterie par la tresse de masse.
+  3. L'électricité cherche le chemin le plus facile. Elle va remonter par les petits fils de masse (0.5 mm²) des capteurs et de l'ECU Moteur !
+  4. L'ECU est traversé par une décharge électromagnétique massive qu'il n'est pas conçu pour supporter. Il "crashe", son processeur plante. Le réseau CAN Bus est brouillé, ce qui affole l'ESP, l'Airbag et le tableau de bord.
+</TestStepCard>
+
+## La Solution : Le Test de Chute de Tension au Démarrage
+
+Inutile de changer les calculateurs. Il faut prouver que la tresse de masse est oxydée.
+
+<DiagnosticTree symptom="Diagnostic de la Tresse de Masse">
+  <li>**Mise en place :** Mettez votre multimètre en mode DC Volts. Posez la pointe Noire sur le Négatif (-) de la batterie. Posez la pointe Rouge directement sur le métal de la boîte de vitesses ou du bloc moteur.</li>
+  <li>**Le Test :** Actionnez le démarreur. Regardez l'écran du multimètre *pendant* que le démarreur tourne.</li>
+  <li>**Le Résultat :** Inférieur à 0.5V : La masse est excellente. 2.0V, 4.0V ou plus ! : Vous avez prouvé la panne. Il y a 4 Volts de "pression" bloqués entre le moteur et le châssis. La tresse de masse est détruite.</li>
+</DiagnosticTree>
+
+<ConfirmationBox>
+  **Validation rapide avec un câble de démarrage :**
+  Prenez un gros câble de démarrage (avec des pinces crocodiles). Connectez une pince sur le Négatif de la batterie, et l'autre pince sur un gros boulon en métal du moteur. Vous venez de créer une tresse de masse temporaire.
+  Si la voiture démarre au quart de tour sans allumer aucun voyant, vous êtes sûr à 100%. Remplacez (ou nettoyez) la tresse de masse située sous le support de batterie !
+</ConfirmationBox>

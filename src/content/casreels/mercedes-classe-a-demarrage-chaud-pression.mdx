@@ -1,0 +1,55 @@
+---
+title: "Mercedes Classe A : Démarrage difficile à chaud"
+description: "Le moteur démarre au quart de tour à froid, mais peine à chaud ? Découvrez comment une fuite interne de pression de rail trompe le calculateur."
+pillar: "diagnostic"
+category: "casreels"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "moyen"
+requiredTools: ["scanner", "kit_retour_injecteur"]
+author: "DiagVault"
+published_date: 2024-06-24T00:00:00.000Z
+---
+
+import EditorialPrinciple from '../../components/article/EditorialPrinciple.astro';
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+**Véhicule :** Mercedes Classe A / CLA / GLA (Moteur Diesel Common Rail CDI)
+**Symptômes :** Le matin, le moteur démarre immédiatement. Après 30 minutes de route, vous coupez le contact pour faire une course. En voulant repartir, le démarreur tourne pendant 5 à 10 longues secondes avant que le moteur ne daigne "tousser" et démarrer. 
+
+Certains changent le capteur PMH (car il est sensible à la chaleur), le capteur d'arbre à cames ou la batterie. Pourtant, 80% du temps sur les Diesel modernes, c'est un problème **hydraulique**.
+
+<EditorialPrinciple />
+
+## L'Analyse du Problème : La règle des 250 Bars
+
+Pour qu'un calculateur de moteur Diesel Common Rail (CDI, dCi, TDI) donne l'ordre d'ouvrir les injecteurs au démarrage, il exige une condition stricte : **la pression dans la rampe commune (Rail) doit atteindre un minimum syndical (souvent 250 à 300 Bars).**
+
+Tant que le capteur de pression rail lit "150 Bars", l'ECU refuse d'injecter du carburant. Le démarreur tourne dans le vide.
+
+**Mais pourquoi cela n'arrive-t-il qu'à chaud ?**
+Le gasoil chaud est **beaucoup plus fluide (liquide)** que le gasoil froid. Si l'un de vos injecteurs a une usure interne (le pointeau ou la valve de retour ne ferme plus hermétiquement), le gasoil sous pression "fuit" par le tuyau de retour vers le réservoir. À froid, le gasoil étant épais (visqueux), la pompe arrive à compenser cette fuite et à monter à 250 Bars. À chaud, le gasoil coule comme de l'eau : la pompe haute pression n'arrive plus à suivre la fuite, et la pression peine à monter.
+
+<TestStepCard step={1} title="Le test de montée en pression (Valise)">
+  1. Branchez votre valise de diagnostic. Allez dans les **Données en Direct (Live Data)** de l'ECU Moteur.
+  2. Sélectionnez deux valeurs : *Régime Moteur (RPM)* et *Pression de Carburant (Rail Pressure)*.
+  3. Moteur chaud (quand la panne est présente), lancez le démarreur.
+  
+  **Résultat :** Vous allez voir le démarreur tourner à 250 Tr/min (Preuve que le capteur PMH marche !). La pression de rail va monter très lentement : 50 Bars, 120 Bars, 190 Bars... Et au bout de 6 secondes, elle atteint enfin 250 Bars. À l'instant exact où elle touche 250 Bars, le moteur démarre. Vous venez de prouver la fuite hydraulique.
+</TestStepCard>
+
+## La Solution : Le Test des Retours Injecteurs
+
+Maintenant que nous savons qu'il y a une fuite, il faut trouver *quel* injecteur fuit. Inutile de les démonter ou de les envoyer au banc d'essai pour le moment.
+
+<DiagnosticTree symptom="Isoler l'injecteur fuyard">
+  <li>**Mise en place :** Débranchez la durite de retour commune au-dessus des injecteurs. Branchez les petits tuyaux de votre **Kit de retour injecteur** sur chaque tête d'injecteur. Branchez les 4 tuyaux à 4 petites éprouvettes graduées. Pincez la durite de retour d'origine pour ne pas que ça coule.</li>
+  <li>**Le Test :** Moteur chaud, lancez le démarreur pendant quelques secondes (ou laissez tourner au ralenti 2 minutes si vous avez réussi à démarrer).</li>
+  <li>**L'Interprétation :** Regardez le niveau de gasoil dans les éprouvettes. Les cylindres 1, 3 et 4 ont craché 15 ml de gasoil. L'éprouvette du cylindre 2 est remplie à **60 ml** !</li>
+</DiagnosticTree>
+
+<ConfirmationBox>
+  **Conclusion :** L'injecteur N°2 est détruit de l'intérieur. Toute la pression générée par la pompe haute pression fuyait vers le réservoir à travers lui. Remplacez cet injecteur, entrez son code IMA dans l'ECU avec la valise, et le démarrage à chaud redeviendra instantané.
+</ConfirmationBox>
