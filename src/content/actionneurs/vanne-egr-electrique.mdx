@@ -1,0 +1,70 @@
+---
+title: "La Vanne EGR Motorisée"
+description: "Pertes de puissance, fumée noire, calages ? Apprenez à diagnostiquer une vanne EGR encrassée, la tester à la valise, et comprendre sa recopie."
+pillar: "diagnostic"
+category: "actionneurs"
+system: "moteur"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["scanner"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+La vanne EGR (Exhaust Gas Recirculation) réinjecte une partie des gaz d'échappement dans l'admission pour faire baisser la température de combustion et réduire les NOx. Le problème : les suies mélangées aux vapeurs d'huile (Reniflard) créent un goudron épais qui bloque la vanne.
+
+<DiagnosticTree 
+  symptom="Panne de Vanne EGR"
+  options={[
+    { label: "Bloquée OUVERTE ?", result: "Moteur cale au ralenti, s'étouffe, fume noir, refuse de démarrer." },
+    { label: "Bloquée FERMÉE ?", result: "Voyant moteur allumé (Code débit insuffisant), mais le moteur tourne souvent très bien !" }
+  ]}
+/>
+
+### Diagnostic à la Valise (Scanner)
+
+Les vannes EGR modernes ont un moteur électrique (Moteur DC) et un capteur de position interne (Potentiomètre de recopie) qui indique à l'ECU si la vanne a bien obéi.
+
+<TestStepCard 
+  title="1. Le Test d'Actionnement (Active Test)"
+  tool="scanner"
+  time="5 min"
+>
+  Le test ultime, moteur arrêté, contact mis :
+  - Allez dans le menu "Tests Actionneurs" (Active Tests / Actuation).
+  - Sélectionnez "Vanne EGR" et commandez une ouverture de 5% à 95%.
+  - Dans un garage silencieux, vous DEVEZ entendre le cliquetis de la vanne qui s'ouvre et se ferme fermement.
+  - Si vous n'entendez rien, le moteur interne est grillé, ou la vanne est soudée par la calamine.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. La Recopie de Position (Live Data)"
+  tool="scanner"
+  time="5 min"
+>
+  L'ECU surveille la vanne avec son capteur de recopie.
+  - Allez dans les Live Data. Affichez "Consigne Position EGR" et "Position Réelle EGR".
+  - Moteur tournant, donnez des petits coups de gaz.
+  - La valeur réelle doit suivre la consigne presque instantanément.
+  - Si l'ECU demande 40% mais que la position réelle reste bloquée à 5%, la vanne est grippée. Code défaut assuré.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. L'impact sur le Débitmètre (MAF)"
+  tool="scanner"
+  time="5 min"
+>
+  C'est le moyen le plus sûr de savoir si l'EGR est bloquée ouverte.
+  - Moteur au ralenti, l'EGR est souvent commandée à 0% (Fermée).
+  - Un moteur 2.0L doit aspirer environ 2.0 à 2.5 g/s d'air frais (MAF).
+  - Si votre MAF lit seulement 1.0 g/s au ralenti, c'est que l'air frais n'entre plus ! Il est remplacé par les gaz d'échappement car la vanne EGR est coincée grande ouverte !
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="Apprentissage après nettoyage"
+>
+  Si vous démontez l'EGR pour la nettoyer (Nettoyant four ou décapant suie), il faut souvent réaliser un "Apprentissage des butées EGR" à la valise. L'ECU fera claquer la vanne à fond pour mémoriser la position fermée à 0%.
+</ConfirmationBox>

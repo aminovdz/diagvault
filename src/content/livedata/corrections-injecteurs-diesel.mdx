@@ -1,0 +1,71 @@
+---
+title: "Corrections d'Injecteurs (Injector Balancing) sur Diesel"
+description: "Comment interpréter les débits de correction (mg/str). Détectez un cylindre faible, un problème de compression ou un injecteur encrassé."
+pillar: "diagnostic"
+category: "livedata"
+system: "moteur"
+difficulty: "avance"
+risk: "moyen"
+requiredTools: ["scanner"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Sur un moteur Common Rail, le calculateur surveille d'infimes variations de la vitesse de rotation du vilebrequin entre chaque explosion. Si un cylindre est "fainéant", l'ECU va allonger le temps d'ouverture de son injecteur pour lui donner plus de carburant et maintenir le ralenti stable. C'est ce qu'on appelle la **Correction de débit d'injecteur**.
+
+<DiagnosticTree 
+  symptom="Live Data : Corrections Injecteurs"
+  options={[
+    { label: "Valeurs proches de 0 ?", result: "Moteur en parfaite santé" },
+    { label: "Valeur très positive (+3.0) ?", result: "L'ECU ajoute du carburant (cylindre faible)" },
+    { label: "Valeur très négative (-3.0) ?", result: "L'ECU retire du carburant (pour compenser le cylindre faible)" }
+  ]}
+/>
+
+### Comment lire ces valeurs
+
+<TestStepCard 
+  title="1. Les conditions du test"
+  tool="scanner"
+  time="5 min"
+>
+  Ces valeurs ne sont valables et lisibles **qu'au ralenti**.
+  - Le moteur doit être à température de fonctionnement (eau > 80°C).
+  - Éteignez tous les consommateurs électriques (phares, clim).
+  - Laissez le moteur tourner au ralenti.
+  - Affichez les paramètres : "Correction cylindre 1, 2, 3, 4" (généralement en mg/stroke ou mm3/stroke).
+</TestStepCard>
+
+<TestStepCard 
+  title="2. La Règle du Zéro"
+  tool="scanner"
+  time="5 min"
+>
+  La somme mathématique de toutes les corrections de tous les cylindres est toujours égale à zéro.
+  - Un moteur parfait aurait `0.0 mg/str` sur les 4 cylindres.
+  - Dans la réalité, des valeurs entre **-1.0 et +1.0** sont parfaitement normales (usure naturelle).
+  - Si un cylindre dépasse **+2.5 / -2.5** (les limites varient selon les marques, certains plafonnent à +/- 5.0), vous avez un problème sur ce cylindre.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Le Piège de la Compensation"
+  tool="aucun"
+  time="10 min"
+>
+  C'est l'erreur numéro 1 des mécaniciens :
+  - Cylindre 1 : +3.5
+  - Cylindre 2 : -1.8
+  - Cylindre 3 : -1.7
+  - Cylindre 4 :  0.0
+  Le cylindre 1 est extrêmement **positif**. Cela signifie qu'il ne produit pas assez de puissance (soit l'injecteur 1 est bouché, soit le cylindre 1 manque de compression). 
+  Parce que le Cylindre 1 est lent, le vilebrequin ralentit. Les cylindres 2 et 3 sont obligés de **freiner** en réduisant leur carburant (d'où les valeurs négatives) pour garder le ralenti stable ! Ne changez surtout pas les injecteurs 2 et 3, ils fonctionnent très bien, ils compensent juste le Cylindre 1.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Injecteur ou Compression ?"
+>
+  Une correction de +4.0 ne signifie pas forcément que l'injecteur est mort. Si le cylindre n'a plus de segmentation ou une soupape grillée, il n'a plus de compression. Sans compression, pas d'explosion puissante, donc le vilebrequin ralentit, et l'ECU ajoute du carburant en boucle sans succès. Prenez les compressions !
+</ConfirmationBox>

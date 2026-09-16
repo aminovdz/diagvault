@@ -1,0 +1,64 @@
+---
+title: "U0100 - Perte de communication avec l'ECM/PCM"
+description: "Comment diagnostiquer un défaut de réseau CAN Bus (U0100) empêchant le démarrage et bloquant l'accès au calculateur moteur."
+pillar: "diagnostic"
+category: "dtc"
+system: "can"
+symptom: ["Voiture ne démarre pas", "Tirets au tableau de bord", "Voyant antidérapage allumé"]
+dtc: ["U0100"]
+difficulty: "avance"
+risk: "eleve"
+requiredTools: ["multimetre", "oscilloscope"]
+published_date: 2024-03-20
+author: "DiagVault"
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+## Le Piège du U0100
+Vous branchez votre valise : impossible de dialoguer avec le calculateur moteur (ECU). En revanche, le module ABS ou la Boîte Automatique communiquent et affichent tous le même code : **U0100 - Lost Communication With ECM/PCM**.
+Cela signifie que le calculateur moteur est "mort" ou coupé du réseau. Mais avant de le déclarer HS, il faut prouver qu'il est bien alimenté.
+
+<DiagnosticTree 
+  title="Règle d'or des modules hors ligne"
+  nodes={[
+    { label: "Vérifier Alimentations (V+)", subText: "Bornes +BAT et +APC (Contact)" },
+    { label: "Vérifier Masses (GND)", subText: "Test en charge avec une ampoule" },
+    { label: "Vérifier Réseau (CAN)", subText: "Les fils CAN-H et CAN-L arrivent-ils au module ?" }
+  ]}
+/>
+
+## 🧪 Méthodologie de Test
+
+<TestStepCard 
+  stepNumber={1}
+  title="Vérifier la résistance du réseau CAN"
+  tool="multimetre"
+  action="Contact coupé, batterie débranchée. Mesurez la résistance entre les PIN 6 et 14 de la prise OBD."
+  expectedResult="60 Ohms (indique que les deux résistances terminales de 120 Ohms sont connectées en parallèle)."
+  failureResult="Si vous lisez 120 Ohms, un des modules terminaux (souvent l'ECU lui-même) est déconnecté du réseau ou son fil CAN est coupé."
+/>
+
+<TestStepCard 
+  stepNumber={2}
+  title="Vérifier l'alimentation et la masse de l'ECU"
+  tool="multimetre"
+  action="Débranchez la prise de l'ECU. Identifiez les broches d'alimentation et de masse via le schéma électrique."
+  expectedResult="Vous devez avoir 12V francs (idéalement testés sous charge avec une ampoule) sur les + et des masses parfaites."
+  failureResult="Pas d'alimentation ? Cherchez un fusible grillé, un relais principal (Main Relay) défectueux ou un fil coupé (souvent rongé ou oxydé dans le faisceau sous la batterie)."
+/>
+
+<TestStepCard 
+  stepNumber={3}
+  title="Vérifier le signal de réveil (Ignition / Wake-up)"
+  tool="multimetre"
+  action="Certains ECU nécessitent un signal 12V spécifique 'Wake-up' (souvent depuis le BCM/BSI) lors de la mise du contact."
+  expectedResult="Le fil de réveil reçoit 12V lors du tour de clé."
+  failureResult="Si le BCM n'envoie pas l'ordre de réveil, l'ECU restera éteint. Le problème ne vient pas de l'ECU."
+/>
+
+<ConfirmationBox 
+  title="Verdict U0100"
+  text="Si l'ECU a d'excellentes masses, de bonnes alimentations, son signal de réveil, et que les fils CAN ont une continuité parfaite jusqu'aux autres calculateurs... alors l'ECU est HS (processeur mort ou infiltration d'eau)."
+/>

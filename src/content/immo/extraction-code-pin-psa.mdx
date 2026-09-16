@@ -1,0 +1,67 @@
+---
+title: "Extraction du Code PIN sur PSA (Peugeot / Citroën)"
+description: "Où trouver et comment extraire le code PIN (code confidentiel) sur les véhicules Peugeot Citroën (PSA) depuis l'EEPROM de la BSI ou de l'ECU."
+pillar: "programmation"
+category: "immo"
+system: "bsi"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["programmateur"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le code PIN PSA (ou Code Confidentiel) est un code alphanumérique de 4 caractères (ex: 4B8Y, WX31). Il est indispensable pour toute opération d'apprentissage de clé (Diagbox) ou d'appairage d'une nouvelle BSI ou d'un calculateur moteur. Si la carte code (format carte de crédit) est perdue, il faut l'extraire des calculateurs.
+
+<DiagnosticTree 
+  symptom="Recherche du Code PIN PSA"
+  options={[
+    { label: "Moteur tournant / OBD ?", result: "Extraction OBD possible (ex: Smok, Abrites)" },
+    { label: "Véhicule AKL (Toutes clés perdues) ?", result: "Lecture de l'EEPROM BSI sur table" },
+    { label: "BSI illisible (Grillée) ?", result: "Lecture de l'EEPROM de l'ECU moteur" }
+  ]}
+/>
+
+### Les méthodes d'extraction (Bench)
+
+<TestStepCard 
+  title="1. Lecture EEPROM de la BSI"
+  tool="programmateur"
+  time="30 min"
+>
+  Le code PIN est stocké en clair (ou inversé) dans l'EEPROM de la BSI (Boîtier de Servitude Intelligent).
+  - Démontez la BSI. Localisez l'EEPROM (généralement une puce à 8 pattes de type 95160, 95256, ou 95128 selon l'année).
+  - Lisez la puce avec un programmateur (au clip SOIC8 ou en la dessoudant).
+  - Ouvrez le fichier binaire (Dump) dans un éditeur Hexadécimal (HxD) ou un soft spécialisé (Immo Universal Decoding).
+  - Le code apparaît en clair dans l'ASCII, souvent inversé. Exemple : Si l'Hexa affiche `59 38 42 34` (Y8B4), le vrai code PIN est souvent **4B8Y**.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Lecture EEPROM du Calculateur Moteur (ECU)"
+  tool="programmateur"
+  time="30 min"
+>
+  L'ECU moteur possède la copie exacte du code PIN de la BSI. Si la BSI est détruite par l'eau, lisez l'ECU !
+  - Exemple sur un Bosch EDC16C34 (1.6 HDi) : Le code PIN est stocké dans l'EEPROM 95160.
+  - Lisez l'EEPROM de l'ECU (souvent en BDM).
+  - Le code PIN y figure trois fois (répétitions de sécurité), là encore sous forme alphanumérique inversée.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. La règle des Caractères Interdits"
+  tool="aucun"
+  time="2 min"
+>
+  Pour vérifier que le PIN que vous avez extrait est correct, sachez que le groupe PSA n'utilise **jamais** les lettres I, O et Q, pour éviter la confusion avec les chiffres 1 et 0.
+  - Si votre extraction vous donne `A0B1`, c'est un zéro et un un (Valide).
+  - Si votre outil affiche `AOB1`, c'est une erreur de décodage.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="Verrouillage PIN (Lock)"
+>
+  Attention, avec Diagbox, si vous entrez 3 codes PIN incorrects consécutifs, la BSI se met en sécurité (Locked) pendant environ 30 minutes (contact mis). Inutile d'insister, attendez.
+</ConfirmationBox>

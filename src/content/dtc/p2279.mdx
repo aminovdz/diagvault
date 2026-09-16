@@ -1,0 +1,63 @@
+---
+title: "P2279 - Fuite dans le système d'admission d'air (Intake Air System Leak)"
+description: "Le code P2279 indique de l'air non mesuré entrant dans l'admission. Découvrez comment trouver les fuites invisibles avec une machine à fumée."
+pillar: "diagnostic"
+category: "dtc"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["machine_a_fumee", "scanner"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le DTC **P2279** est l'un des rares codes très explicites : il s'agit physiquement d'un trou, d'une déchirure ou d'un joint défectueux qui laisse entrer de l'air dans le collecteur d'admission, en aval (après) le débitmètre ou le boîtier papillon.
+
+<DiagnosticTree 
+  symptom="P2279 : Fuite d'air admission"
+  options={[
+    { label: "Sifflement entendu ?", result: "Inspecter durites d'échangeur" },
+    { label: "Ralenti instable ?", result: "Recherche avec machine à fumée" },
+    { label: "STFT positif (> 15%) ?", result: "Vérifier la valve PCV (Reniflard)" }
+  ]}
+/>
+
+### La Recherche de Fuite Efficace
+
+<TestStepCard 
+  title="1. Inspection des Fuel Trims (STFT / LTFT)"
+  tool="scanner"
+  time="5 min"
+>
+  Sur un moteur Essence, l'air entrant par une fuite n'est pas compté par le débitmètre. Le mélange devient pauvre. La sonde Lambda le voit, et l'ECU ajoute du carburant en urgence.
+  - Lisez le Short Term Fuel Trim (STFT). S'il est à +15% ou +25% au ralenti, mais redescend à 0% à 3000 tr/min, vous avez la preuve mathématique absolue d'une fuite de vide.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Le Test à la Machine à Fumée (L'Outil Ultime)"
+  tool="machine_a_fumee"
+  time="15 min"
+>
+  Oubliez la technique du nettoyant frein pulvérisé au hasard, c'est dangereux et peu précis.
+  - Bouchez l'entrée d'air (après le filtre à air).
+  - Injectez de la fumée sous légère pression dans le collecteur d'admission via un tube de dépression (comme celui du servofrein / mastervac).
+  - Observez. La fumée sortira exactement par le trou : joint de collecteur d'admission, axe de papillon usé, durite percée sous une tresse en nylon.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Le Piège de la Valve PCV"
+  tool="aucun"
+  time="10 min"
+>
+  Le système de ventilation du carter (PCV) est relié à l'admission. Si la membrane de la valve PCV (souvent intégrée au couvre-culasse) est déchirée, le moteur aspire de l'air massivement à travers le carter d'huile. 
+  - Retirez la jauge d'huile ou le bouchon de remplissage pendant que le moteur tourne. S'il y a une aspiration énorme qui plaque votre main, la PCV est éclatée.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="Réparation"
+>
+  Une fois la fuite trouvée et colmatée, pensez impérativement à réinitialiser les adaptations de richesse (Reset Fuel Trims) avec votre valise, sinon le moteur mettra plusieurs jours à se réadapter et tournera trop riche.
+</ConfirmationBox>

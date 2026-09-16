@@ -1,0 +1,57 @@
+---
+title: "Le Capteur de Pression Différentielle (FAP/DPF)"
+description: "Régénérations impossibles ? Découvrez comment le capteur de pression différentielle mesure l'encrassement du Filtre à Particules."
+pillar: "diagnostic"
+category: "capteurs"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner", "machine_a_fumee"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le Filtre à Particules (FAP/DPF) est un piège à suie sur l'échappement. Comment l'ECU sait-il quand il est plein pour lancer une régénération ? Il utilise un capteur de pression différentielle (Delta P). Il mesure la pression avant le filtre, et après le filtre. Plus le filtre est bouché, plus l'écart de pression est grand.
+
+<DiagnosticTree 
+  symptom="Panne de Pression Différentielle"
+  options={[
+    { label: "Pression trop haute (ex: 200 mbar au ralenti) ?", result: "Filtre bouché ou tuyau fondu/bouché." },
+    { label: "Pression à 0 ou négative en pleine accélération ?", result: "Tuyau arraché, percé, ou capteur branché à l'envers." }
+  ]}
+/>
+
+### Diagnostic des Tuyaux et du Capteur
+
+Le capteur est fixé sur le tablier et relié à l'échappement par deux petits tuyaux en caoutchouc (ou parfois un seul tuyau qui mesure avant le filtre, la pression après filtre étant supposée atmosphérique).
+
+<TestStepCard 
+  title="1. Vérification visuelle (L'évidence)"
+  tool="aucun"
+  time="5 min"
+>
+  Dans 50% des cas, le capteur n'a rien. Les gaz d'échappement très chauds brûlent et percent les tuyaux en caoutchouc qui relient le capteur au pot.
+  - Suivez les tuyaux sous la voiture. Cherchez des zones noircies par la suie (fuite).
+  - Si un tuyau est fondu, le capteur lit la pression atmosphérique, donc "0 mbar". L'ECU croit que le FAP est vide, il ne lance jamais de régénération, et le moteur finit par s'étouffer.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Test du capteur avec une pompe à vide (Mityvac)"
+  tool="scanner"
+  time="10 min"
+>
+  Est-ce que le capteur réagit à la pression ?
+  - Moteur à l'arrêt, contact mis.
+  - Débranchez le gros tuyau (celui venant de l'amont du FAP) au niveau du capteur.
+  - Branchez une pompe à pression manuelle (ou souflez très légèrement avec la bouche) dans l'embout du capteur.
+  - Regardez la valise : La valeur "Pression différentielle" doit monter instantanément (ex: de 0 mbar à 50 mbar). Si la valeur ne bouge pas à l'écran, le capteur est figé (HS).
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Adaptation Obligatoire"
+>
+  Après le remplacement d'un capteur de pression différentielle, il faut obligatoirement effacer les adaptations du capteur via la valise diagnostique. Le capteur neuf n'a jamais exactement le même point "zéro" que l'ancien. Sans cet apprentissage, le FAP se colmatera de nouveau très vite.
+</ConfirmationBox>

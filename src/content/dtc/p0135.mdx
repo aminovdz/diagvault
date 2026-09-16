@@ -1,0 +1,67 @@
+---
+title: "P0135 - Circuit de chauffage de la sonde Lambda (Banc 1, Capteur 1)"
+description: "La résistance chauffante de la sonde O2 est coupée. Testez les 4 fils et le fusible dédié avant de dévisser la sonde Lambda."
+pillar: "diagnostic"
+category: "dtc"
+system: "moteur"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le **P0135** est un code purement électrique. Il indique que l'ECU détecte un circuit ouvert, un court-circuit, ou une consommation de courant anormale sur l'élément chauffant de la sonde Lambda amont (avant catalyseur). Sans chauffage, la sonde met trop de temps à devenir active (Closed Loop).
+
+<DiagnosticTree 
+  symptom="P0135 : Chauffage Lambda"
+  options={[
+    { label: "12V Présent sur le fil de chauffe ?", result: "Contrôler le Fusible" },
+    { label: "Masse pulsée par l'ECU ?", result: "Vérifier la commande PWM" },
+    { label: "Résistance de la sonde infinie ?", result: "Remplacer la sonde" }
+  ]}
+/>
+
+### Tester la résistance chauffante en 3 étapes
+
+<TestStepCard 
+  title="1. Mesure de la résistance de la sonde (Le coupable à 95%)"
+  tool="multimetre"
+  time="10 min"
+>
+  Sur une sonde Lambda à 4 fils, deux fils sont de la même couleur (souvent deux fils blancs, ou deux fils noirs). Ils correspondent à la résistance chauffante.
+  - Débranchez la sonde. Mettez le multimètre en mode Ohmmètre (Ω).
+  - Placez vos pointes de touche sur les deux broches correspondant aux fils de la même couleur (côté sonde).
+  - Une résistance saine se situe généralement entre 2 et 15 Ohms.
+  - Si le multimètre affiche "OL" (Out of Limits / Infini), la résistance interne est grillée. Remplaçez la sonde.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Contrôle du 12V d'alimentation"
+  tool="multimetre"
+  time="10 min"
+>
+  Si la sonde est bonne (ex: 4 Ohms), le problème vient du faisceau du véhicule.
+  - Mettez le contact (Moteur arrêté).
+  - Côté faisceau de la voiture, mesurez la tension entre la broche d'alimentation du chauffage (regardez le schéma) et une bonne masse châssis.
+  - Vous devez trouver 12V (Tension de batterie). Si vous avez 0V, un relais ou un fusible est fondu. Cherchez la boîte à fusibles moteur.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Contrôle de la Masse commandée par l'ECU"
+  tool="multimetre"
+  time="10 min"
+>
+  L'ECU contrôle l'intensité de chauffage en pulsant la masse (PWM).
+  - Connectez une petite ampoule témoin (Test Light) entre le fil 12V et le fil de commande de masse côté faisceau.
+  - Démarrez le moteur à froid. L'ampoule devrait s'allumer (ou clignoter rapidement). Si elle ne s'allume pas du tout, le fil est coupé entre la sonde et l'ECU, ou le driver interne de l'ECU est grillé.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="Sonde Amont vs Aval"
+>
+  Banc 1 Capteur 1 = Avant le catalyseur (Amont / Upstream). Banc 1 Capteur 2 = Après le catalyseur (Aval / Downstream). Assurez-vous de débrancher et de tester la bonne sonde pour ne pas chercher une panne qui n'existe pas !
+</ConfirmationBox>

@@ -1,0 +1,65 @@
+---
+title: "P2453 - Capteur de Pression Différentielle FAP - Plage/Performance"
+description: "P2453 ne signifie pas FAP bouché ! Le capteur de pression lui-même, ou son faisceau électrique, est en dehors de sa plage de calibration."
+pillar: "diagnostic"
+category: "dtc"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "moyen"
+requiredTools: ["scanner", "multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Contrairement au P2002 qui indique un problème physique dans le filtre, le code **P2453** pointe spécifiquement vers un problème de plausibilité électrique ou pneumatique du capteur de pression différentielle (Ex: il lit 50 mbar de pression alors que le moteur est arrêté).
+
+<DiagnosticTree 
+  symptom="P2453 : Capteur Pression FAP"
+  options={[
+    { label: "Pression non nulle à l'arrêt ?", result: "Capteur décalibré ou mort" },
+    { label: "Tension du Signal anormale ?", result: "Vérifier avec un multimètre" },
+    { label: "Tuyaux inversés ou percés ?", result: "Vérifier le montage physique" }
+  ]}
+/>
+
+### Comment tester le capteur Pression Différentielle
+
+<TestStepCard 
+  title="1. Lecture de la plausibilité à froid (KOEO)"
+  tool="scanner"
+  time="5 min"
+>
+  Le test décisif : contact mis (Key On), moteur arrêté (Engine Off).
+  Il n'y a pas de gaz d'échappement qui circule, donc la pression différentielle de part et d'autre du filtre DOIT être de 0.
+  - Allez dans les paramètres en direct (Live Data) : "Pression Différentielle Filtre à Particules".
+  - Si vous lisez une valeur fixe comme -20 hPa, ou +80 hPa : le capteur est HS.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Vérification des alimentations (Si P000 KOEO)"
+  tool="multimetre"
+  time="15 min"
+>
+  Si le capteur lit 0 mais que le code revient, vérifiez son connecteur (3 fils) :
+  - Fil 1 : Masse (0V)
+  - Fil 2 : Alimentation (5V fournis par l'ECU)
+  - Fil 3 : Signal de retour vers l'ECU (souvent autour de 0.5V moteur arrêté, montant vers 1.0V+ en charge).
+  Une masse oxydée décale complètement la lecture (Voltage Drop), faisant croire à l'ECU que le filtre est plein.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Inspection des tuyaux silicones"
+  tool="aucun"
+  time="15 min"
+>
+  Les tuyaux qui relient le capteur à l'échappement subissent des températures extrêmes. Ils se percent souvent ou durcissent. Si de l'humidité ou du carbone s'accumule dedans et gèle en hiver, le capteur se bloque. Passez un coup d'air comprimé (DOUCEMENT) dans les tuyaux en direction de l'échappement (jamais vers le capteur !).
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Apprentissage obligatoire"
+>
+  Après le remplacement d'un capteur de pression différentielle, vous DEVEZ utiliser la valise diagnostique pour effectuer l'apprentissage / adaptation du nouveau capteur, afin de dire à l'ECU que le 0.5V actuel correspond bien au zéro absolu.
+</ConfirmationBox>

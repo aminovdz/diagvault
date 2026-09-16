@@ -1,0 +1,68 @@
+---
+title: "Comprendre et Tester les Relais (85, 86, 87, 30)"
+description: "Comment fonctionne un relais automobile (bornes 85, 86, 87, 30). Apprenez à le diagnostiquer correctement, à le shunter, et à repérer un relais collé."
+pillar: "diagnostic"
+category: "electricite"
+system: "bsi"
+difficulty: "debutant"
+risk: "moyen"
+requiredTools: ["multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Un relais n'est rien d'autre qu'un **interrupteur télécommandé**. Les calculateurs (ECU, BSI) sont très fragiles : ils ne peuvent fournir que quelques milliampères. S'ils devaient alimenter un ventilateur de 30 Ampères directement, ils prendraient feu. Ils utilisent donc un petit courant pour activer un relais, qui lui, va fermer un gros contact de puissance.
+
+<DiagnosticTree 
+  symptom="Panne de Relais"
+  options={[
+    { label: "Le relais ne clique pas ?", result: "La bobine (85/86) n'est pas alimentée." },
+    { label: "Le relais clique mais rien ne marche ?", result: "Le contact de puissance (30/87) est cramé." },
+    { label: "Le composant tourne tout le temps ?", result: "Les contacts internes (30/87) sont soudés (collés)." }
+  ]}
+/>
+
+### La norme DIN (Les 4 bornes magiques)
+
+<TestStepCard 
+  title="1. Le circuit de Commande (Bobine : 85 et 86)"
+  tool="aucun"
+  time="2 min"
+>
+  C'est la partie "Télécommande" :
+  - **86 :** Alimentation de la bobine (souvent un +12V après contact).
+  - **85 :** La masse de la bobine (très souvent commandée par le calculateur pour activer le relais).
+  Quand le 85 et 86 sont alimentés, un électro-aimant s'active. Vous entendez un **"Clic"**.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Le circuit de Puissance (Interrupteur : 30 et 87)"
+  tool="aucun"
+  time="2 min"
+>
+  C'est la partie "Musclée" :
+  - **30 :** Alimentation permanente forte puissance (souvent reliée directement à la batterie via un gros fusible).
+  - **87 :** La sortie vers l'actionneur (Ventilateur, Pompe à essence, Démarreur).
+  Quand la bobine fait son "Clic", une plaque de métal s'abaisse et relie violemment le 30 avec le 87. Le gros courant passe.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Le test de Shunt (Bypass)"
+  tool="aucun"
+  time="5 min"
+>
+  La pompe à essence ne tourne pas et vous soupçonnez son relais ?
+  - Retirez le relais de la boîte à fusibles.
+  - Regardez sous le relais pour identifier les broches **30 et 87**.
+  - Prenez un fil électrique épais, et faites un pont (shunt) entre les trous 30 et 87 dans la boîte à fusibles.
+  - Si la pompe à essence se met à tourner immédiatement, c'est que la puissance est disponible, mais que le relais est défectueux, ou que le calculateur n'envoie pas le signal (85/86) pour l'activer.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Attention aux broches 87a"
+>
+  Certains relais ont 5 broches. La broche **87a** est normalement fermée (reliée au 30 quand le relais est au repos). Ne shuntez jamais le 30 avec le 85 ou 86, vous enverriez 30 Ampères directement dans le processeur du calculateur (ECU grillé garanti).
+</ConfirmationBox>

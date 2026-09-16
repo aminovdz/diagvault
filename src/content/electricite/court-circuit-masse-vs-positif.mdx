@@ -1,0 +1,71 @@
+---
+title: "Court-circuit à la Masse vs Court-circuit au Plus"
+description: "Déchiffrez les codes DTC : Court-circuit à la masse (Short to Ground) vs Court-circuit au Positif (Short to Battery). Où chercher le fil fondu ?"
+pillar: "diagnostic"
+category: "electricite"
+system: "bsi"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+C'est une erreur très classique sur les valises diagnostiques. Lorsqu'un capteur (comme une sonde de température ou un débitmètre) a un problème électrique, l'ECU sort un code spécifique. Comprendre ce code vous dit exactement ce qui est arrivé au fil.
+
+<DiagnosticTree 
+  symptom="Lecture DTC Électrique"
+  options={[
+    { label: "Short to Ground (Court-circuit Masse) ?", result: "Le fil du signal touche le châssis métallique" },
+    { label: "Short to Power (Court-circuit Positif) ?", result: "Le fil du signal touche un fil 12V ou 5V" },
+    { label: "Open Circuit (Circuit Ouvert) ?", result: "Le fil est sectionné (coupé en deux)" }
+  ]}
+/>
+
+### La logique du "Short to Ground" (Court-circuit à la Masse)
+
+<TestStepCard 
+  title="1. Comprendre le Voltage à zéro"
+  tool="aucun"
+  time="2 min"
+>
+  L'ECU s'attend à recevoir un voltage variable sur son fil de signal (ex: entre 0.5V et 4.5V).
+  - Si le fil de signal est dénudé et frotte contre la carrosserie de la voiture (le châssis), le courant va instantanément s'échapper vers la masse.
+  - L'ECU lira un voltage de **0.00 Volts**. 
+  - Il déclenche immédiatement le code "Court-circuit à la Masse" (Short to Ground). Inspectez le faisceau là où il passe sur des parties métalliques tranchantes ou chaudes (échappement).
+</TestStepCard>
+
+### La logique du "Short to Power" (Court-circuit au Plus)
+
+<TestStepCard 
+  title="2. Comprendre le Voltage Maximum"
+  tool="aucun"
+  time="5 min"
+>
+  C'est l'inverse absolu. 
+  - À l'intérieur d'une gaine de faisceau, le fil de signal s'est dénudé et touche le gros fil d'alimentation 12V (ou le fil d'alimentation 5V du capteur).
+  - Le courant positif inonde le fil de signal. L'ECU reçoit soudainement **5.00V ou 12.0V** pleins.
+  - Il déclenche le code "Court-circuit au Positif" (Short to Battery / Short to B+). 
+</TestStepCard>
+
+### Le piège du Circuit Ouvert (Open Circuit)
+
+<TestStepCard 
+  title="3. Le Pull-Up Resistor de l'ECU"
+  tool="multimetre"
+  time="5 min"
+>
+  Si le fil est coupé en deux (coup de ciseaux), que lit l'ECU ?
+  - Sur de nombreux circuits (comme les sondes de température), l'ECU utilise une "Pull-Up Resistor" interne. S'il n'y a plus de composant au bout du fil, l'ECU lira son propre voltage de référence (souvent 5V).
+  - C'est pour cela qu'un capteur débranché (ou un fil coupé) remonte souvent une erreur **"Signal Haut" (Circuit High Input)**, ce qui est très proche d'un Short to Power !
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="Résumé Rapide"
+>
+  Signal Bas (0V) = Fil dénudé touchant le châssis (Masse).
+  Signal Haut (5V/12V) = Fil dénudé touchant un fil d'alimentation, OU fil sectionné / capteur débranché.
+</ConfirmationBox>

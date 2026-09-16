@@ -1,0 +1,65 @@
+---
+title: "Les bases de la lecture d'un schéma électrique"
+description: "Apprenez à déchiffrer les schémas électriques automobiles. Repérez les alimentations (B+), les masses (GND), les fusibles et les numéros de connecteurs."
+pillar: "diagnostic"
+category: "electricite"
+system: "bsi"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["aucun"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Un schéma électrique automobile n'est pas un plan géographique de la voiture : c'est un flux logique qui montre comment le courant voyage de la batterie jusqu'au composant (et retourne à la batterie). Sans savoir lire un schéma, diagnostiquer une panne électrique relève du pur hasard.
+
+<DiagnosticTree 
+  symptom="Lecture de Schéma"
+  options={[
+    { label: "Où va le courant ?", result: "De haut (Alimentation 12V) en bas (Masse)" },
+    { label: "Ligne en pointillés ?", result: "Indique qu'une partie du circuit n'est pas dessinée" },
+    { label: "Numéros sur les fils ?", result: "Indique la couleur du fil et sa section (mm²)" }
+  ]}
+/>
+
+### Le Flux du Courant : De Haut en Bas
+
+<TestStepCard 
+  title="1. L'Alimentation (Le haut du schéma)"
+  tool="aucun"
+  time="5 min"
+>
+  Dans 90% des schémas (OEM ou Haynes/Autodata), l'alimentation est dessinée tout en haut.
+  - **Ligne 30 (Bat+) :** Alimentation permanente 12V, même contact coupé (directement reliée à la batterie).
+  - **Ligne 15 (Ignition) :** Alimentation 12V après contact.
+  - Le courant descend ensuite à travers un fusible (ex: F12 - 15A), puis traverse souvent un relais avant d'arriver au composant.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Le Composant (Le centre)"
+  tool="aucun"
+  time="5 min"
+>
+  Au centre du schéma se trouvent les actionneurs (moteur d'essuie-glace, ampoule, injecteur) et les capteurs. 
+  Chaque composant a un numéro d'identification unique (ex: M33 pour un moteur, B54 pour un capteur). L'index du schéma vous donnera son nom exact et parfois sa localisation physique dans la voiture.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. La Masse (Le bas du schéma)"
+  tool="aucun"
+  time="5 min"
+>
+  Le courant **doit** retourner à la batterie pour que le circuit soit fermé. C'est le rôle de la masse (Ground/GND).
+  - Elle est dessinée en bas, souvent par un symbole de râteau inversé ou des lignes de plus en plus courtes.
+  - Elle porte un numéro (ex: G104 ou M2). Ce numéro est crucial : si plusieurs composants partagent la même masse G104 et qu'elle est oxydée sur le châssis, tous ces composants tomberont en panne en même temps !
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="Code Couleur des Fils"
+>
+  Les lettres sur les fils indiquent la couleur. Attention, c'est souvent en anglais ou en allemand ! 
+  Exemples : **BK** (Black/Noir), **RD** (Red/Rouge), **BU** (Blue/Bleu), **WH** (White/Blanc). Un fil bicolore sera noté **RD/WH** (Rouge à rayure blanche).
+</ConfirmationBox>

@@ -1,0 +1,71 @@
+---
+title: "Le Test de Chute de Tension (Voltage Drop Test)"
+description: "Le test ultime en électricité automobile. Pourquoi le test de continuité ment, et comment le Voltage Drop révèle les fils corrodés et les mauvaises masses."
+pillar: "diagnostic"
+category: "electricite"
+system: "bsi"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+C'est le concept le plus mal compris en électricité automobile. Un fil corrodé à l'intérieur de sa gaine peut laisser passer 12 Volts si vous le testez à vide (composant débranché), mais s'effondrer à 3 Volts dès qu'on lui demande d'alimenter une ampoule. Le "Voltage Drop Test" est la **seule** méthode fiable.
+
+<DiagnosticTree 
+  symptom="Test d'un fil électrique"
+  options={[
+    { label: "Multimètre en mode Ohm (Bip) ?", result: "Inutile (Un seul brin de cuivre fait biper)" },
+    { label: "Voltmètre avec composant débranché ?", result: "Trompeur (Tension à vide = 12V)" },
+    { label: "Voltmètre avec circuit en fonctionnement ?", result: "Test validé (Voltage Drop)" }
+  ]}
+/>
+
+### Comment effectuer un Voltage Drop Test
+
+La règle d'or : Le composant (l'ampoule, le démarreur) **doit être branché et activé**.
+
+<TestStepCard 
+  title="1. Tester l'Alimentation (Côté Positif)"
+  tool="multimetre"
+  time="5 min"
+>
+  Imaginons un phare avant qui éclaire très faiblement.
+  - Mettez le multimètre en Volts (DC).
+  - Placez la pointe rouge **directement sur la borne POSITIVE de la batterie**.
+  - Placez la pointe noire sur **le fil positif à l'arrière de l'ampoule allumée**.
+  - Si le multimètre affiche **0.2V**, c'est parfait. Le fil a "consommé" (perdu) 0.2V, c'est normal.
+  - S'il affiche **4.0V**, cela signifie que 4 Volts sont perdus dans le fil rouge (corrosion, fusible oxydé, mauvais relais). Vous avez trouvé la panne.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Tester la Masse (Côté Négatif)"
+  tool="multimetre"
+  time="5 min"
+>
+  Très souvent, le problème vient de la rouille sur la connexion de masse au châssis.
+  - Placez la pointe noire **directement sur la borne NÉGATIVE de la batterie**.
+  - Placez la pointe rouge sur **le fil de masse à l'arrière de l'ampoule allumée**.
+  - S'il affiche **0.1V**, la masse est parfaite.
+  - S'il affiche **5.0V**, cela signifie que 5 Volts ne peuvent pas retourner à la batterie. L'ampoule n'a plus que 7V pour s'allumer (12V - 5V = 7V). Nettoyez la cosse de masse !
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Test du Démarreur Paresseux"
+  tool="multimetre"
+  time="10 min"
+>
+  Le moteur tourne au ralenti au démarreur malgré une batterie neuve ? 
+  Faites un Voltage Drop sur le gros câble rouge. Placez la pointe rouge sur le + Batterie, et la noire sur le gros écrou rouge du démarreur. **Donnez un coup de démarreur.**
+  Si le voltmètre affiche **plus de 0.5V** pendant que le démarreur tourne, le gros câble rouge est oxydé de l'intérieur (câble vert) et agit comme une résistance. Remplacez le câble.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Le Piège du Multimètre"
+>
+  N'oubliez jamais : Un multimètre ne consomme aucun courant pour mesurer la tension (haute impédance). Il vous affichera 12V même si le fil n'est plus tenu que par un seul brin de cuivre. Mettez toujours le circuit **EN CHARGE** pour le tester.
+</ConfirmationBox>

@@ -1,0 +1,73 @@
+---
+title: "Le Boîtier Papillon Motorisé"
+description: "Ratés de ralenti, voiture qui accélère toute seule ou mode dégradé ? Comprendre le moteur à courant continu (DC) du papillon et le nettoyage indispensable."
+pillar: "diagnostic"
+category: "actionneurs"
+system: "moteur"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["scanner", "multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Il n'y a plus de câble d'accélérateur depuis 20 ans. Lorsque vous appuyez sur la pédale, vous envoyez une demande à l'ECU. L'ECU décide s'il est sûr d'accélérer, et envoie du courant dans le moteur électrique (Moteur DC) du boîtier papillon pour ouvrir le volet.
+
+<DiagnosticTree 
+  symptom="Panne de Papillon Motorisé"
+  options={[
+    { label: "Le ralenti pompe de haut en bas (Yo-yo) ?", result: "Boîtier papillon très encrassé par l'huile." },
+    { label: "Plus aucune réponse à l'accélérateur ?", result: "L'ECU a coupé l'alimentation du moteur par sécurité (Limp Mode)." }
+  ]}
+/>
+
+### Le Nettoyage : L'entretien n°1
+
+Le boîtier papillon avale les vapeurs d'huile du moteur (système PCV). Une croûte noire se forme autour du volet.
+L'ECU s'attend à ce que 3% d'ouverture laisse passer X air. Si la croûte bouche le passage, le moteur s'étouffe au ralenti. L'ECU compense en ouvrant plus (ex: 8%), mais le ralenti devient instable.
+
+<TestStepCard 
+  title="1. Comment le nettoyer en sécurité"
+  tool="aucun"
+  time="15 min"
+>
+  - Retirez la durite d'admission d'air.
+  - Débranchez la batterie.
+  - **Ne forcez JAMAIS le papillon à la main violemment.** Les engrenages internes en plastique casseront. 
+  - Poussez-le doucement avec un doigt. Vaporisez du "Nettoyant Papillon" (Throttle Body Cleaner) sur un chiffon, et essuyez la crasse noire autour du volet et du corps.
+</TestStepCard>
+
+### Diagnostic Électrique de l'Actionneur
+
+<TestStepCard 
+  title="2. L'architecture H-Bridge"
+  tool="multimetre"
+  time="5 min"
+>
+  Le moteur interne du papillon n'a que 2 fils (les autres fils sont pour le capteur de position TPS).
+  - L'ECU utilise un Pont en H (H-Bridge) pour inverser le courant. 
+  - Si l'ECU envoie le + sur le fil A et le - sur le fil B, le papillon s'ouvre.
+  - S'il envoie le - sur le fil A et le + sur le fil B, le papillon se ferme de force.
+  - Si vous débranchez le papillon, un gros ressort de sécurité le forcera dans une position intermédiaire (environ 10%).
+</TestStepCard>
+
+<TestStepCard 
+  title="3. L'Apprentissage (Throttle Adaptation)"
+  tool="scanner"
+  time="5 min"
+>
+  C'est l'étape que tout le monde oublie. Après un nettoyage, l'ECU est toujours habitué à ouvrir la vanne à 8% (à cause de la crasse). Or, sans crasse, 8% d'ouverture va faire bondir votre ralenti à 1800 tr/min.
+  - Branchez la valise diagnostique.
+  - Moteur à l'arrêt, contact mis.
+  - Cherchez le menu "Réinitialisation des apprentissages" ou "Throttle Body Alignment (TBA)".
+  - L'ECU fera claquer le papillon à fond, puis le fermera, et mémorisera la nouvelle valeur "Propre".
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Bruit moteur éteint"
+>
+  C'est normal d'entendre le boîtier papillon émettre un sifflement aigu continu lorsque le contact est mis moteur arrêté. C'est la fréquence PWM (souvent 1000 Hz) que l'ECU utilise pour maintenir le moteur électrique dans sa position de repos.
+</ConfirmationBox>

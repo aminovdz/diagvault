@@ -1,0 +1,73 @@
+---
+title: "Le Moteur Pas-à-Pas (Régulateur de Ralenti / IACV)"
+description: "Moteur qui cale au stop ou ralenti qui fait le yo-yo à 2000 tours ? Apprenez à nettoyer et diagnostiquer l'actuateur de ralenti (IACV)."
+pillar: "diagnostic"
+category: "actionneurs"
+system: "moteur"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Sur les anciens moteurs (avant le papillon 100% motorisé), l'accélérateur est géré par un câble physique. Quand vous lâchez la pédale, le clapet est totalement fermé. L'air ne peut plus entrer, le moteur devrait caler. 
+Pour empêcher cela, l'ECU utilise un canal de dérivation (By-pass) contrôlé par une petite valve : le moteur de ralenti (IACV - Idle Air Control Valve).
+
+<DiagnosticTree 
+  symptom="Panne de Ralenti (IACV)"
+  options={[
+    { label: "La voiture cale en arrivant à un feu rouge ?", result: "La valve est bloquée fermée (Bouchée de calamine)." },
+    { label: "Le ralenti est perché à 1500 ou 2000 tr/min ?", result: "La valve est bloquée ouverte ou le ressort est cassé." }
+  ]}
+/>
+
+### L'Entretien Vital : Le Nettoyage
+
+La panne numéro 1 d'un régulateur de ralenti est purement mécanique. L'air contournant le papillon est chargé en vapeurs d'huile du carter (PCV). Une boue noire goudronneuse finit par engluer le cône mobile du moteur pas-à-pas.
+
+<TestStepCard 
+  title="1. Nettoyage de la soupape"
+  tool="aucun"
+  time="15 min"
+>
+  L'IACV se trouve vissé sur ou à côté du boîtier papillon (souvent 2 ou 3 vis torx).
+  - Démontez la valve.
+  - Vous verrez un cône en métal (ou en plastique) à l'extrémité, rempli de crasse noire.
+  - Utilisez du nettoyant frein ou du nettoyant carburateur et une vieille brosse à dents.
+  - Nettoyez jusqu'à ce que le cône soit brillant. **N'oubliez pas de nettoyer aussi le trou (le canal By-pass) sur le collecteur d'admission !**
+</TestStepCard>
+
+### Diagnostic Électrique
+
+<TestStepCard 
+  title="2. Test des enroulements (Moteur Pas-à-pas à 4 fils)"
+  tool="multimetre"
+  time="5 min"
+>
+  Un vrai moteur "Pas-à-pas" possède deux bobines (4 fils). L'ECU envoie des impulsions alternatives pour faire avancer ou reculer l'axe cran par cran (Stepper Motor).
+  - Mettez le multimètre en Ohms.
+  - Mesurez la résistance entre les broches A et B (Première bobine). Vous devriez trouver environ 40 à 60 Ohms.
+  - Mesurez entre les broches C et D (Deuxième bobine). Vous devriez trouver la même valeur.
+  - Si vous trouvez "OL" (Ligne ouverte) sur l'une des deux bobines, le moteur interne est grillé, il faut le remplacer.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Test du mouvement au contact"
+  tool="aucun"
+  time="2 min"
+>
+  - La valve étant démontée, branchez sa prise électrique.
+  - Tenez-la fermement (Attention, le doigt interne peut être éjecté ! Mettez votre pouce devant le cône).
+  - Demandez à quelqu'un de mettre le contact (sans démarrer).
+  - Vous devez voir le cône s'avancer ou reculer (L'ECU l'initialise à sa position "Start"). S'il ne bouge pas et ne vibre pas, l'ECU ne le commande pas (Faisceau coupé ou ECU HS).
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Le Piège des Prises d'Air"
+>
+  Si votre ralenti est à 2000 tr/min, l'IACV n'est pas forcément fautif. L'ECU le ferme peut-être à fond pour faire baisser le régime, mais l'air entre par une fuite massive ailleurs (durite de freinage percée, joint d'admission déchiré). 
+</ConfirmationBox>

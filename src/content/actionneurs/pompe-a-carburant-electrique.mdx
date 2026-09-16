@@ -1,0 +1,71 @@
+---
+title: "La Pompe à Carburant (Gavage)"
+description: "Le moteur tourne mais ne démarre pas ? Diagnostiquez une pompe à essence immergée, testez son alimentation en charge et vérifiez son débit."
+pillar: "diagnostic"
+category: "actionneurs"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["multimetre", "pince_amperemetrique"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+La pompe de gavage (Low Pressure Fuel Pump) est immergée dans le réservoir d'essence. Sans son action (qui fournit environ 3 à 4 bars sur une essence, ou 0.5 bar pour alimenter la pompe HP d'un diesel), le moteur ne peut pas démarrer. C'est l'un des composants les plus remplacés par erreur.
+
+<DiagnosticTree 
+  symptom="Panne de Pompe à Essence"
+  options={[
+    { label: "On n'entend pas la pompe à la mise du contact ?", result: "Problème électrique (Relais, fusible, faisceau, ou pompe morte)." },
+    { label: "On entend la pompe mais ça ne démarre pas ?", result: "Problème de pression ou de débit (Filtre bouché, fuite de durite interne)." }
+  ]}
+/>
+
+### Diagnostic Électrique
+
+<TestStepCard 
+  title="1. La méthode du coup de poing"
+  tool="aucun"
+  time="2 min"
+>
+  C'est vieux comme le monde, mais ça marche. Les charbons du moteur électrique de la pompe finissent par s'user. Le moteur se "grippe" sur un point mort.
+  - Demandez à quelqu'un d'actionner le démarreur.
+  - Pendant qu'il tourne la clé, frappez violemment le dessous du réservoir d'essence avec votre poing ou un maillet en caoutchouc.
+  - Si la voiture démarre instantanément, la pompe est mourante (charbons usés). Il faut la remplacer.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Test d'alimentation au multimètre"
+  tool="multimetre"
+  time="10 min"
+>
+  Soulevez la banquette arrière, accédez à la prise de la pompe.
+  - Mettez le contact. L'ECU active le relais de pompe pendant **seulement 2 à 3 secondes** (Prime) pour mettre le circuit en pression, puis le coupe si le moteur ne tourne pas. 
+  - Demandez à un ami de tourner la clé. Vous avez 2 secondes pour voir vos 12V s'afficher.
+  - Si vous avez 12V et une masse parfaite (Voltage Drop Test), et que la pompe ne tourne pas, elle est morte.
+  - Si vous n'avez pas de 12V, remontez vers le relais de pompe (souvent dans la boîte à fusibles moteur) et shuntez-le (bornes 30 et 87).
+</TestStepCard>
+
+### Diagnostic avec Pince Ampèremétrique
+
+<TestStepCard 
+  title="3. Le test d'Ampérage"
+  tool="pince_amperemetrique"
+  time="5 min"
+>
+  C'est le moyen le plus professionnel de tester une pompe.
+  - Remplacez le relais de pompe par un fil boucle (Shunt) pour forcer la pompe à tourner.
+  - Mettez votre pince ampèremétrique autour du fil.
+  - Une pompe standard en bonne santé consomme entre **4 et 7 Ampères**.
+  - Si elle consomme **0A** : Circuit ouvert (Moteur grillé).
+  - Si elle consomme **12A ou plus** : Moteur grippé ou filtre à essence complètement bouché (La pompe force).
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Le contacteur d'Inertie"
+>
+  Sur beaucoup de vieilles voitures (notamment françaises), un contacteur de choc (Inertia Switch) rouge se trouve sous le capot. En cas de nid-de-poule violent, la bille saute et coupe l'alimentation de la pompe pour éviter un incendie. Appuyez dessus avant de démonter la pompe !
+</ConfirmationBox>

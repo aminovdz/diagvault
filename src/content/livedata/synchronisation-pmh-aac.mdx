@@ -1,0 +1,65 @@
+---
+title: "Synchronisation PMH/AAC (Cam/Crank Torsion Value)"
+description: "Vérifiez que la courroie ou chaîne de distribution n'est pas décalée en lisant un simple chiffre sur votre valise (État de synchronisation / Angle de torsion)."
+pillar: "diagnostic"
+category: "livedata"
+system: "moteur"
+difficulty: "avance"
+risk: "faible"
+requiredTools: ["scanner"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Changer un capteur d'arbre à cames (AAC) ou de vilebrequin (PMH) n'a de sens que si les deux sont mécaniquement bien synchronisés. Un allongement de la chaîne de distribution ou une courroie décalée d'une dent se voit immédiatement dans les Live Data.
+
+<DiagnosticTree 
+  symptom="Live Data : Synchronisation PMH/AAC"
+  options={[
+    { label: "État : Non Synchronisé (No Sync) ?", result: "Capteur défectueux ou décalage massif" },
+    { label: "Torsion Value > +3° ou < -3° ?", result: "Chaîne allongée ou courroie mal tendue" },
+    { label: "Oscillation de la valeur ?", result: "Poulie Damper ou tendeur de chaîne fatigué" }
+  ]}
+/>
+
+### Comment lire la synchronisation 
+
+<TestStepCard 
+  title="1. État binaire : OUI ou NON (Sync State)"
+  tool="scanner"
+  time="2 min"
+>
+  Sur beaucoup de véhicules (ex: PSA, Ford), l'ECU affiche une ligne "Synchronisation Arbre à cames / Vilebrequin".
+  - Moteur tournant (ou même au démarreur), cette ligne **doit impérativement indiquer "OUI" ou "Synchronisé"**.
+  - Si elle affiche "NON", l'ECU interdit l'injection. Les signaux ne se croisent pas au bon moment.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Angle de Torsion (TDI / VAG - Torsion Value)"
+  tool="scanner"
+  time="5 min"
+>
+  Dans le groupe VAG (notamment les moteurs TDI IP ou Common Rail), allez dans le canal de mesure 4 (Block 004). La dernière ligne indique la "Torsion Value" ou "Angle de Synchronisation".
+  - L'idéal absolu est de **0.0°**.
+  - La tolérance usine se situe généralement entre **-3.0° et +3.0°**.
+  - Si vous êtes à **-4.5°** (retard), la courroie s'est allongée avec les années, ou le dernier calage de distribution a été fait au marqueur blanc au lieu des piges de blocage. Le moteur consomme plus, démarre mal et claque.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Chaîne de distribution et Déphaseur VVT"
+  tool="scanner"
+  time="10 min"
+>
+  Sur les moteurs à essence à chaîne (ex: THP, TSI), l'ECU affiche "Adaptation Arbre à cames" (Camshaft Adaptation).
+  - L'ECU compense l'usure de la chaîne en modifiant la phase.
+  - Si la valeur d'adaptation dépasse **+5° ou -5°** (selon le moteur), le témoin MIL s'allume. La chaîne s'est tellement étirée que le tendeur hydraulique est en bout de course. Il faut remplacer le kit chaîne complet d'urgence.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="Diagnostic croisé"
+>
+  Si le capteur PMH (Crank) lâche en roulant, le moteur s'arrête (il perd la référence principale de PMH). Si le capteur AAC (Cam) lâche, le moteur continue de tourner (l'ECU bascule en mode semi-séquentiel) mais mettra très longtemps à démarrer la fois suivante.
+</ConfirmationBox>

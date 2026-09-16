@@ -1,0 +1,75 @@
+---
+title: "L'Embrayage Magnétique du Compresseur A/C"
+description: "La clim ne fait plus de froid ? Testez la bobine magnétique du compresseur, vérifiez l'entrefer (Air Gap) et contournez les sécurités."
+pillar: "diagnostic"
+category: "actionneurs"
+system: "chauffage_climatisation"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le compresseur de climatisation (A/C) est entraîné par la courroie d'accessoire. Mais il ne tourne pas en permanence. Un embrayage magnétique (une grosse bobine) est situé derrière la poulie. Quand on appuie sur le bouton "A/C", l'ECU envoie du 12V à la bobine, qui devient un aimant puissant, plaque le plateau d'embrayage contre la poulie, et le compresseur se met à tourner.
+
+<DiagnosticTree 
+  symptom="Panne de Compresseur A/C"
+  options={[
+    { label: "L'intérieur de la poulie tourne avec la courroie ?", result: "L'embrayage est collé, le compresseur fonctionne." },
+    { label: "Seul l'extérieur de la poulie tourne ?", result: "L'embrayage n'est pas activé (Pas de gaz, ou bobine HS)." }
+  ]}
+/>
+
+### Diagnostic de la Bobine d'Embrayage
+
+Le premier réflexe d'un mécanicien quand la clim ne marche pas est de "Recharger en Gaz". Sauf que si c'est la bobine magnétique qui est grillée, vous aurez payé 80€ pour rien.
+
+<TestStepCard 
+  title="1. Test d'alimentation (12V)"
+  tool="multimetre"
+  time="5 min"
+>
+  L'embrayage du compresseur a une petite prise à 1 fil ou 2 fils.
+  - Débranchez la prise. Démarrez le moteur. Appuyez sur le bouton A/C dans l'habitacle.
+  - Mettez le multimètre dans la prise venant du faisceau de la voiture. 
+  - Avez-vous 12V (ou 14V moteur tournant) ?
+  - **OUI** : Le système est parfait, la voiture demande le froid. Si le compresseur ne "claque" pas, la bobine magnétique est morte.
+  - **NON** : L'ECU refuse d'activer la clim (Généralement parce qu'il n'y a plus de gaz dans le circuit, le capteur de pression bloque tout par sécurité).
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Test de Résistance de la Bobine"
+  tool="multimetre"
+  time="2 min"
+>
+  Moteur éteint, mesurez la résistance directement sur la prise du compresseur.
+  - Une bobine saine affiche entre **3 et 5 Ohms**.
+  - Si elle affiche "OL", le fil de cuivre à l'intérieur a fondu. L'embrayage est à remplacer.
+  - Si elle affiche 0 Ohm, elle est en court-circuit (elle fait sûrement griller le fusible de la climatisation dès que vous l'allumez).
+</TestStepCard>
+
+### Le Problème de l'Entrefer (Air Gap)
+
+C'est une panne sournoise. La clim marche parfaitement le matin. Au bout de 20 minutes de route, elle se coupe et souffle de l'air chaud. 
+
+<TestStepCard 
+  title="3. Diagnostic de l'usure du plateau"
+  tool="aucun"
+  time="5 min"
+>
+  - Quand le métal du compresseur chauffe, l'aimant perd un peu de sa force.
+  - Avec les années, le plateau de l'embrayage s'use (il devient plus fin).
+  - L'espace (Air gap) entre la poulie et le plateau, censé être de **0.5 mm**, passe à **1.5 mm**.
+  - L'aimant chaud n'a plus la force d'attirer le plateau de si loin. L'embrayage se décolle.
+  - **La réparation magique** : Dévissez le boulon central (10 ou 14mm) de la poulie. Retirez le plateau, et enlevez une petite rondelle d'espacement (Shim) qui se trouve derrière. Remontez le tout. L'Air gap est corrigé gratuitement !
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Compresseurs Modernes (Variable)"
+>
+  De nombreux véhicules modernes (VW, BMW, Peugeot) n'ont PLUS d'embrayage magnétique ! La poulie tourne toujours avec l'axe. C'est une valve électronique à l'intérieur (Solenoid Valve) qui gère l'inclinaison des pistons internes de 0 à 100%. Il n'y a plus de "CLAC" rassurant sous le capot. Il faut analyser le signal PWM de cette valve à l'oscilloscope.
+</ConfirmationBox>

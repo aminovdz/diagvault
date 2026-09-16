@@ -1,0 +1,68 @@
+---
+title: "Vanne EGR : Rapport Cyclique et Recopie (Consigne vs Réel)"
+description: "Comment savoir si la vanne EGR se bloque ? Analysez le rapport cyclique (PWM) et le potentiomètre de recopie pour diagnostiquer sans démonter."
+pillar: "diagnostic"
+category: "livedata"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Beaucoup de mécaniciens condamnent la vanne EGR au moindre broutage ou voyant moteur. Grâce à la Live Data, vous pouvez voir **en direct** si le clapet de la vanne accroche, se bloque, ou si c'est simplement le débitmètre (MAF) qui donne une fausse information au calculateur.
+
+<DiagnosticTree 
+  symptom="Live Data : Vanne EGR"
+  options={[
+    { label: "Position réelle suit la consigne ?", result: "Vanne mécaniquement saine" },
+    { label: "Position réelle fige à 30% ?", result: "Soupape grippée par la calamine" },
+    { label: "Position reste à 0% en charge ?", result: "C'est normal (l'EGR se ferme en accélération)" }
+  ]}
+/>
+
+### Le Test de Suivi de Consigne
+
+<TestStepCard 
+  title="1. Comprendre la Commande et la Recopie"
+  tool="scanner"
+  time="5 min"
+>
+  Sur une vanne EGR électrique moderne (5 fils), il y a deux données cruciales dans votre valise :
+  - **EGR Commande (Duty Cycle / Consigne) :** Ce que l'ECU demande (ex: 50% d'ouverture).
+  - **EGR Position (Recopie / Réel) :** Ce que le potentiomètre interne de la vanne lit physiquement (ex: le clapet est ouvert à 48%).
+  Ces deux lignes doivent se suivre comme une ombre.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Le Test d'Accélération"
+  tool="scanner"
+  time="10 min"
+>
+  Affichez ces deux valeurs sur un graphique et faites un essai routier.
+  - **Au ralenti (après 2 minutes) :** L'EGR se ferme souvent (0%) pour éviter l'encrassement.
+  - **À vitesse stabilisée (Cruise) :** L'ECU demande beaucoup d'EGR (ex: 60%). La courbe réelle doit monter de façon parfaitement fluide à 60%.
+  - **Accélération forte (Pied au plancher) :** L'ECU demande instantanément 0% (fermeture totale pour donner 100% d'air pur au moteur). La vanne doit claquer à 0% en une fraction de seconde. 
+  - **Le problème :** Si l'ECU demande 0% mais que la position réelle descend lentement à 20% puis reste bloquée, la vanne est grippée (calamine). Le moteur fumera noir et manquera de puissance.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. L'Active Test (Si Moteur Coupé)"
+  tool="scanner"
+  time="5 min"
+>
+  Allez dans la section "Tests Actionneurs" (Actuator Tests).
+  - Moteur éteint, contact mis (KOEO).
+  - Sélectionnez "Vanne EGR" et variez l'ouverture (0%, 25%, 50%, 100%).
+  - Vous devriez entendre un claquement net sous le capot. Sur l'écran, la position de recopie doit correspondre exactement au pourcentage demandé. S'il n'y a pas de bruit et que la recopie reste à 0%, la vanne (ou son faisceau moteur) est grillée.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="Lien avec le Débitmètre (MAF)"
+>
+  L'EGR et le MAF sont inséparables. Si la vanne EGR s'ouvre de 50%, le MAF doit lire 50% d'air frais en moins. Si la vanne s'ouvre (recopie OK) mais que le MAF ne bouge pas, le tuyau métallique de l'EGR est totalement bouché.
+</ConfirmationBox>

@@ -1,0 +1,56 @@
+---
+title: "P0299 - Sous-pression du Turbocompresseur"
+description: "Vérifications logiques pour un code P0299 sans remplacer le turbo (fuites de suralimentation, N75, géométrie variable)."
+pillar: "diagnostic"
+category: "dtc"
+system: "moteur"
+symptom: ["Mode dégradé", "Perte de puissance"]
+dtc: ["P0299"]
+sensor: ["Capteur MAP"]
+actuator: ["Electrovanne Turbo"]
+difficulty: "avance"
+risk: "moyen"
+requiredTools: ["scanner", "machine_a_fumee"]
+published_date: 2024-03-20
+author: "DiagVault"
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+
+## Le Piège du P0299
+L'ECU demande 1.5 bar de pression de turbo, mais le capteur MAP ne lit que 1.1 bar. L'ECU déclenche le P0299 et met le véhicule en mode dégradé (Limp Mode).
+Le réflexe est souvent de dire "le turbo est mort", mais 80% des P0299 sont dus à une **fuite d'air** ou un **problème de commande (dépression/électrovanne)**.
+
+## 🧪 Méthodologie de Test
+
+<TestStepCard 
+  stepNumber={1}
+  title="Vérification visuelle et acoustique des durites"
+  tool="machine_a_fumee"
+  action="Inspectez l'intercooler et les durites de suralimentation. Injectez de la fumée sous pression dans le circuit d'admission."
+  expectedResult="Circuit totalement étanche."
+  failureResult="Une durite fendue laissera échapper la pression générée par le turbo (souvent accompagné d'un sifflement ou d'un souffle bruyant en charge). Réparez la fuite."
+/>
+
+<TestStepCard 
+  stepNumber={2}
+  title="Test de la commande du turbo (Dépression ou Électrique)"
+  tool="scanner"
+  action="Utilisez la fonction 'Active Test' du scanner pour commander l'actuateur du turbo de 0% à 100% moteur au ralenti."
+  expectedResult="La tige de la wastegate ou de la géométrie variable (VGT) doit bouger de manière fluide sur toute sa course (environ 1.5 à 2 cm)."
+  failureResult="Si la tige ne bouge pas (commande pneumatique), vérifiez la pompe à vide, les durites de dépression et l'électrovanne (N75). Si c'est un actuateur électronique, vérifiez son alimentation et ses engrenages internes."
+/>
+
+<TestStepCard 
+  stepNumber={3}
+  title="Vérification du capteur MAP"
+  tool="scanner"
+  action="Moteur coupé, contact mis (KOEO). Lisez la pression du capteur MAP et la pression atmosphérique (Baro)."
+  expectedResult="Les deux pressions doivent être identiques (environ 1 bar / 1000 mbar)."
+  failureResult="Si le capteur MAP affiche 0.5 bar ou 2.0 bar moteur éteint, il est défectueux ou son câblage est en court-circuit. L'ECU croit à tort qu'il y a une sous-pression."
+/>
+
+<ConfirmationBox 
+  title="Quand remplacer le turbo ?"
+  text="Si le circuit est parfaitement étanche, que l'actuateur ferme bien les aubes/la wastegate à fond, que le capteur MAP dit la vérité, MAIS que le turbo ne génère pas de pression, alors (et seulement alors) la turbine ou l'axe est HS."
+/>

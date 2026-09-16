@@ -1,0 +1,66 @@
+---
+title: "Clear Crash Data Airbag : Réparation après impact"
+description: "Clear Crash Data Airbag : Comment effacer l'historique d'impact dans l'EEPROM du calculateur SRS après un accident pour éteindre le voyant."
+pillar: "programmation"
+category: "eeprom"
+system: "bsi"
+difficulty: "intermediaire"
+risk: "eleve"
+requiredTools: ["programmateur"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Lorsqu'un véhicule subit un accident ayant déclenché les ceintures ou les airbags, le calculateur SRS (Airbag) enregistre un "Crash Data" dans sa mémoire EEPROM ou dans le MCU. Les concessionnaires vous obligeront à acheter un module neuf très coûteux. En électronique avancée, on "efface" ce crash (Clear Crash).
+
+<DiagnosticTree 
+  symptom="Voyant Airbag (Après Accident)"
+  options={[
+    { label: "Défaut : Calculateur à remplacer ?", result: "Crash Data enregistré (Verrouillage logiciel)" },
+    { label: "Airbags remplacés mais voyant allumé ?", result: "Le module doit être réinitialisé (Clear Crash)" },
+    { label: "Défaut matériel interne ?", result: "Module physiquement fissuré ou capteur d'impact HS" }
+  ]}
+/>
+
+### Comment effacer un Crash Data
+
+<TestStepCard 
+  title="1. L'extraction du DUMP (Lecture)"
+  tool="programmateur"
+  time="20 min"
+>
+  Démontez le module Airbag (souvent sous la console centrale, fixé solidement au châssis).
+  - Ouvrez-le et identifiez la puce mémoire (Généralement une EEPROM SPI 95xxx ou I2C, parfois un processeur SPC560 ou MAC).
+  - Lisez le fichier binaire (Dump original) de la mémoire, et **sauvegardez-le sous le nom "Crash_Original.bin"**.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Modification du Fichier (Clear)"
+  tool="aucun"
+  time="10 min"
+>
+  Le "Crash Data" est simplement un bloc de lignes de code hexadécimal (souvent des FF ou des données spécifiques de l'accident).
+  - Utilisez un logiciel spécialisé (Tachosoft, Airbag Universal Repair, CarProg) qui possède la solution pour le numéro de pièce exact de votre module (ex: Bosch 0 285 xxx xxx).
+  - Le logiciel compare votre fichier avec une base de données de modules neufs (Clear), et efface spécifiquement les lignes du crash sans toucher à la configuration du véhicule (VIN, nombre d'airbags équipés).
+  - Sauvegardez le nouveau fichier "Clear.bin".
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Écriture et Vérification"
+  tool="programmateur"
+  time="15 min"
+>
+  Écrivez le fichier "Clear.bin" dans la puce.
+  - Ressoudez la puce.
+  - Remontez le module dans la voiture **après** vous être assuré que tous les airbags déclenchés et prétensionneurs ont été remplacés physiquement.
+  - Branchez la batterie, mettez le contact (en restant hors de la zone de déploiement des airbags par sécurité). Le voyant doit s'éteindre.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Avertissement de Sécurité"
+>
+  Si le voyant Airbag reste allumé après un Clear Crash, passez la valise. Le module vous indiquera quel airbag ou quelle résistance de ceinture pose encore problème. N'utilisez JAMAIS de résistances (leurres) pour masquer un airbag manquant, c'est un délit pénal.
+</ConfirmationBox>

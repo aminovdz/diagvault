@@ -1,0 +1,66 @@
+---
+title: "P0442 - Fuite Légère du Système d'Évaporation (EVAP System Small Leak Detected)"
+description: "P0442 indique une légère fuite de vapeurs d'essence. Du bouchon de réservoir usé à la purge canister bloquée, découvrez comment trouver la fuite."
+pillar: "diagnostic"
+category: "dtc"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["machine_a_fumee", "scanner"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le DTC **P0442** s'allume lorsque l'ECU effectue son test d'étanchéité du réservoir à carburant (généralement la nuit ou au ralenti) et détecte une fuite "légère" (trou d'environ 1 millimètre). Les vapeurs d'essence (polluantes) s'échappent dans l'atmosphère.
+
+<DiagnosticTree 
+  symptom="P0442 : Fuite Légère EVAP"
+  options={[
+    { label: "Bouchon de réservoir ?", result: "Joint usé ou bouchon mal fermé" },
+    { label: "Vanne de Purge (Avant) ?", result: "Bloquée légèrement ouverte" },
+    { label: "Vanne de Ventilation (Arrière) ?", result: "Ne ferme pas de façon étanche" }
+  ]}
+/>
+
+### La chasse à la micro-fuite
+
+<TestStepCard 
+  title="1. Le Bouchon de Réservoir (Gas Cap)"
+  tool="aucun"
+  time="2 min"
+>
+  C'est la cause de 50% des codes P0442. 
+  - Inspectez le joint torique (O-ring) du bouchon de remplissage d'essence. S'il est craquelé, sec, ou manquant, la pression s'échappe par là.
+  - Resserrez toujours le bouchon jusqu'à entendre plusieurs clics. Si le défaut part après un reset, le problème est résolu.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Test de l'électrovanne de Purge Canister (Purge Valve)"
+  tool="aucun"
+  time="10 min"
+>
+  L'électrovanne de purge (sous le capot) aspire les vapeurs du réservoir vers le moteur. Elle doit être **parfaitement étanche** au repos.
+  - Débranchez la durite côté réservoir de la vanne de purge.
+  - Démarrez le moteur.
+  - Posez votre doigt sur l'entrée de la vanne. Si vous sentez une aspiration (même légère), la vanne fuit. Remplacez-la.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Générateur de Fumée dans le circuit EVAP"
+  tool="machine_a_fumee"
+  time="20 min"
+>
+  Si le bouchon et la purge sont OK, la fuite est sous la voiture (réservoir, canister, goulotte).
+  - Connectez une machine à fumée au port de test EVAP sous le capot (port Schrader vert).
+  - **Important :** Utilisez la valise diagnostique pour "Fermer la vanne de ventilation EVAP" (EVAP Vent Solenoid - Close). Sans cela, toute la fumée sortira par l'arrière de la voiture normalement.
+  - Cherchez la fumée sous la voiture (une fissure sur le haut du réservoir en plastique ou sur la goulotte de remplissage).
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Machine à fumée et Réservoir"
+>
+  N'utilisez **jamais** de compresseur d'air haute pression (soufflette) dans le système EVAP. Vous risquez d'exploser le réservoir à carburant en plastique. Utilisez une machine à fumée EVAP régulée à très basse pression (0.5 PSI maximum).
+</ConfirmationBox>

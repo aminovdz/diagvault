@@ -1,0 +1,67 @@
+---
+title: "Taux de Suie et Cendres (FAP / DPF Mass)"
+description: "Soot Mass vs Ash Mass. Comment savoir si votre Filtre à Particules est juste encrassé ou s'il est définitivement en fin de vie et plein de cendres."
+pillar: "diagnostic"
+category: "livedata"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+L'état d'un Filtre à Particules (FAP / DPF) est défini par deux valeurs distinctes dans le calculateur moteur : la Masse de Suie (Soot Mass) et la Masse de Cendres (Ash Mass). Confondre ces deux termes conduit inévitablement à un diagnostic erroné et des régénérations forcées inutiles.
+
+<DiagnosticTree 
+  symptom="Live Data : FAP (DPF)"
+  options={[
+    { label: "Masse de SUIE très élevée (> 30g) ?", result: "Régénération requise (Conduite ou Forcée)" },
+    { label: "Masse de CENDRES élevée (> 60g) ?", result: "FAP physiquement en fin de vie (Nettoyage/Remplacement)" },
+    { label: "Suie mesurée vs calculée ?", result: "Détection de capteur défaillant" }
+  ]}
+/>
+
+### Différence cruciale : Suie vs Cendres
+
+<TestStepCard 
+  title="1. La Masse de Suie (Soot Mass)"
+  tool="scanner"
+  time="5 min"
+>
+  La suie, c'est le noir de fumée. **Elle brûle.**
+  - L'ECU calcule la masse de suie (ex: 15 grammes) et déclenche une régénération automatique vers 20-25g.
+  - La régénération brûle cette suie et la transforme en CO2. La valeur retombe à 0-5g.
+  - **Diagnostic :** Si la suie monte à 40g (Voyant FAP allumé), le client fait trop de ville, ou un problème (EGR fuyard, injecteur, thermostat froid) génère trop de fumée. Une régénération forcée peut régler le problème, une fois la cause réparée.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. La Masse de Cendres (Oil Ash Volume/Mass)"
+  tool="scanner"
+  time="5 min"
+>
+  Les cendres sont le résidu incombustible de la combustion de l'huile moteur (Additifs, métaux). **Elles ne brûlent pas.**
+  - À chaque régénération, la suie disparaît, mais les cendres s'accumulent (très lentement) au fond du FAP.
+  - Vers 200 000 km, la masse de cendres atteint sa limite (ex: 60 grammes ou 175 ml sur VAG).
+  - **Diagnostic :** Le FAP est physiquement "rempli de sable". L'ECU lancera des régénérations tous les 50 km (car la pression est toujours haute). **Aucune régénération forcée n'y fera rien.** Le FAP doit être démonté pour un lavage hydrodynamique ou être remplacé.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Suie Calculée vs Suie Mesurée"
+  tool="scanner"
+  time="10 min"
+>
+  De nombreux ECU (comme VAG EDC17) affichent deux lignes :
+  - **Suie Calculée (Calculated) :** L'ECU la devine mathématiquement selon la charge moteur et le temps de roulage.
+  - **Suie Mesurée (Measured) :** L'ECU la déduit via la pression lue par le capteur différentiel du FAP.
+  - *Le Piège :* Si la Suie Calculée est de 10g, mais que la Suie Mesurée est de -5g ou 50g en permanence, le capteur de pression différentielle donne une information fausse. Remplacez le capteur !
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="La Remise à Zéro"
+>
+  Si vous faites un nettoyage pro du FAP ou si vous le remplacez, vous DEVEZ utiliser la fonction "Remplacement FAP / Reset Ash Counter" de la valise. Cela remet les "Cendres" à zéro. Si vous oubliez, l'ECU continuera de croire que le filtre est plein et fera des régénérations constantes.
+</ConfirmationBox>

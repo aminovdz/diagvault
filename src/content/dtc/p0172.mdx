@@ -1,0 +1,64 @@
+---
+title: "P0172 - Système Trop Riche, Ligne 1 (System Too Rich Bank 1)"
+description: "Le calculateur réduit l'injection de carburant car le mélange est trop riche. Causes : injecteur fuyard, MAF défectueux, ou pression d'essence trop haute."
+pillar: "diagnostic"
+category: "dtc"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner", "multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le **P0172** est l'exact opposé du P0171. Il signifie qu'il y a **trop de carburant** (ou pas assez d'air) dans la chambre de combustion. La sonde Lambda (O2) détecte un manque d'oxygène dans l'échappement, et l'ECU réagit en retirant du carburant (les Fuel Trims deviennent très négatifs, ex: -20%).
+
+<DiagnosticTree 
+  symptom="P0172 : Mélange Trop Riche"
+  options={[
+    { label: "Injecteur fuyard ?", result: "Goutte à goutte dans le cylindre" },
+    { label: "MAF qui surévalue ?", result: "Débitmètre sale ou défectueux" },
+    { label: "Pression d'essence ?", result: "Régulateur de pression bloqué fermé" }
+  ]}
+/>
+
+### Plan d'attaque du Diagnostic
+
+<TestStepCard 
+  title="1. Analyse des Fuel Trims (STFT / LTFT)"
+  tool="scanner"
+  time="5 min"
+>
+  Vérifiez à quel moment le mélange est riche.
+  - Si les corrections (STFT + LTFT) sont de **-20% au ralenti** mais reviennent à **0% en charge (3000 tr/min)**, c'est généralement un injecteur qui fuit (goutte à goutte) ou le clapet de purge canister (EVAP) bloqué ouvert.
+  - Si le mélange est riche **à la fois au ralenti et en charge**, suspectez le débitmètre (MAF) qui "ment" en indiquant plus d'air qu'il n'en rentre réellement, ou une pression de carburant globalement trop élevée.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Test de Pression de Carburant"
+  tool="multimetre"
+  time="15 min"
+>
+  Si le régulateur de pression de carburant (souvent sur la rampe ou dans le réservoir) est défectueux, la pompe peut envoyer 5 bars au lieu de 3 bars.
+  Les injecteurs s'ouvrent le même temps, mais beaucoup plus d'essence est pulvérisée.
+  - Branchez un manomètre sur la rampe d'injection (port Schrader).
+  - Vérifiez que la pression correspond aux spécifications du constructeur (ex: 3.5 bars constants).
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Test du Débitmètre (MAF)"
+  tool="scanner"
+  time="10 min"
+>
+  Un MAF sale sous-évalue souvent l'air (P0171), mais un MAF électriquement défectueux peut surévaluer (P0172). 
+  Moteur coupé, contact mis (KOEO), le MAF devrait lire 0 g/s. S'il lit 2 ou 3 g/s alors que le moteur ne tourne pas, l'ECU va injecter du carburant pour de l'air fantôme. Remplacez le capteur.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="Rappel"
+>
+  Ne remplacez pas la sonde Lambda ! Si elle déclenche le P0172, c'est justement parce qu'elle fonctionne parfaitement et qu'elle fait son travail en lisant le mélange riche.
+</ConfirmationBox>

@@ -1,0 +1,69 @@
+---
+title: "Virginisation de Direction Assistée Électrique (DAE / EPS)"
+description: "Virginisation de direction assistée électrique (DAE / EPS). Comment effacer le VIN d'une colonne de direction d'occasion (ex: Renault/Fiat) via son EEPROM."
+pillar: "programmation"
+category: "eeprom"
+system: "immo"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["programmateur", "fer_a_souder"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Les directions assistées électriques (DAE / EPS), particulièrement chez Renault (Clio 3, Modus, Megane) et Fiat (Punto, 500), tombent fréquemment en panne (Capteur d'angle de braquage HS, moteur grillé). Acheter une colonne complète à la casse est la solution la moins chère, mais elle est codée au numéro de châssis (VIN) de l'ancien véhicule !
+
+<DiagnosticTree 
+  symptom="Colonne DAE d'occasion montée"
+  options={[
+    { label: "Direction toujours très dure ?", result: "Le module refuse de s'activer" },
+    { label: "Défaut : VIN Incohérent ?", result: "L'UCH refuse l'autorisation (Immo)" },
+    { label: "Défaut : Réseau Multiplexé ?", result: "Code PIN ou VIN bloquant" }
+  ]}
+/>
+
+### La méthode de Virginisation
+
+La "Virginisation" consiste à remettre l'EEPROM de la DAE d'occasion dans son état neuf (Sortie d'Usine). Ainsi, au premier contact, elle lira le VIN de la voiture sur le réseau CAN et s'y appariera automatiquement.
+
+<TestStepCard 
+  title="1. Accéder à l'EEPROM de la DAE"
+  tool="fer_a_souder"
+  time="20 min"
+>
+  Le calculateur DAE est généralement fixé directement sur la colonne de direction (ou c'est le moteur lui-même).
+  - Démontez le couvercle du calculateur de la colonne d'occasion.
+  - Localisez l'EEPROM (souvent une 24C16 sur Renault Clio 3 / Modus).
+  - Dessoudez l'EEPROM et placez-la sur votre programmateur.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Effacement du VIN (Le fichier Vierge)"
+  tool="programmateur"
+  time="15 min"
+>
+  Lisez le fichier Original de la DAE (Dump). Vous verrez en clair, dans la colonne ASCII à droite de votre éditeur hexadécimal, le numéro VF1... (le numéro de châssis de l'ancienne voiture).
+  - Remplacer ces octets (du VIN) par des `FF FF` ne suffit généralement pas.
+  - Utilisez un logiciel comme "Renault EPS Virgin" ou injectez un fichier "Vierge Certifié" (Clear Dump) correspondant exactement au numéro de pièce (Reference TRW).
+  - Écrivez le fichier vierge dans l'EEPROM et ressoudez la puce.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Apprentissage sur le véhicule (Plug & Play)"
+  tool="scanner"
+  time="10 min"
+>
+  - Montez la colonne de direction dans la voiture.
+  - Branchez la batterie. Mettez le contact.
+  - Sur de nombreux modèles (Renault), la DAE va détecter le VIN diffusé par l'UCH et l'ABS, et s'auto-coder immédiatement. La direction devient molle, c'est gagné !
+  - Sur d'autres, il faudra passer la valise diagnostique, aller dans le calculateur DAE, et lancer l'apprentissage du capteur d'angle de braquage (Steering Angle Calibration) en mettant les roues droites.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="Éviter la DAE d'occasion"
+>
+  Rappelez-vous qu'une DAE de casse a généralement 150 000 km et le même capteur d'angle de braquage fragile que celle d'origine. Mettre une DAE d'occasion recule souvent le problème d'un an ou deux. La réparation du capteur interne est souvent plus durable.
+</ConfirmationBox>

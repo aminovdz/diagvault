@@ -1,0 +1,70 @@
+---
+title: "L'Injecteur Diesel Common Rail (Test des Retours)"
+description: "Moteur qui claque ou refuse de démarrer ? Le test des retours d'injecteurs (Leak-off Test) est la méthode infaillible pour les systèmes Common Rail."
+pillar: "diagnostic"
+category: "actionneurs"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "moyen"
+requiredTools: ["kit_retour_injecteur", "scanner"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Les injecteurs Common Rail (HDI, TDI, DCI) fonctionnent sous des pressions extrêmes (jusqu'à 2500 bars). Leurs tolérances internes sont de l'ordre du micron. Lorsqu'ils s'usent, la haute pression s'enfuit à l'intérieur de l'injecteur et retourne dans le réservoir au lieu d'être pulvérisée dans le cylindre.
+
+<DiagnosticTree 
+  symptom="Panne d'Injection Diesel"
+  options={[
+    { label: "Pression Rail trop basse au démarrage ?", result: "Fuite interne (Retour de fuite trop grand)." },
+    { label: "Claquement métallique fort en accélération ?", result: "Injecteur bloqué ouvert (Pisse le gazole)." }
+  ]}
+/>
+
+### Le Test des Retours (Leak-off Test)
+
+C'est LE test mécanique par excellence pour les diesels modernes. Il permet de voir si un injecteur est mort de l'intérieur.
+
+<TestStepCard 
+  title="1. Préparation des fioles"
+  tool="kit_retour_injecteur"
+  time="10 min"
+>
+  - Moteur à l'arrêt.
+  - Débranchez délicatement les petits tuyaux de retour (souvent clipsés sur le dessus) de vos 4 injecteurs.
+  - Branchez les 4 tuyaux transparents de votre kit de fioles sur les retours des injecteurs.
+  - Pincez le tuyau de retour général du véhicule (pour éviter que le gazole ne remonte et ne coule partout).
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Le Test de Démarrage (Cranking)"
+  tool="aucun"
+  time="2 min"
+>
+  Si la voiture refuse de démarrer (Pression trop basse) :
+  - Débranchez le capteur PMH (pour empêcher l'ECU d'ouvrir les injecteurs).
+  - Actionnez le démarreur pendant 15 secondes d'affilée.
+  - Regardez les fioles. Un injecteur en bon état ne crache presque rien au démarreur (quelques gouttes).
+  - Si l'une des fioles se remplit de plusieurs centimètres, cet injecteur a une fuite interne massive. La pompe HP se vide par lui ! Remplacez-le.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Le Test au Ralenti (Idle)"
+  tool="aucun"
+  time="5 min"
+>
+  Si la voiture démarre mais tourne sur 3 pattes ou fume :
+  - Laissez le capteur PMH branché, démarrez le moteur, et laissez tourner au ralenti pendant 2 minutes (ou jusqu'à ce que les fioles se remplissent).
+  - Arrêtez le moteur.
+  - Comparez les niveaux. **Les 4 fioles doivent avoir approximativement le même niveau.**
+  - Si la fiole N°2 a 3 fois plus de gazole que les autres, l'injecteur N°2 est fatigué et ne maintient plus la pression.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Codage obligatoire (IMA)"
+>
+  Lorsque vous remplacez un injecteur Common Rail, il est obligatoire d'entrer son code de calibrage (Code IMA, souvent de 7 à 30 caractères inscrits sur la tête de l'injecteur) dans l'ECU avec votre Scanner. Sans cela, le moteur claquera ou polluera.
+</ConfirmationBox>

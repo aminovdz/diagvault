@@ -1,0 +1,66 @@
+---
+title: "P0101 - Débitmètre MAF Plage/Performance (Mass Air Flow Circuit Range/Performance)"
+description: "Le P0101 n'implique pas de changer le débitmètre systématiquement. Découvrez comment diagnostiquer les fuites d'admission et l'encrassement du capteur."
+pillar: "diagnostic"
+category: "dtc"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner", "machine_a_fumee"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le DTC **P0101** ne signifie pas "Capteur MAF défectueux". Il signifie que **le volume d'air mesuré par le capteur ne correspond pas au volume d'air calculé par le calculateur** (via le régime, le capteur MAP et la position du papillon).
+
+<DiagnosticTree 
+  symptom="P0101 : MAF Cohérence"
+  options={[
+    { label: "Fuite d'air ?", result: "Air non comptabilisé (Machine à fumée)" },
+    { label: "Capteur sale ?", result: "Nettoyage du filament MAF" },
+    { label: "Faux contact ?", result: "Tirer sur le faisceau (Wiggle Test)" },
+    { label: "MAF fatigué ?", result: "Volumetric Efficiency (VE) Test" }
+  ]}
+/>
+
+### Procédure de Diagnostic Logique
+
+<TestStepCard 
+  title="1. Recherche de fuites d'air (Prise d'air)"
+  tool="machine_a_fumee"
+  time="20 min"
+>
+  L'erreur numéro 1 est de remplacer le capteur. 
+  Si de l'air s'infiltre dans le moteur **après** le débitmètre (durite d'admission fissurée, joint de collecteur, PCV valve percée), le débitmètre ne verra pas cet air. L'ECU détectera une incohérence.
+  - Branchez une machine à fumée dans l'admission, moteur éteint.
+  - Cherchez la moindre volute de fumée sortant d'une durite ou d'un joint.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Lecture Live Data et Test du VE (Volumetric Efficiency)"
+  tool="scanner"
+  time="15 min"
+>
+  Un moteur en bonne santé au ralenti, chaud et sans accessoires, consomme environ **1 gramme par seconde pour chaque litre de cylindrée** (ex: 2.0L = ~2 g/s au ralenti).
+  - Pour tester la pleine échelle du capteur : passez en 2ème vitesse, accélérez à fond (WOT - Wide Open Throttle) jusqu'à la zone rouge.
+  - Regardez le pic du MAF en g/s.
+  - La formule magique : La puissance du moteur en chevaux (HP) multipliée par 0.8 devrait donner à peu près le pic en g/s (Ex: Moteur de 100 CH * 0.8 = ~80 g/s). Si vous n'avez que 40 g/s, le MAF est sale ou sous-estime largement.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Inspection visuelle et nettoyage"
+  tool="aucun"
+  time="10 min"
+>
+  Démontez le MAF et regardez les fils de mesure à l'intérieur. Si un filtre à air K&N (huilé) a été posé, l'huile se dépose souvent sur le fil chaud du MAF, l'isolant de l'air, ce qui fausse la mesure.
+  Utilisez exclusivement un "Nettoyant Spécial Débitmètre" (pas de nettoyant frein, trop agressif pour le filament).
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="Verdict"
+>
+  Ne remplacez le débitmètre que si : vous avez vérifié l'absence totale de prise d'air, le faisceau électrique (5V, Masse, Signal) est impeccable, et le capteur échoue lamentablement au test WOT (Wide Open Throttle).
+</ConfirmationBox>

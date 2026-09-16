@@ -1,0 +1,67 @@
+---
+title: "P0113 - Capteur de Température d'Air d'Admission Circuit Haut (IAT Sensor Circuit High)"
+description: "L'ECU lit une température d'admission absurde (-40°C). Le code P0113 indique toujours un circuit ouvert : capteur débranché, fil coupé, ou sonde morte."
+pillar: "diagnostic"
+category: "dtc"
+system: "moteur"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["scanner", "multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le code **P0113** signifie "Intake Air Temperature Circuit High Input". Sur les sondes de température CTN (Coefficient de Température Négatif), une tension (voltage) élevée mesurée par l'ECU équivaut à une température extrêmement froide. 
+En clair : **le circuit est ouvert / fil coupé**, l'ECU voit exactement 5.0V et affiche **-40°C**.
+
+<DiagnosticTree 
+  symptom="P0113 : Circuit Ouvert IAT"
+  options={[
+    { label: "Capteur débranché ?", result: "Vérifier le connecteur (très fréquent)" },
+    { label: "Fil coupé ?", result: "L'ECU voit 5V (Circuit Ouvert)" },
+    { label: "Sonde HS (Résistance Infinie) ?", result: "Mesurer au multimètre" }
+  ]}
+/>
+
+### Résolution express en 3 étapes
+
+<TestStepCard 
+  title="1. La lecture des Live Data (-40°C)"
+  tool="scanner"
+  time="2 min"
+>
+  Branchez votre valise et lisez la valeur "Température Air Admission" (IAT).
+  Si vous voyez exactement **-40°C** (ou -40°F, curieusement c'est la même température), c'est la signature électrique d'un circuit totalement ouvert. Si vous êtes intervenu récemment sous le capot (changement filtre à air), vous avez très probablement oublié de rebrancher le capteur !
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Le Test du Trombone (Bypass Test)"
+  tool="multimetre"
+  time="5 min"
+>
+  Débranchez le connecteur du capteur IAT (2 fils).
+  - Prenez un petit fil électrique (ou un trombone propre) et faites un pont (shunt) entre les deux terminaux du connecteur **côté faisceau**.
+  - Regardez votre valise de diagnostic. 
+  - La température doit instantanément sauter de -40°C à **+130°C / +150°C** (la valeur maximale de votre ECU).
+  - Si cela se produit, votre faisceau électrique est parfait jusqu'à l'ECU. Le problème vient 100% du capteur IAT (remplacez-le).
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Test du câblage (Si le shunt ne marche pas)"
+  tool="multimetre"
+  time="15 min"
+>
+  Si, malgré le trombone, la valise affiche toujours -40°C : le fil est physiquement coupé entre le capteur et l'ECU, ou la masse du capteur a disparu.
+  - Utilisez le multimètre pour mesurer le voltage dans la prise débranchée. Vous devez trouver un fil avec exactement 5.0V (venant de l'ECU), et un fil avec une masse parfaite.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="Rappel Technique CTN"
+>
+  CTN : Plus la température monte, plus la résistance (et donc la tension lue par l'ECU) baisse. 
+  Circuit ouvert (fil coupé) = 5V = Froid extrême (-40°C) -> P0113.
+  Court-circuit (fils qui se touchent) = 0V = Chaud extrême (+140°C) -> P0112.
+</ConfirmationBox>

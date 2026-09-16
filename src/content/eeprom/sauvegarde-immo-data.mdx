@@ -1,0 +1,66 @@
+---
+title: "Sécuriser ses arrières : Sauvegarder le DUMP"
+description: "Sécuriser ses arrières : Pourquoi et comment toujours sauvegarder le DUMP original (sauvegarde complète) avant d'écrire ou de modifier un calculateur."
+pillar: "programmation"
+category: "eeprom"
+system: "ecu"
+difficulty: "debutant"
+risk: "moyen"
+requiredTools: ["programmateur"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+En électronique automobile (Immo, EEPROM, Chiptuning), une seule règle domine : **Le Full Backup (la sauvegarde complète originale)**. Sans elle, une simple erreur de manipulation peut détruire des données cryptées uniques au véhicule (Immo Data), vous obligeant à racheter un calculateur neuf chez le concessionnaire.
+
+<DiagnosticTree 
+  symptom="Conséquences d'un fichier perdu"
+  options={[
+    { label: "Fichier Flash perdu/écrasé ?", result: "Trouver un fichier 'Original' en ligne (Même HW/SW)" },
+    { label: "Fichier EEPROM Immo perdu ?", result: "Catastrophe : Données uniques perdues (AKL complexe)" },
+    { label: "Outil qui plante en écriture ?", result: "Restauration possible uniquement si Backup préalable" }
+  ]}
+/>
+
+### La méthodologie du Backup
+
+<TestStepCard 
+  title="1. Séparer la Flash et l'EEPROM"
+  tool="programmateur"
+  time="5 min"
+>
+  Un ECU moteur ou une BSI contient deux types de mémoire :
+  - **La Flash :** Contient la cartographie (Engine Maps) et le système d'exploitation du calculateur. Ce fichier est identique pour toutes les voitures qui ont la même motorisation. (Si vous le perdez, vous pouvez le retrouver sur des forums de chiptuning).
+  - **L'EEPROM (ou Immo Data) :** Contient le code PIN, le VIN, le kilométrage et le codage des injecteurs. Ce fichier est **UNIQUE** à cette voiture spécifique. Si vous le perdez ou l'écrasez, personne sur internet ne pourra vous fournir le même !
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Toujours lire avant d'écrire"
+  tool="programmateur"
+  time="10 min"
+>
+  Même si vous avez acheté un fichier "Tuning" ou un fichier "Immo OFF" tout fait sur internet, ne l'écrivez jamais directement.
+  - Connectez le calculateur sur table.
+  - Lisez l'EEPROM. Enregistrez-la : `Peugeot208_EDC17C60_EEPROM_ORI.bin`.
+  - Lisez la Flash. Enregistrez-la : `Peugeot208_EDC17C60_FLASH_ORI.bin`.
+  - Si (et seulement si) ces lectures réussissent et que les fichiers ne sont pas vides (pas remplis de 00 00), vous pouvez procéder à l'écriture de votre fichier modifié.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Les dangers de l'OBD"
+  tool="scanner"
+  time="5 min"
+>
+  Le flashage par la prise OBD (via KESS, Autotuner) est pratique mais risqué. 
+  Par OBD, l'outil ne fait souvent qu'une "Lecture Virtuelle" (Virtual Read depuis un serveur) et n'écrit que la Flash. Si la tension de la batterie chute pendant l'écriture, le flashage coupe à 50%. La voiture ne démarre plus.
+  - Sans un vrai backup "Bench" (sur table), restaurer un ECU planté par OBD peut nécessiter des interventions très lourdes. Gardez toujours un chargeur de batterie branché lors d'une opération OBD !
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Le dossier d'archives"
+>
+  Structurez votre ordinateur. Créez un dossier par client/véhicule avec la plaque d'immatriculation et la date. Vous serez extrêmement soulagé de retrouver le fichier "ORI" (Original) si le client revient un an plus tard avec un problème sur son calculateur.
+</ConfirmationBox>

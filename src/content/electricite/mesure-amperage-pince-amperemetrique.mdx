@@ -1,0 +1,69 @@
+---
+title: "La Pince Ampèremétrique : Diagnostiquer sans démonter"
+description: "Comment utiliser une pince ampèremétrique pour tester la santé d'une pompe à essence, d'un injecteur ou la compression d'un moteur sans rien démonter."
+pillar: "diagnostic"
+category: "electricite"
+system: "moteur"
+difficulty: "avance"
+risk: "faible"
+requiredTools: ["pince_amperemetrique", "oscilloscope"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le Voltage (Tension) vous dit si le courant arrive au composant. L'Ampérage (Intensité) vous dit **quel travail effectue le composant**. Une pompe à essence peut recevoir un 12V parfait, si elle est grippée ou tourne dans le vide, seul l'ampérage vous le révèlera. La Pince Ampèremétrique (Current Clamp) est l'outil ultime.
+
+<DiagnosticTree 
+  symptom="Symptôme et Courant"
+  options={[
+    { label: "Pompe consomme 0A ?", result: "Moteur grillé ou fil coupé (Circuit ouvert)" },
+    { label: "Pompe consomme 20A ?", result: "Moteur grippé ou filtre totalement bouché" },
+    { label: "Pompe consomme 2A ?", result: "Pompe désamorcée (tourne dans le vide, pas d'essence)" }
+  ]}
+/>
+
+### Comment utiliser la Pince Ampèremétrique (Low Amp Probe)
+
+La magie de la pince, c'est qu'elle se "clipse" autour d'un fil sans jamais le dénuder ou le percer. Elle mesure le champ magnétique créé par le passage des électrons.
+
+<TestStepCard 
+  title="1. La règle absolue du Fil Unique"
+  tool="pince_amperemetrique"
+  time="2 min"
+>
+  Vous devez pincer **un seul fil**. 
+  Si vous pincez le câble entier contenant le + et le -, le courant va dans un sens sur le +, et revient dans l'autre sur le -. Les champs magnétiques s'annulent, la pince lira 0 Ampère. Mettez la pince autour du fil positif OU du fil négatif, mais jamais les deux.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. L'Oscilloscope et la Pompe à essence"
+  tool="oscilloscope"
+  time="15 min"
+>
+  Branchée sur un oscilloscope, une pince "Low Amp" (60A) permet de lire les pulsations de la pompe à essence dans le réservoir.
+  Une pompe est un moteur électrique à balais (charbons). À chaque fois qu'un charbon passe sur une lame du collecteur (commutateur), l'ampérage fait une petite vague.
+  - Remplacez le relais de pompe à essence par un fil boucle (Shunt).
+  - Mettez la pince autour du fil boucle.
+  - L'oscilloscope dessinera les vagues (ondulations). S'il y a un trou régulier dans les vagues, un charbon de la pompe est mort. La pompe va bientôt lâcher. Vous avez diagnostiqué la pompe sans lever la banquette arrière ni ouvrir le réservoir !
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Test de Compression Relative (High Amp)"
+  tool="oscilloscope"
+  time="10 min"
+>
+  Utilisez une pince "High Amp" (600A) autour du gros câble de masse de la batterie.
+  - Coupez l'injection (enlevez le relais de pompe).
+  - Lancez le démarreur pendant 10 secondes.
+  - À chaque fois qu'un cylindre passe en phase de compression, il résiste. Le démarreur force plus, et tire un pic de courant (ex: 150 Ampères).
+  - Vous verrez 4 gros pics successifs sur l'écran. Si l'un des pics est beaucoup plus bas que les autres (ex: 80A), ce cylindre n'a plus de compression mécanique ! 10 minutes, les mains propres.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Le Zéro (Zeroing)"
+>
+  Une pince ampèremétrique capte les champs magnétiques terrestres. Appuyez toujours sur le bouton "ZERO" de la pince lorsqu'elle est fermée dans le vide, juste avant de la clipser autour du fil du véhicule.
+</ConfirmationBox>

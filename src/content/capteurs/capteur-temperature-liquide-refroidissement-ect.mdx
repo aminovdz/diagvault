@@ -1,0 +1,62 @@
+---
+title: "La Sonde de Température (ECT / CTS)"
+description: "Démarrage difficile à froid ? Fumée noire ? Pourquoi la sonde de température (CTN) dicte toute la stratégie d'injection de l'ECU."
+pillar: "diagnostic"
+category: "capteurs"
+system: "moteur"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["scanner", "multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le capteur ECT (Engine Coolant Temperature) est le "Starter" électronique de la voiture. À froid, le carburant se condense sur les parois glacées du collecteur. L'ECU doit injecter **deux à trois fois plus d'essence** pour que le moteur démarre. Si la sonde ECT ment, le moteur ne démarrera pas à froid, ou s'étouffera de chaleur à chaud.
+
+<DiagnosticTree 
+  symptom="Température faussée"
+  options={[
+    { label: "Sonde lit -40°C en plein été ?", result: "Circuit ouvert (Fil coupé ou sonde morte)." },
+    { label: "Sonde lit +140°C le matin à froid ?", result: "Court-circuit (Les deux fils se touchent)." }
+  ]}
+/>
+
+### Comment fonctionne une thermistance CTN
+
+99% des capteurs de température sont des thermistances **CTN (Coefficient de Température Négatif)**.
+Négatif signifie que la résistance baisse quand la température monte.
+- Moteur très froid (0°C) : Résistance très haute (ex: 5000 Ohms). L'ECU lit un voltage proche de 4.5V.
+- Moteur chaud (90°C) : Résistance très basse (ex: 200 Ohms). L'ECU lit un voltage bas (0.5V).
+
+<TestStepCard 
+  title="1. Le test de bon sens (Valise)"
+  tool="scanner"
+  time="2 min"
+>
+  C'est le test le plus rapide de la terre.
+  - Le matin, après une nuit de repos, branchez la valise. Ne démarrez pas.
+  - Lisez les valeurs : Température d'Eau (ECT) et Température d'Air (IAT).
+  - Ces deux capteurs doivent donner **exactement la même température** que la météo extérieure (à 2°C près).
+  - S'il fait 10°C dehors et que l'ECT indique 80°C, le moteur ne démarrera jamais (L'ECU n'enverra presque pas d'essence, croyant que le moteur est déjà chaud).
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Le test de continuité et de tension"
+  tool="multimetre"
+  time="5 min"
+>
+  Le capteur ECT a généralement 2 fils.
+  - Débranchez le capteur.
+  - L'ECU utilise sa résistance "Pull-Up". Avec le contact mis, un fil doit afficher **exactement 5.0 Volts**.
+  - L'autre fil est la masse de l'ECU. Il doit afficher **0.0 Volts**.
+  - Si vous avez bien 5V et 0V, le faisceau est parfait, le calculateur est parfait. Si la température lue à la valise (capteur rebranché) est toujours fausse, le capteur est HS.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="Ventilateurs Fous"
+>
+  Si vous débranchez la sonde ECT moteur tournant (ou si son fil casse), l'ECU lira -40°C. Mais par sécurité logicielle, l'ECU déclenchera immédiatement les ventilateurs de radiateur à vitesse maximale (Mode dégradé thermique). C'est normal !
+</ConfirmationBox>

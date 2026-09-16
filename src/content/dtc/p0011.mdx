@@ -1,0 +1,68 @@
+---
+title: "P0011 - Position Arbre à Cames Très Avancée (VVT Timing Over-Advanced Bank 1)"
+description: "Problème sur la distribution variable (VVT/VANOS). Avant d'incriminer une chaîne de distribution allongée, vérifiez le niveau d'huile et le solénoïde VVT."
+pillar: "diagnostic"
+category: "dtc"
+system: "moteur"
+difficulty: "avance"
+risk: "moyen"
+requiredTools: ["scanner", "multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le **P0011** (et ses dérivés P0012, P0014) indique que l'ECU essaie de modifier le calage de l'arbre à cames (Avance) via le système VVT (Variable Valve Timing), mais que l'arbre à cames ne se déplace pas, ou reste bloqué en position avancée. 
+
+<DiagnosticTree 
+  symptom="P0011 : Calage VVT Incorrect"
+  options={[
+    { label: "Niveau d'huile ?", result: "L'huile est le fluide hydraulique du VVT" },
+    { label: "Solénoïde VVT bloqué ?", result: "Démonter et inspecter (limaille)" },
+    { label: "Chaîne allongée ?", result: "Contrôler le calage mécanique" }
+  ]}
+/>
+
+### La logique hydraulique du VVT
+
+<TestStepCard 
+  title="1. Le fluide vital : Niveau et Qualité de l'Huile"
+  tool="aucun"
+  time="2 min"
+>
+  Le système VVT de TOUS les constructeurs utilise la pression d'huile moteur pour faire tourner le déphaseur (Phaser) en bout d'arbre à cames.
+  - Si le véhicule manque de 2 litres d'huile, l'ECU ne pourra pas avancer l'arbre à cames.
+  - Si l'huile n'a pas été vidangée depuis 30 000 km, les passages hydrauliques (microscopiques) du VVT sont bouchés par les boues (sludge).
+  - La première étape absolue d'un P0011 est de vérifier la jauge d'huile.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Test du Solénoïde VVT (VVT Actuator / OCV)"
+  tool="scanner"
+  time="15 min"
+>
+  Le solénoïde (Oil Control Valve) laisse passer l'huile. Souvent, il se grippe ouvert à cause de la saleté.
+  - Utilisez votre valise de diag dans la section "Tests Actionneurs".
+  - Moteur au ralenti, commandez l'ouverture du solénoïde VVT d'admission de 0% à 100%.
+  - En s'ouvrant, il décale l'arbre à cames massivement. Le moteur doit se mettre à tourner très mal et **caler (ou presque caler)** immédiatement.
+  - Si le régime moteur ne bronche absolument pas : soit le solénoïde est mort (bloqué), soit la pression d'huile n'arrive pas au déphaseur.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Inspection du tamis (Filtre) du Solénoïde"
+  tool="multimetre"
+  time="15 min"
+>
+  Démontez le solénoïde VVT (généralement 1 seule vis de 10mm sur le cache-culbuteur).
+  - Regardez les petites grilles (tamis) autour du solénoïde. 
+  - Si elles sont pleines de limaille de fer ou de copeaux de plastique (guides de chaîne broyés), vous avez un lourd problème mécanique.
+  - Si le solénoïde est propre, vous pouvez le tester en lui appliquant du 12V directement pour voir s'il "claque" fermement.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Distribution"
+>
+  Si l'huile est parfaite, le solénoïde fonctionne, mais que le code persiste, c'est généralement que la chaîne de distribution s'est tellement allongée (ou le tendeur a lâché) que le rattrapage VVT est hors limites physiques.
+</ConfirmationBox>

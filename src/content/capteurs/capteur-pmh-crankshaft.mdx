@@ -1,0 +1,85 @@
+---
+title: "Le Capteur PMH (Vilebrequin / CKP)"
+description: "Le chef d'orchestre du moteur. Découvrez comment différencier et tester un capteur PMH Inductif (2 fils) d'un capteur à Effet Hall (3 fils)."
+pillar: "diagnostic"
+category: "capteurs"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["multimetre", "oscilloscope"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le capteur de Point Mort Haut (PMH), aussi appelé Crankshaft Position Sensor (CKP), est le capteur le plus important du moteur. Sans lui, le calculateur ne sait pas à quelle vitesse tourne le moteur ni où se trouvent les pistons. Conséquence : pas d'étincelle, pas d'injection, pas de démarrage.
+
+<DiagnosticTree 
+  symptom="Type de Capteur PMH"
+  options={[
+    { label: "2 Fils (Généralement) ?", result: "Capteur Inductif (Génère son propre voltage AC)" },
+    { label: "3 Fils ?", result: "Capteur à Effet Hall (Nécessite une alimentation 5V/12V)" }
+  ]}
+/>
+
+### Capteur Inductif (VR Sensor)
+
+Le capteur inductif (Variable Reluctance) possède un aimant entouré d'une bobine. Au passage des dents de la cible du vilebrequin, il génère un courant alternatif (AC).
+
+<TestStepCard 
+  title="1. Test de résistance (Ohm)"
+  tool="multimetre"
+  time="5 min"
+>
+  Débranchez le capteur.
+  Mesurez la résistance entre les deux broches du capteur.
+  - Valeur typique : **entre 300 et 1200 Ohms** (selon constructeur).
+  - Si vous lisez "OL" (Circuit Ouvert) ou "0 Ohm" (Court-circuit), la bobine interne est fondue ou cassée. Remplacez le capteur.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Test de signal (Voltage AC)"
+  tool="multimetre"
+  time="5 min"
+>
+  Rebranchez le capteur. Piquez les deux fils par l'arrière (Backprobe).
+  - Réglez le multimètre sur **Voltage Alternatif (AC)**.
+  - Lancez le démarreur.
+  - Vous devez lire un voltage qui monte (souvent entre 1V et 5V AC au démarreur). Si le voltage reste à 0, le capteur est mort, ou l'entrefer (distance avec la cible) est trop grand.
+</TestStepCard>
+
+### Capteur à Effet Hall
+
+Plus précis et fonctionnant même à vitesse nulle, le capteur Hall agit comme un interrupteur numérique. Il a besoin d'être alimenté.
+
+<TestStepCard 
+  title="3. Test d'Alimentation et de Masse"
+  tool="multimetre"
+  time="5 min"
+>
+  Débranchez le capteur. Mettez le contact (sans démarrer).
+  Mesurez la tension sur la prise du faisceau :
+  - Un fil doit avoir **5V ou 12V** (Alimentation).
+  - Un fil doit avoir **0V** (Masse parfaite).
+  - Le dernier fil est le Signal (qui va vers l'ECU).
+</TestStepCard>
+
+<TestStepCard 
+  title="4. Test du Signal Carré"
+  tool="oscilloscope"
+  time="10 min"
+>
+  Le test ultime du capteur Hall se fait à l'oscilloscope.
+  - Branchez la voie 1 sur le fil de signal (capteur rebranché).
+  - Lancez le démarreur ou laissez tourner le ralenti.
+  - Vous devez voir un signal carré parfait (0V - 5V) de type "Créneaux".
+  - Les dents manquantes sur la cible créeront un espace plus long dans le signal : c'est ce qui indique le PMH à l'ECU.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Attention aux limaille"
+>
+  Le bout des capteurs PMH est fortement aimanté. Ils attirent souvent la limaille de fer issue de l'usure de l'embrayage. Un capteur recouvert de limaille lira mal les dents de la cible (Signal bruité). Un simple nettoyage suffit souvent à régler les pannes de démarrage à chaud.
+</ConfirmationBox>

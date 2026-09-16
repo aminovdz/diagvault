@@ -1,0 +1,64 @@
+---
+title: "Groupe VAG : Adaptation Kessy / Dashboard (MAC, CS, PIN)"
+description: "Groupe VAG : Comprendre les données de sécurité Immo (MAC, CS, PIN) nécessaires pour adapter un compteur, un ECU ou un Kessy d'occasion."
+pillar: "programmation"
+category: "immo"
+system: "immo"
+difficulty: "expert"
+risk: "moyen"
+requiredTools: ["programmateur"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Changer un module électronique d'occasion (ECU, Compteur, BCM) sur le groupe VAG (Volkswagen, Audi, Seat, Skoda) est un véritable casse-tête à cause de la "Protection des Composants" (Immo 4, Immo 5, MQB).
+
+<DiagnosticTree 
+  symptom="Remplacement Module VAG"
+  options={[
+    { label: "Même référence ?", result: "Le matériel est compatible, reste le logiciel" },
+    { label: "Module Immo4 ou Immo5 ?", result: "La méthode d'adaptation varie" },
+    { label: "Safe au tableau de bord ?", result: "Protection composant active" }
+  ]}
+/>
+
+### Le triptyque de la sécurité VAG (Immo 4)
+
+Pour qu'un calculateur d'occasion soit accepté par la voiture, trois données doivent concorder avec le reste de la voiture.
+
+<TestStepCard 
+  title="1. Le PIN (Code Secret)"
+  tool="aucun"
+  time="2 min"
+>
+  Le code PIN (4 ou 5 chiffres) est historique. Il permet de se "logger" dans le système (Security Access) pour autoriser l'apprentissage des clés. Cependant, depuis Immo 4, le PIN seul ne suffit plus pour adapter un module d'occasion.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Le CS (Component Security)"
+  tool="programmateur"
+  time="10 min"
+>
+  C'est le cœur du système moderne. Le CS (Security Component) est un code unique (généralement 6 ou 7 bytes) assigné au véhicule à l'usine.
+  - Le CS du Compteur (Dash) doit être strictement identique au CS du calculateur moteur.
+  - Si vous montez un ECU d'occasion, il a le CS de sa voiture d'origine (la donneuse).
+  - Il faut extraire le CS de la voiture receveuse (via le compteur) et l'injecter dans l'EEPROM de l'ECU d'occasion à l'aide d'un outil avancé (ex: VVDI, AVDI).
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Le MAC (Message Authentication Code)"
+  tool="programmateur"
+  time="5 min"
+>
+  Le MAC agit comme une signature de synchronisation entre deux modules. 
+  Lorsqu'on lie un ECU d'occasion à un compteur, l'outil de programmation calcule un nouveau MAC (basé sur les CS) et synchronise les deux modules. Si le MAC est incorrect, le moteur démarre puis cale au bout d'une seconde, même si le PIN et le CS sont bons.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Power Class"
+>
+  Un autre piège VAG : la Power Class. Si vous achetez un ECU de VW Golf 105cv pour réparer une Golf 140cv, l'adaptation Immo échouera, car les "Power Class" (Codage de puissance du châssis) sont différentes dans la Flash.
+</ConfirmationBox>

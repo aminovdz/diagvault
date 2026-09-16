@@ -1,0 +1,67 @@
+---
+title: "Capteur MAP : Pression Absolue du Collecteur"
+description: "Le MAP capte la charge du moteur. Apprenez à l'interpréter : 300 mbar au ralenti (Essence) et les tests de dépression."
+pillar: "diagnostic"
+category: "livedata"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le capteur MAP (Manifold Absolute Pressure) mesure la pression à l'intérieur du collecteur d'admission. Contrairement à un manomètre de turbo (Boost) qui affiche "0" moteur éteint, un capteur de pression **absolue** lit la pression atmosphérique au repos (environ 1 Bar / 1000 mbar au niveau de la mer).
+
+<DiagnosticTree 
+  symptom="Lecture Live Data : MAP"
+  options={[
+    { label: "Moteur coupé (KOEO) ?", result: "Doit lire ~1000 mbar (Pression atmosphérique)" },
+    { label: "Ralenti trop élevé (Essence) ?", result: "MAP anormalement haut (Fuite de vide)" },
+    { label: "Pleine charge (Turbo) ?", result: "Pression MAP = Pression Atmo + Pression Turbo" }
+  ]}
+/>
+
+### Lecture du MAP par Type de Moteur
+
+<TestStepCard 
+  title="1. La lecture de base (Moteur Arrêté)"
+  tool="scanner"
+  time="2 min"
+>
+  Contact mis, moteur à l'arrêt. Le capteur MAP est à la pression de l'air ambiant.
+  - Au niveau de la mer : Environ **1000 mbar** (100 kPa / 14.5 psi).
+  - En montagne (2000m) : Environ 800 mbar.
+  - Si le capteur lit 500 mbar ou 2500 mbar moteur coupé au niveau de la mer, il est électriquement mort. Ne cherchez pas de panne mécanique.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Le MAP sur Moteur Essence (Atmosphérique)"
+  tool="scanner"
+  time="5 min"
+>
+  Les moteurs essence possèdent un boîtier papillon qui étouffe l'arrivée d'air au ralenti, créant un puissant "vide" (dépression) dans le collecteur.
+  - Au ralenti (papillon fermé) : Le MAP doit chuter drastiquement, autour de **300 à 400 mbar** (30 à 40 kPa).
+  - En pleine accélération (WOT) : Le papillon s'ouvre en grand, le vide disparaît. Le MAP remonte instantanément à 1000 mbar.
+  - **Diagnostic :** Si au ralenti, le MAP affiche 600 mbar (le vide est mauvais), vous avez soit une grosse fuite d'air, soit le moteur a un problème mécanique (soupapes mal calées, courroie décalée) qui l'empêche de "pomper" l'air correctement.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Le MAP sur Moteur Turbo (Diesel & Essence)"
+  tool="scanner"
+  time="5 min"
+>
+  Un diesel n'a généralement pas de papillon de gaz, donc il ne crée pas de vide dans l'admission.
+  - Au ralenti : Le MAP lit environ 1000 mbar (l'équivalent de la pression atmo).
+  - En accélération pleine charge : Le turbo s'active et **souffle**. La pression monte au-dessus de la pression atmo.
+  - Si le turbo souffle 1.5 Bar (1500 mbar) de suralimentation, le capteur MAP absolu affichera **2500 mbar** (1000 atmo + 1500 turbo).
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Capteur Barométrique"
+>
+  L'ECU utilise souvent un capteur barométrique interne (intégré dans l'ECU) et le capteur MAP. Moteur éteint, leurs deux valeurs doivent être strictement identiques.
+</ConfirmationBox>

@@ -1,0 +1,71 @@
+---
+title: "Le Débitmètre Massique (MAF)"
+description: "Fil chaud encrassé, ratés d'allumage et mélange pauvre. Comment tester un débitmètre d'air massique (MAF) et valider la respiration du moteur."
+pillar: "diagnostic"
+category: "capteurs"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner", "multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le débitmètre (Mass Air Flow) pèse l'air qui entre dans le moteur. C'est l'information principale que l'ECU utilise pour calculer la quantité d'essence à injecter. Un MAF encrassé pèse moins d'air qu'il n'en rentre réellement : l'ECU injecte trop peu d'essence (Mélange Pauvre, P0171).
+
+<DiagnosticTree 
+  symptom="Nettoyage du MAF"
+  options={[
+    { label: "Nettoyant frein ou Carbu ?", result: "NE JAMAIS FAIRE. Le solvant détruit le film chaud en plastique." },
+    { label: "Nettoyant Contacts / MAF Cleaner ?", result: "La seule méthode sûre (Laisse s'évaporer)." }
+  ]}
+/>
+
+### Diagnostic du MAF par la Valise
+
+<TestStepCard 
+  title="1. Test de la valeur au ralenti"
+  tool="scanner"
+  time="5 min"
+>
+  Moteur chaud, au ralenti, sans climatisation :
+  - Regardez le PID "Mass Air Flow" en grammes par seconde (g/s).
+  - La règle empirique (Rule of Thumb) : **1 g/s par litre de cylindrée**.
+  - Un moteur 2.0L doit aspirer environ 2.0 à 2.5 g/s. 
+  - S'il lit 1.0 g/s, il est sous-évaluant l'air (probablement sale) ou vous avez une grosse prise d'air après le capteur.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Test d'Efficacité Volumétrique (WOT Test)"
+  tool="scanner"
+  time="10 min"
+>
+  Prenez la route avec un passager.
+  - Mettez la valise en graphique sur la courbe du MAF.
+  - En 2ème vitesse, accélérez à fond (Pédale 100%) jusqu'à la zone rouge.
+  - La valeur de pic en g/s doit être à peu près **égale à 80% des chevaux du moteur**.
+  - Exemple : Une voiture de 100 CV devrait aspirer environ 80 g/s au rupteur. Si elle plafonne à 50 g/s, le débitmètre est usé (ou l'échappement est bouché).
+</TestStepCard>
+
+### Test Électrique au Multimètre
+
+<TestStepCard 
+  title="3. Le test du signal (Backprobe)"
+  tool="multimetre"
+  time="5 min"
+>
+  Les débitmètres MAF analogiques ont généralement 5 fils (Masse, 12V, 5V, Signal MAF, Signal Température IAT).
+  - Trouvez le fil du signal MAF (souvent au centre).
+  - Au contact mis, moteur arrêté, il doit indiquer environ 1.0V (ou 0V sur certains modèles).
+  - Moteur au ralenti : environ 1.2V à 1.5V.
+  - Donnez un grand coup de gaz sec : le voltage doit bondir instantanément vers **3.5V ou 4.0V**. Si la montée est lente, le capteur est "paresseux".
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="MAF Digital (Fréquence)"
+>
+  Beaucoup de véhicules modernes (GM, Mitsubishi) utilisent des MAF numériques. Le signal envoyé n'est pas un Voltage variable, mais une Fréquence variable (Hertz). Votre multimètre doit être réglé sur Hz pour voir la fréquence augmenter en accélérant (ex: de 2500 Hz à 8000 Hz).
+</ConfirmationBox>

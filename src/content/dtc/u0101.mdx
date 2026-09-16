@@ -1,0 +1,66 @@
+---
+title: "U0101 - Perte de Communication avec le TCM (Calculateur de Transmission)"
+description: "Impossible de changer de vitesse, voyant PRNDL éteint, et code U0101. Diagnostic complet d'une perte de réseau CAN entre le moteur (ECM) et la boîte (TCM)."
+pillar: "diagnostic"
+category: "dtc"
+system: "can"
+difficulty: "expert"
+risk: "moyen"
+requiredTools: ["oscilloscope", "multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le code **U0101** signifie que le calculateur moteur (ECM/PCM) ne reçoit plus les messages CAN Bus du calculateur de la boîte automatique (TCM). En conséquence, le véhicule bloque généralement la boîte en 3ème vitesse (Limp Mode), l'indicateur PRNDL clignote ou disparaît.
+
+<DiagnosticTree 
+  symptom="U0101 : Perte de Comm TCM"
+  options={[
+    { label: "TCM est-il sous tension ?", result: "Vérifier fusibles et relais de boîte" },
+    { label: "Le réseau CAN arrive-t-il ?", result: "Sonder le CAN-H et CAN-L sur la prise TCM" },
+    { label: "TCM HS ?", result: "Module noyé dans l'huile (ex: DSG/Mechatronic)" }
+  ]}
+/>
+
+### Approche de diagnostic de réseau
+
+<TestStepCard 
+  title="1. Interrogation de tous les modules (Network Scan)"
+  tool="scanner"
+  time="5 min"
+>
+  Faites un scan complet de TOUS les modules du véhicule.
+  - Si TOUS les autres modules communiquent (ABS, Airbag, BCM) mais que seul le TCM est en rouge "Non Communicant", le réseau de la voiture est bon, mais le TCM est "mort" ou déconnecté.
+  - Si la valise n'arrive pas non plus à communiquer avec le TCM (qui gère la boîte), il n'envoie aucune donnée.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Test d'alimentation (Power & Ground)"
+  tool="multimetre"
+  time="20 min"
+>
+  La cause n°1 d'un module "muet" n'est pas le CAN Bus, c'est **l'absence d'alimentation (12V) ou de masse**.
+  - Localisez le TCM (Parfois sous le capot, parfois intégré DANS la boîte de vitesses - Mechatronic).
+  - Débranchez la grosse prise. Trouvez sur votre schéma électrique (Wiring Diagram) les pins d'alimentation (B+) et d'allumage (Ignition) ainsi que les pins de masse (GND).
+  - Testez ces pins avec une ampoule témoin de phare sous forte charge. Si l'ampoule brille fortement, l'alimentation du TCM est parfaite. S'il manque un 12V, cherchez un fil coupé ou un fusible grillé.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Test de la liaison CAN Bus"
+  tool="oscilloscope"
+  time="15 min"
+>
+  Si le TCM a bien son 12V et sa masse, vérifiez s'il reçoit "l'internet" de la voiture (le CAN Bus).
+  - Identifiez les pins CAN-H et CAN-L sur le connecteur du TCM.
+  - Utilisez un oscilloscope (ou un multimètre, ~2.6V et ~2.4V) contact mis. Si vous voyez les paquets de données CAN Bus taper sur les pins de la prise de boîte, c'est que la voiture parle bien à la boîte.
+  - **Verdict :** 12V ok, Masse ok, CAN Bus arrive à la prise, mais le TCM ne répond pas (U0101) = Le TCM est officiellement HS (carte mère grillée ou infiltration d'huile/eau).
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Piège Mechatronic (DSG/ZF)"
+>
+  Sur beaucoup de boîtes (comme la DSG VW ou les ZF 8HP), le TCM baigne littéralement dans l'huile de boîte (ATF). Une surchauffe, de la limaille ou un fluide contaminé peut détruire le processeur interne. 
+</ConfirmationBox>

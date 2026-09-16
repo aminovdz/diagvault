@@ -1,0 +1,68 @@
+---
+title: "P0340 - Capteur de Position d'Arbre à Cames Circuit (Camshaft Position Sensor Circuit)"
+description: "Le moteur refuse de démarrer avec un P0340 ? Avant d'acheter un nouveau capteur AAC, apprenez à tester son alimentation, sa masse et son signal."
+pillar: "diagnostic"
+category: "dtc"
+system: "moteur"
+difficulty: "avance"
+risk: "faible"
+requiredTools: ["oscilloscope", "multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le code **P0340** est souvent interprété à tort comme une preuve que le capteur d'arbre à cames (AAC / CMP) est défectueux. Or, le mot clé est "Circuit". L'ECU ne voit pas les impulsions, cela peut être le faisceau, l'ECU lui-même, ou un problème mécanique (courroie décalée).
+
+<DiagnosticTree 
+  symptom="P0340 : Défaut Circuit AAC"
+  options={[
+    { label: "Alimentation 5V/12V ?", result: "Vérifier au multimètre contact mis" },
+    { label: "Masse franche ?", result: "Vérifier chute de tension sur la masse" },
+    { label: "Signal carré propre ?", result: "Passage à l'oscilloscope" },
+    { label: "Synchronisation ?", result: "Corrélation avec le capteur Vilebrequin" }
+  ]}
+/>
+
+### Méthode "Test, Don't Guess"
+
+<TestStepCard 
+  title="1. Contrôle des Alimentations et de la Masse (Capteur Hall 3 Fils)"
+  tool="multimetre"
+  time="15 min"
+>
+  Sur un capteur à effet Hall (majorité des véhicules modernes), vous avez 3 fils.
+  - Contact mis, débranchez le capteur.
+  - Cherchez la masse (Mettez la pointe rouge sur le (+) batterie, et la pointe noire sur chaque pin jusqu'à lire ~12V).
+  - Cherchez l'alimentation : Pointe noire sur le (-) batterie, pointe rouge sur les pins. Vous devez trouver 5V ou 12V.
+  - Le troisième fil est le fil de signal (qui aura souvent un voltage de "bias" de 5V venant de l'ECU). S'il manque l'alimentation ou la masse, le problème vient du faisceau, pas du capteur.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Contrôle du Signal (L'épreuve de vérité)"
+  tool="oscilloscope"
+  time="20 min"
+>
+  Le multimètre ne va pas assez vite pour "voir" les impulsions d'un arbre à cames tournant à 1000 tr/min. Il vous faut un oscilloscope.
+  - Piquez le fil de signal avec une aiguille (Backprobe) pendant que le capteur est branché.
+  - Lancez le démarreur ou laissez le moteur tourner.
+  - Vous devez voir un signal "carré" parfait passant de 0V à 5V (ou 12V).
+  - Si le signal est plat (0V continu ou 5V continu), et que l'alimentation/masse est bonne : **le capteur est HS**.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Le Piège Mécanique (Corrélation)"
+  tool="oscilloscope"
+  time="30 min"
+>
+  Si le capteur génère bien son signal carré, pourquoi l'ECU lève-t-il un code ? 
+  Il est possible que la chaîne ou courroie de distribution soit décalée. L'ECU compare le moment où le signal AAC arrive par rapport au signal Vilebrequin (PMH). Si c'est hors tolérance, il affiche parfois P0340 (ou P0016). Capturez les deux signaux en même temps sur 2 canaux et comparez avec une base de données de signaux connus.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="Verdict"
+>
+  Changer le capteur d'arbre à cames sans avoir testé la présence du 5V et de la Masse est un pari risqué. Testez l'électrique d'abord, remplacez la pièce ensuite.
+</ConfirmationBox>

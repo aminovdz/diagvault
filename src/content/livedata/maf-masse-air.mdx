@@ -1,0 +1,68 @@
+---
+title: "Débitmètre (MAF) : G/s, Ralenti et WOT"
+description: "Comment interpréter les grammes par seconde (g/s) de votre débitmètre. La règle du '1 gramme par litre' et le test d'efficacité volumétrique (WOT)."
+pillar: "diagnostic"
+category: "livedata"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le débitmètre massique (Mass Air Flow - MAF) est le capteur roi pour le calcul de l'injection sur les moteurs essence, et pour la gestion de l'EGR sur les moteurs diesel. Savoir lire la Live Data du MAF permet de détecter instantanément une prise d'air, un filtre à air bouché, ou un capteur encrassé.
+
+<DiagnosticTree 
+  symptom="Lecture Live Data : MAF"
+  options={[
+    { label: "Valeur trop basse au ralenti ?", result: "Prise d'air (Vacuum Leak) en aval" },
+    { label: "Pic trop bas en accélération ?", result: "Capteur encrassé ou filtre bouché" },
+    { label: "Valeur non nulle moteur coupé ?", result: "Capteur électriquement défaillant" }
+  ]}
+/>
+
+### Interprétation des Valeurs
+
+<TestStepCard 
+  title="1. Moteur Coupé (Key On Engine Off)"
+  tool="scanner"
+  time="2 min"
+>
+  L'air ne circule pas. La valeur du MAF **doit être strictement de 0 g/s** (ou 0 kg/h).
+  S'il affiche 2 ou 3 g/s alors que le moteur ne tourne pas, l'élément chauffant du MAF est défectueux ou encrassé par des vapeurs d'huile.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Règle du Ralenti : 1 gramme par Litre"
+  tool="scanner"
+  time="5 min"
+>
+  Moteur chaud, au ralenti (environ 800 tr/min), sans la climatisation :
+  - La valeur attendue est d'environ **1 gramme par seconde (g/s) pour chaque litre de cylindrée**.
+  - Un moteur 2.0L devrait aspirer environ 2 g/s à 2.5 g/s.
+  - Un moteur 1.4L devrait aspirer environ 1.4 g/s.
+  *Si vous lisez 0.5 g/s sur un 2.0L :* De l'air entre dans le moteur sans passer par le débitmètre (prise d'air / Vacuum Leak). L'ECU va enrichir le mélange (Fuel Trims positifs) pour compenser.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Test en Pleine Charge (WOT - Wide Open Throttle)"
+  tool="scanner"
+  time="10 min"
+>
+  C'est le test d'efficacité volumétrique ultime.
+  - Mettez-vous en 2ème ou 3ème vitesse.
+  - Accélérez à fond (pédale au plancher) depuis 1500 tr/min jusqu'à la zone rouge.
+  - **La règle empirique (Moteurs Atmosphériques) :** Le pic du MAF (en g/s) doit correspondre à environ **80% de la puissance du moteur en chevaux**.
+  - Ex : Un moteur de 100 CH devrait afficher un pic autour de 80 g/s.
+  - S'il plafonne à 40 g/s, le capteur MAF est extrêmement sale, ou l'échappement (catalyseur) est bouché et empêche le moteur de "respirer".
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="Conversion g/s vers kg/h"
+>
+  Si votre valise affiche des kg/h au lieu de g/s, divisez la valeur par 3.6. (Ex: 10 kg/h / 3.6 = 2.77 g/s).
+</ConfirmationBox>

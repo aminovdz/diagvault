@@ -1,0 +1,55 @@
+---
+title: "P0300 - Ratés d'allumage aléatoires (Misfires)"
+description: "Comment isoler la cause d'un P0300 (allumage, carburant ou mécanique) sans remplacer les bougies au hasard."
+pillar: "diagnostic"
+category: "dtc"
+system: "moteur"
+symptom: ["Moteur broute", "Voyant moteur clignote", "Perte de puissance"]
+dtc: ["P0300", "P0301", "P0302", "P0303", "P0304"]
+difficulty: "intermediaire"
+risk: "eleve"
+requiredTools: ["scanner", "multimetre"]
+published_date: 2024-03-20
+author: "DiagVault"
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+
+## Le Piège du P0300
+Un voyant moteur qui **clignote** indique un raté d'allumage actif qui endommage le catalyseur (le carburant imbrûlé part dans l'échappement). Le P0300 indique des ratés "aléatoires" (sur plusieurs cylindres). S'il s'agit d'un cylindre précis, ce sera P0301 (Cyl. 1), P0302 (Cyl. 2), etc.
+
+Ne changez pas immédiatement bobines et bougies. La règle des trois éléments s'applique : **Étincelle, Carburant, Compression.**
+
+## 🧪 Méthodologie de Test (Isolation)
+
+<TestStepCard 
+  stepNumber={1}
+  title="Identifier les cylindres concernés (Misfire Counters)"
+  tool="scanner"
+  action="Allez dans les Live Data et affichez les compteurs de ratés (Misfire Cylinder 1, 2, 3, 4)."
+  expectedResult="Déterminer si le problème touche un seul cylindre (ex: Cyl 2) ou s'il est vraiment aléatoire (tous les cylindres)."
+  failureResult="Si TOUS les cylindres ont des ratés = problème global (Prise d'air, Pression d'essence, MAF). Si UN SEUL cylindre a des ratés = problème isolé (Bobine 2, Injecteur 2, Compression Cyl 2)."
+/>
+
+<TestStepCard 
+  stepNumber={2}
+  title="Le test d'échange (Si raté isolé)"
+  tool="aucun"
+  action="Si le cylindre 2 a des ratés (P0302), échangez la bobine 2 avec la bobine 1. Effacez les codes et roulez."
+  expectedResult="Le raté reste sur le cylindre 2."
+  failureResult="Si le raté suit la bobine et devient un P0301, la bobine est morte. Si le raté reste sur le cylindre 2, répétez l'opération avec la bougie, puis avec l'injecteur."
+/>
+
+<TestStepCard 
+  stepNumber={3}
+  title="Vérification Globale (Si raté aléatoire P0300)"
+  tool="machine_a_fumee"
+  action="Cherchez une fuite de dépression (vacuum leak). Lisez les Fuel Trims."
+  expectedResult="STFT proche de 0%."
+  failureResult="Un STFT à +20% au ralenti qui redescend à 0% à 3000 tr/min est la preuve absolue d'une prise d'air (qui appauvrit le mélange au point de créer des ratés d'allumage)."
+/>
+
+<ConfirmationBox 
+  title="Attention aux causes mécaniques"
+  text="Si bobine, bougie, et injecteur sont OK, et qu'il n'y a pas de prise d'air, testez la compression ou utilisez un capteur de pression dans le cylindre à l'oscilloscope. Un ressort de soupape cassé causera un P030X constant."
+/>

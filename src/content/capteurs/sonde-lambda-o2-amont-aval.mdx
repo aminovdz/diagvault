@@ -1,0 +1,63 @@
+---
+title: "La Sonde Lambda (O2) : Zirconium et Différences"
+description: "Différence entre la sonde Amont (Régulation) et Aval (Diagnostic du catalyseur). Apprenez à lire le graphique en dents de scie de la sonde Zirconium."
+pillar: "diagnostic"
+category: "capteurs"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+La sonde Lambda mesure l'oxygène restant dans les gaz d'échappement. Les sondes traditionnelles au Zirconium (Narrowband) sont des générateurs de tension qui oscillent entre 0.1V et 0.9V. Elles sont le juge final de la combustion.
+
+<DiagnosticTree 
+  symptom="Rôle des Sondes O2"
+  options={[
+    { label: "Sonde 1 / Amont (Avant le cata) ?", result: "Régule activement l'injection (Short Term Fuel Trim)." },
+    { label: "Sonde 2 / Aval (Après le cata) ?", result: "Vérifie l'efficacité du catalyseur (Code P0420)." }
+  ]}
+/>
+
+### 1. La Sonde Amont (Sensor 1, Bank 1)
+
+L'ECU est constamment en train de corriger le mélange. Il ajoute de l'essence, la sonde dit "Trop Riche", il enlève de l'essence, la sonde dit "Trop Pauvre". Ce balai infernal crée un signal en dents de scie parfait.
+
+<TestStepCard 
+  title="1. Test du signal oscillant"
+  tool="scanner"
+  time="5 min"
+>
+  Moteur très chaud (les sondes Lambda ne fonctionnent qu'au-dessus de 300°C) :
+  - Sur la valise, affichez le **graphique** de la "Sonde O2 Banc 1 Capteur 1" (B1S1).
+  - Vous devez voir une oscillation rapide et constante entre **0.1V (Pauvre)** et **0.8V ou 0.9V (Riche)**.
+  - La sonde doit basculer au moins 2 à 3 fois par seconde au ralenti.
+  - Si la ligne est bloquée à 0.1V, vous avez une prise d'air géante, ou la sonde est morte.
+  - Si le signal est "paresseux" (met 2 secondes à basculer), la sonde est usée et surconsomme. Remplacez-la.
+</TestStepCard>
+
+### 2. La Sonde Aval (Sensor 2)
+
+Son rôle principal n'est pas de régler l'injection, mais de vérifier si le catalyseur fait son travail (brûler les restes de pollution). 
+
+<TestStepCard 
+  title="2. Diagnostic d'un code P0420"
+  tool="scanner"
+  time="5 min"
+>
+  Le catalyseur stocke de l'oxygène pour nettoyer les gaz. La sonde aval devrait donc voir très peu de variations d'oxygène si le cata fonctionne.
+  - Affichez le graphique de la Sonde Aval (B1S2) sous le graphique de la Sonde Amont (B1S1).
+  - Au ralenti stabilisé : La sonde Aval doit afficher une **ligne droite presque plate**, souvent autour de 0.6V ou 0.7V.
+  - Si la sonde Aval oscille de haut en bas EXACTEMENT comme la sonde Amont, **votre catalyseur est vide ou détruit**. Il ne filtre plus rien. C'est l'origine exacte du code P0420.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="La résistance de Chauffage"
+>
+  Les sondes modernes ont 4 fils. Deux d'entre eux alimentent une résistance chauffante (Heater Circuit) pour amener la sonde à 300°C en quelques secondes (Codes P0135). Si la résistance fond, la sonde sera inactive au ralenti car elle sera trop froide, même si la céramique Zirconium est intacte.
+</ConfirmationBox>

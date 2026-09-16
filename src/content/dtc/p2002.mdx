@@ -1,0 +1,65 @@
+---
+title: "P2002 - Efficacité du Filtre à Particules Inférieure au Seuil (DPF Efficiency)"
+description: "Un FAP colmaté ou cassé ? Ne lancez pas de régénération forcée sans avoir vérifié le capteur de pression différentielle et ses tuyaux."
+pillar: "diagnostic"
+category: "dtc"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "eleve"
+requiredTools: ["scanner", "multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le **P2002** indique que le filtre à particules (FAP / DPF) ne retient pas correctement les suies, ou que le système de surveillance est défaillant. C'est l'un des diagnostics les plus mal compris, menant au remplacement coûteux du filtre pour rien.
+
+<DiagnosticTree 
+  symptom="P2002 : Efficacité FAP"
+  options={[
+    { label: "Capteur Différentiel ?", result: "Doit être à 0 mbar moteur coupé" },
+    { label: "Tuyaux percés ?", result: "Vérifier les durites avant/après FAP" },
+    { label: "Suie dans l'échappement ?", result: "Céramique du FAP fondue/fissurée" }
+  ]}
+/>
+
+### Procédure de Diagnostic Logique
+
+<TestStepCard 
+  title="1. Test du Capteur de Pression Différentielle (Key On Engine Off)"
+  tool="scanner"
+  time="5 min"
+>
+  L'ECU surveille le FAP en mesurant la différence de pression avant et après le filtre.
+  - Mettez le contact, moteur coupé (KOEO).
+  - Lisez la "Pression Différentielle DPF" (DPF Differential Pressure).
+  - Elle **doit être de 0 mbar** (ou 0 hPa, 0 PSI). Si vous lisez 50 mbar moteur coupé, le capteur est mort. C'est lui le problème.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Le Test de Pression en charge (Live Data)"
+  tool="scanner"
+  time="15 min"
+>
+  Démarrez le moteur.
+  - Au ralenti, un FAP propre indique entre **5 et 15 mbar**.
+  - Accélérez fort jusqu'à 3000 tr/min. La pression doit monter progressivement jusqu'à environ **50 à 100 mbar** (selon le moteur).
+  - Si la pression reste collée à 0 mbar, c'est que les gaz d'échappement passent librement. Deux causes possibles : Les tuyaux en caoutchouc qui relient le capteur au FAP sont fondus/percés, OU la céramique à l'intérieur du FAP a été détruite.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Le test de la main (Test de la suie)"
+  tool="aucun"
+  time="5 min"
+>
+  Passez un doigt ou un chiffon blanc propre à l'intérieur de la sortie du pot d'échappement (là où sort la fumée).
+  - Si le chiffon ressort **complètement noir de suie épaisse**, votre filtre à particules est fissuré ou a été vidé physiquement. Un vrai FAP fonctionnel bloque 99% des particules, la sortie d'échappement doit être d'une propreté absolue.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Attention Régénération"
+>
+  Ne forcez jamais une régénération statique si le capteur de pression est défectueux ou si la pression dépasse les 300 mbar au ralenti (risque d'incendie du véhicule). Réparez le capteur ou effectuez un nettoyage hydrodynamique du filtre d'abord.
+</ConfirmationBox>

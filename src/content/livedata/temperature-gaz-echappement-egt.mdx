@@ -1,0 +1,67 @@
+---
+title: "Température Gaz Échappement (EGT 1, 2, 3)"
+description: "Comprendre les capteurs EGT (Exhaust Gas Temperature). Essentiels pour lancer une régénération de filtre à particules (FAP) et protéger le turbo."
+pillar: "diagnostic"
+category: "livedata"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Les capteurs de Température des Gaz d'Échappement (EGT - Exhaust Gas Temperature) sont les thermomètres de l'ECU. Il y en a généralement 3 sur un diesel moderne : EGT 1 (avant turbo), EGT 2 (avant FAP), EGT 3 (après FAP). S'ils mentent, le FAP se colmatera inévitablement.
+
+<DiagnosticTree 
+  symptom="Live Data : Capteurs EGT"
+  options={[
+    { label: "Capteur bloqué à 100°C ou 1000°C ?", result: "Capteur en court-circuit ou coupé" },
+    { label: "Incohérence à froid ?", result: "Un capteur décalibré interdit la régénération" },
+    { label: "Température n'atteint pas 600°C en régénération ?", result: "Problème d'injection de post-combustion" }
+  ]}
+/>
+
+### Comment analyser les EGT
+
+<TestStepCard 
+  title="1. Plausibilité Moteur Froid (KOEO)"
+  tool="scanner"
+  time="5 min"
+>
+  La base du diagnostic EGT commence moteur froid (à l'arrêt complet toute la nuit).
+  - Affichez EGT 1, EGT 2, EGT 3.
+  - Ils **doivent tous afficher la température ambiante** (ex: 20°C). 
+  - S'il fait 20°C dehors et que EGT 2 affiche 150°C, le capteur est décalibré (thermocouple usé). L'ECU utilisera cette fausse valeur pour ses calculs de FAP. Si un capteur affiche 1000°C, le fil est probablement coupé.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Profil de Température en Roulant"
+  tool="scanner"
+  time="15 min"
+>
+  En conduite normale (90 km/h stabilisé) :
+  - **EGT 1 (Avant Turbo) :** C'est le plus chaud, il suit vos coups d'accélérateur. Il monte rapidement à 300°C - 450°C.
+  - **EGT 2 (Avant FAP) :** Il est lissé par la masse du catalyseur DOC. Il tourne autour de 250°C - 350°C.
+  - **EGT 3 (Après FAP) :** Très stable, légèrement inférieur ou égal à l'EGT 2.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Surveillance pendant une Régénération"
+  tool="scanner"
+  time="30 min"
+>
+  Pour que la suie brûle dans le FAP, la température interne doit dépasser 600°C. 
+  - Lorsque la régénération (Active) se déclenche, l'ECU effectue des post-injections de gazole (injecte du carburant très tard pour qu'il s'enflamme dans l'échappement).
+  - Vous devez voir **EGT 2 (Avant FAP) grimper en flèche vers 600°C - 650°C**.
+  - Si l'EGT 2 refuse de dépasser 400°C, la régénération échouera (Time out). La cause n'est pas le FAP, mais le système qui n'arrive pas à créer la chaleur : Injecteur encrassé, clapet étouffoir défectueux, ou 5ème injecteur d'échappement bouché.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Le danger du Tuning"
+>
+  Les mauvaises reprogrammations (Chiptuning) augmentent massivement l'injection. Si l'EGT 1 (Avant turbo) dépasse les 850°C sur un diesel, les ailettes du turbo fondent littéralement. Les bons tuners laissent les limiteurs d'EGT actifs.
+</ConfirmationBox>

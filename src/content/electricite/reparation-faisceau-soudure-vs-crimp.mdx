@@ -1,0 +1,67 @@
+---
+title: "Réparer un faisceau : Soudure vs Sertissage (Crimp)"
+description: "Pourquoi les constructeurs interdisent la soudure à l'étain sur les faisceaux moteurs. Apprenez à utiliser les manchons à sertir thermo-rétractables (Crimp)."
+pillar: "diagnostic"
+category: "electricite"
+system: "bsi"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["aucun"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Un fil de capteur ABS a été arraché par une branche. Réflexe de beaucoup : sortir le fer à souder, l'étain, et de l'adhésif électricien. Pourtant, si vous lisez les manuels de réparation des constructeurs (OEM), **la soudure est formellement interdite** sur les faisceaux extérieurs et moteurs.
+
+<DiagnosticTree 
+  symptom="Fil coupé ou arraché"
+  options={[
+    { label: "Fer à souder et étain ?", result: "Rigidifie le fil, casse à cause des vibrations." },
+    { label: "Dominos / Sucres ?", result: "Risque d'oxydation (Rouille verte) et faux contacts." },
+    { label: "Manchons à sertir (Crimp) + Thermo ?", result: "La seule méthode homologuée constructeur." }
+  ]}
+/>
+
+### Le problème fatal de la soudure (Solder)
+
+<TestStepCard 
+  title="1. La rupture de fatigue"
+  tool="aucun"
+  time="2 min"
+>
+  Un faisceau automobile passe sa vie à subir de violentes vibrations (moteur, route).
+  - Un fil de cuivre multibrins est souple. Il absorbe les vibrations.
+  - Lorsque vous soudez à l'étain, l'étain remonte par capillarité sous la gaine du fil. 
+  - La zone soudée devient un bâton rigide et solide. Lors des vibrations, le fil cassera net juste à la limite entre la zone souple et la zone rigide soudée, souvent au bout de 6 mois.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. L'oxydation acide"
+  tool="aucun"
+  time="2 min"
+>
+  Le fil d'étain moderne contient du flux de soudure (pour aider à décaper le cuivre). Si ce flux n'est pas parfaitement nettoyé (ce qui est impossible sous la gaine), il reste acide et va lentement ronger le cuivre, créant la fameuse corrosion verte.
+</TestStepCard>
+
+### La solution : Le Sertissage (Crimping)
+
+<TestStepCard 
+  title="3. Les manchons thermo-rétractables (Splice Crimp)"
+  tool="aucun"
+  time="10 min"
+>
+  La méthode approuvée par l'aéronautique et l'automobile :
+  - Dénudez 5mm de chaque côté.
+  - Insérez les fils dans un petit tube métallique non isolé (Splice), ou un manchon à sertir.
+  - Écrasez-le avec une véritable pince à sertir professionnelle (pas une pince universelle qui aplatit). Le sertissage crée une soudure à froid sous haute pression : les brins de cuivre fusionnent. La liaison reste souple.
+  - Glissez par-dessus une gaine thermo-rétractable contenant de la colle interne (Adhesive Lined Heat Shrink). En la chauffant, la colle fond et scelle la réparation à 100% contre l'eau et le sel de la route.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="Quand souder ?"
+>
+  La soudure n'est pas morte ! Elle est obligatoire pour la réparation des cartes électroniques (ECU, BSI, Compteurs) car la carte mère ne vibre pas par rapport à ses composants.
+</ConfirmationBox>

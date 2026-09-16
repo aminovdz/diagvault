@@ -1,0 +1,69 @@
+---
+title: "Pourquoi le test de continuité (Bip) vous ment"
+description: "Le testeur de continuité (le bip du multimètre) est le plus grand menteur de l'atelier. Découvrez pourquoi il vous fait rater vos diagnostics de faisceaux."
+pillar: "diagnostic"
+category: "electricite"
+system: "bsi"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+"J'ai testé le fil du phare au multimètre, il bipe, donc le fil est bon !" — C'est la phrase la plus prononcée avant de changer un calculateur pour rien. Le mode "Continuité" (le petit symbole sonore sur le multimètre) ne sert qu'à une chose : savoir si un fil est COMPLÈTEMENT coupé en deux. 
+
+<DiagnosticTree 
+  symptom="Le Test de Continuité"
+  options={[
+    { label: "Le fil bipe ?", result: "Il n'est pas coupé, MAIS il peut être fortement oxydé." },
+    { label: "Le fil ne bipe pas ?", result: "Il est sectionné à 100% (Circuit Ouvert)." },
+    { label: "Comment être sûr ?", result: "Utiliser une ampoule témoin sous charge (Test Light)." }
+  ]}
+/>
+
+### La réalité du Bip
+
+<TestStepCard 
+  title="1. La loi de l'Ampérage"
+  tool="aucun"
+  time="2 min"
+>
+  Imaginez un câble de démarreur gros comme le pouce. Il est constitué de 50 brins de cuivre et doit laisser passer 200 Ampères.
+  Suite à un frottement, 49 brins sont sectionnés. Le fil ne tient plus que par **un seul petit brin de cuivre**.
+  - Si vous testez ce fil avec la continuité : le multimètre envoie un micro-courant (0.001 Ampère). Ce courant passe très facilement dans l'unique brin de cuivre restant. **Le multimètre bipe !** Vous croyez que le fil est bon.
+  - Dans la réalité, quand vous tournerez la clé, les 200 Ampères du démarreur feront fondre ce brin unique instantanément (ou ne passeront tout simplement pas).
+</TestStepCard>
+
+<TestStepCard 
+  title="2. L'alternative : L'ampoule Témoin (Test Light)"
+  tool="aucun"
+  time="5 min"
+>
+  Pour tester un fil d'alimentation, laissez le multimètre dans la boîte.
+  Utilisez une vraie **Ampoule Témoin** (Halogène, par exemple une vieille ampoule H7 soudée à deux fils).
+  - L'ampoule H7 consomme environ 5 Ampères.
+  - Branchez un bout de l'ampoule sur la masse.
+  - Touchez le bout du fil suspect avec l'autre bout de l'ampoule.
+  - Si l'ampoule **s'allume de façon éblouissante**, le fil est capable de fournir de la puissance.
+  - Si l'ampoule **rougeoye faiblement**, le fil est oxydé (vert de gris) à l'intérieur. Il laisse passer le voltage, mais pas l'ampérage.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Quand utiliser la Continuité ?"
+  tool="multimetre"
+  time="2 min"
+>
+  Le bip du multimètre reste utile pour le diagnostic des fils de **Capteurs** (très faible puissance) ou des réseaux de communication (**CAN Bus**).
+  Un réseau CAN ne transporte presque aucun ampérage, donc un test de continuité (ou de résistance en Ohms) est approprié pour vérifier qu'un fil de CAN-H ou CAN-L n'est pas sectionné.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="Règle de l'Atelier"
+>
+  Multimètre = Test de tension (Volt) ou composants de faible puissance (Capteurs).
+  Ampoule Témoin = Test de fils de forte puissance (Actionneurs, Phares, Pompes).
+</ConfirmationBox>

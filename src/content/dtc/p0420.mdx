@@ -1,0 +1,67 @@
+---
+title: "P0420 - Efficacité du catalyseur (Comment ne pas le remplacer à l'aveugle)"
+description: "Méthode de test avancée pour confirmer si le P0420 vient vraiment du catalyseur, d'une sonde O2 ou d'une fuite d'échappement."
+pillar: "diagnostic"
+category: "dtc"
+system: "moteur"
+symptom: ["Voyant moteur allumé", "Surconsommation"]
+dtc: ["P0420"]
+sensor: ["Sonde Lambda O2"]
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner", "oscilloscope"]
+published_date: 2024-03-20
+author: "DiagVault"
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+## Le Piège du P0420
+Le code **P0420 (Rendement du système catalytique inférieur au seuil)** est l'un des plus rentables pour les garages, car il se solde souvent par un remplacement de catalyseur (très cher). Pourtant, dans 30% des cas, le catalyseur est en parfait état.
+
+Le calculateur moteur (ECU) surveille l'efficacité du catalyseur en comparant les signaux de la **Sonde Lambda Amont (Capteur 1)** et de la **Sonde Lambda Aval (Capteur 2)**. 
+Si la sonde aval oscille de la même manière que la sonde amont, l'ECU en déduit que le catalyseur ne stocke plus d'oxygène et ne filtre plus rien.
+
+<DiagnosticTree 
+  title="Arbre de Décision Rapide - P0420"
+  nodes={[
+    { label: "Analyse Live Data", subText: "Regarder Fuel Trims (STFT/LTFT)" },
+    { label: "Trims OK (proche 0%)", subText: "Vérifier fuites d'échappement et sondes O2" },
+    { label: "Trims élevés (>10%)", subText: "Régler le problème de mélange (prise d'air, injecteurs) AVANT de juger le catalyseur" }
+  ]}
+/>
+
+## 🧪 Méthodologie de Test
+
+<TestStepCard 
+  stepNumber={1}
+  title="Vérification des Fuel Trims (STFT / LTFT)"
+  tool="scanner"
+  action="Lisez les données en direct (Live Data) au ralenti et à 2500 tr/min."
+  expectedResult="STFT et LTFT combinés doivent être entre -5% et +5%."
+  failureResult="Si les Fuel Trims sont positifs (ex: +15%), le moteur tourne pauvre (prise d'air, MAF défectueux, pression d'essence). Cet excès d'oxygène sature le catalyseur et déclenche le P0420. Réparez cela d'abord !"
+/>
+
+<TestStepCard 
+  stepNumber={2}
+  title="Test de la fuite d'échappement"
+  tool="machine_a_fumee"
+  action="Injectez de la fumée dans l'échappement moteur froid, ou bouchez légèrement la sortie et écoutez."
+  expectedResult="Aucune fuite entre la culasse et la sonde aval."
+  failureResult="Une fuite d'échappement avant la sonde aval aspire de l'oxygène frais. La sonde aval lit cet oxygène et l'ECU croit que le catalyseur est mort."
+/>
+
+<TestStepCard 
+  stepNumber={3}
+  title="Graphique des Sondes O2 (Live Data)"
+  tool="scanner"
+  action="Affichez la Tension Sonde 1 (Amont) et Sonde 2 (Aval) en graphique, moteur bien chaud."
+  expectedResult="Sonde 1 doit osciller rapidement (0.1V à 0.9V). Sonde 2 doit être relativement stable (autour de 0.6V - 0.7V)."
+  failureResult="Si la Sonde 2 imite exactement le tracé de la Sonde 1, et que les étapes 1 et 2 sont OK, alors le catalyseur est effectivement HS."
+/>
+
+<ConfirmationBox 
+  title="Verdict P0420"
+  text="Ne condamnez le catalyseur QUE SI : Les Fuel Trims sont parfaits, il n'y a aucune fuite d'échappement, le moteur ne consomme pas d'huile, et la sonde aval (qui a été vérifiée) oscille comme la sonde amont."
+/>

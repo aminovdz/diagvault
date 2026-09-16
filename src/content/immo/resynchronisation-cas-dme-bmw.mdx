@@ -1,0 +1,69 @@
+---
+title: "BMW : Resynchronisation CAS / DME (Code ISN)"
+description: "BMW ne démarre plus après une panne de batterie ? Comment effectuer un réalignement (resynchronisation) ISN entre le module CAS et l'ECU DME."
+pillar: "programmation"
+category: "immo"
+system: "immo"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Une panne très classique sur les BMW (E46, E90, E60) : la batterie se décharge complètement. Le client met des pinces de démarrage (Câbles), le démarreur tourne parfaitement, mais le moteur refuse de se lancer. L'erreur OBD indique "DME/CAS Tampering" ou "Rolling Code Incorrect".
+
+<DiagnosticTree 
+  symptom="Panne de démarrage BMW (Démarreur tourne)"
+  options={[
+    { label: "La clé est-elle reconnue ?", result: "S'il n'y a pas de clé barrée au tableau, le CAS lit la clé" },
+    { label: "Défaut EWS/CAS Tampering dans l'ECU ?", result: "Perte de synchro (Rolling code)" },
+    { label: "Défaut de code ISN ?", result: "Alignement nécessaire à la valise" }
+  ]}
+/>
+
+### Comprendre le Code ISN (Individual Serial Number)
+
+<TestStepCard 
+  title="1. Le rôle du Rolling Code"
+  tool="aucun"
+  time="2 min"
+>
+  Sur BMW, l'antidémarrage fonctionne en deux temps :
+  1. Le CAS (Car Access System) vérifie la puce de la clé. Si OK, le démarreur s'active.
+  2. Le CAS envoie un mot de passe (ISN) + un code tournant (Rolling Code) au DME (Calculateur Moteur). Si OK, le DME active l'injection et les bobines.
+  Lors d'une baisse de tension violente (batterie vide), le CAS et le DME désynchronisent leur compteur de "Rolling Code". Ils ne se comprennent plus.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Procédure de Resynchronisation (Valise OBD)"
+  tool="scanner"
+  time="10 min"
+>
+  Contrairement à la reprogrammation complexe, ce problème se règle par OBD sans démonter.
+  - Branchez votre valise (Autel, Launch, ISTA-D).
+  - Allez dans Fonctions Spéciales -> Service -> Drive (Moteur) -> EWS/CAS Alignment (ou Resync DME/CAS).
+  - La valise va forcer les deux calculateurs à remettre leurs compteurs de code tournant à zéro en même temps.
+  - Coupez le contact pendant 10 secondes. La voiture redémarre instantanément.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. CAS3+ et Changement d'ECU (ISN Long)"
+  tool="programmateur"
+  time="45 min"
+>
+  Si vous **remplacez** le calculateur moteur d'occasion sur une génération CAS3+ ou ultérieure, la synchro OBD ne marchera pas ! 
+  Le CAS et l'ECU partagent un code ISN fixe (16 bytes sur CAS3+, 32 bytes sur CAS4).
+  - Il faut lire le code ISN secret de l'ECU moteur d'occasion (sur table via Boot/Bench).
+  - Écrire cet ISN dans le module CAS de la voiture pour qu'ils soient "appairés".
+  - Ensuite, la synchronisation OBD fonctionnera.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Batterie Parfaite"
+>
+  Ne tentez jamais une resynchronisation CAS/DME si la batterie du véhicule est encore faible. Mettez un chargeur stabilisateur (Gysflash), sinon vous risquez de corrompre l'EEPROM du CAS de manière irrémédiable.
+</ConfirmationBox>

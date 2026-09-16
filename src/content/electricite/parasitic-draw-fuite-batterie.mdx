@@ -1,0 +1,71 @@
+---
+title: "Diagnostic de Fuite de Batterie (Parasitic Draw)"
+description: "Batterie vide tous les matins ? Apprenez la méthode infaillible de la chute de tension sur les fusibles pour trouver le boîtier qui refuse de s'endormir."
+pillar: "diagnostic"
+category: "electricite"
+system: "bsi"
+difficulty: "intermediaire"
+risk: "moyen"
+requiredTools: ["multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le client se plaint : "Si je ne roule pas pendant 2 jours, la batterie est à plat." C'est le cauchemar de nombreux garagistes. Un module (autoradio, alarme, ou calculateur) refuse de se mettre en veille (Sleep Mode) et vide la batterie à petit feu. C'est ce qu'on appelle un **Parasitic Draw**.
+
+<DiagnosticTree 
+  symptom="Batterie vide à l'arrêt"
+  options={[
+    { label: "Moins de 50 milliampères (0.05A) ?", result: "Consommation normale (Mémoire des calculateurs)" },
+    { label: "Plus de 200 milliampères ?", result: "Fuite parasite avérée." },
+    { label: "Arrachage de fusibles ?", result: "Mauvaise méthode (réveille les calculateurs)." }
+  ]}
+/>
+
+### La Méthode de la Chute de Tension (Voltage Drop across Fuses)
+
+La méthode de grand-père consistait à débrancher la batterie, mettre un ampèremètre en série, et arracher les fusibles un par un jusqu'à ce que la consommation chute. **NE FAITES PLUS ÇA SUR LES VOITURES MODERNES.** Arracher et remettre un fusible réveille le réseau CAN et fausse totalement votre diagnostic.
+
+<TestStepCard 
+  title="1. La Préparation du Véhicule (Mise en veille)"
+  tool="aucun"
+  time="45 min"
+>
+  - Ouvrez le capot, les portes, et le coffre (pour accéder aux boîtes à fusibles).
+  - Fermez manuellement toutes les serrures avec un tournevis (pour faire croire à la voiture que les portes sont closes).
+  - Verrouillez la voiture à la clé.
+  - **Attendez entre 30 et 60 minutes.** Les calculateurs modernes sont très lents à s'endormir (surtout chez BMW et Mercedes). Ne touchez plus à rien.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Le Test des Fusibles au Millivoltmètre"
+  tool="multimetre"
+  time="15 min"
+>
+  L'astuce de génie : Un fusible, c'est un tout petit fil de métal. Si du courant (la fuite) le traverse, il va générer une infime chute de tension (Voltage Drop) mesurable en millivolts.
+  - Réglez votre multimètre sur **mV DC** (Millivolts).
+  - Appliquez les pointes de touche sur les deux petits points de métal exposés sur le dessus de chaque fusible (sans les retirer !).
+  - Un fusible "Endormi" (pas de fuite) affichera **0.0 mV**.
+  - Si un fusible affiche **1.5 mV, 2.0 mV**, etc. : C'est LUI qui est traversé par la fuite de courant.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Identification du circuit"
+  tool="aucun"
+  time="5 min"
+>
+  Vous avez trouvé un fusible de 15 Ampères qui lit 2.3 mV.
+  - Ne l'enlevez toujours pas.
+  - Regardez le schéma de la boîte à fusibles pour identifier ce qu'il alimente (ex: F24 = Autoradio / Amplificateur audio).
+  - Débranchez physiquement l'amplificateur dans le coffre. 
+  - La valeur sur le fusible retombe à 0.0 mV ? Vous venez de trouver le module défectueux.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="Tableau de conversion"
+>
+  Il existe des abaques (charts) en ligne pour convertir les millivolts d'un fusible en milliampères, en fonction de son ampérage (couleur) et de son type (Mini, ATO, Maxi). Cherchez "Fuse Voltage Drop Chart" sur Google.
+</ConfirmationBox>

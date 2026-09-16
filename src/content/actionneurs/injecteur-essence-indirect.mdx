@@ -1,0 +1,71 @@
+---
+title: "L'Injecteur Essence (MPI / Indirect)"
+description: "Ratés d'allumage ? Apprenez à tester la résistance d'une bobine d'injecteur, vérifier son alimentation, et écouter son claquement."
+pillar: "diagnostic"
+category: "actionneurs"
+system: "moteur"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["multimetre", "oscilloscope"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Un injecteur d'essence classique (Multipoint / MPI) n'est qu'une simple électrovanne (un électro-aimant qui soulève une aiguille). Il vaporise l'essence dans la tubulure d'admission juste avant la soupape. Lorsqu'il se bouche ou que sa bobine grille, le cylindre ne donne plus rien (Code P0301 à P0304).
+
+<DiagnosticTree 
+  symptom="Raté de Cylindre (Misfire)"
+  options={[
+    { label: "Bougie et Bobine parfaites ?", result: "L'injecteur est le suspect numéro un." },
+    { label: "L'injecteur ne claque pas ?", result: "Problème électrique (Bobine interne coupée ou fil arraché)." },
+    { label: "L'injecteur claque mais le cylindre est mort ?", result: "Buse physiquement bouchée par des impuretés." }
+  ]}
+/>
+
+### Diagnostic Électrique
+
+<TestStepCard 
+  title="1. Test de Résistance (Bobine Interne)"
+  tool="multimetre"
+  time="5 min"
+>
+  C'est la panne électrique la plus courante.
+  - Débranchez la prise de l'injecteur moteur arrêté.
+  - Mettez votre multimètre en Ohms. Touchez les deux broches de l'injecteur.
+  - Un injecteur standard MPI doit afficher entre **12 et 16 Ohms**.
+  - S'il affiche "OL" (Circuit Ouvert), la bobine est coupée à l'intérieur. Injecteur mort.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Test d'Alimentation et Commande"
+  tool="multimetre"
+  time="5 min"
+>
+  L'injecteur est-il alimenté par la voiture ?
+  - Mettez le contact.
+  - Un des deux fils du faisceau DOIT afficher **12V** (venant du relais principal).
+  - L'autre fil va vers l'ECU (Ground Control). L'ECU le met à la masse pour ouvrir l'injecteur (environ 2 à 4 millisecondes au ralenti).
+  - Pour vérifier que l'ECU commande bien, branchez une petite LED (Noid Light) sur la prise. Au démarreur, la LED doit clignoter frénétiquement.
+</TestStepCard>
+
+### Diagnostic Mécanique
+
+<TestStepCard 
+  title="3. Le test du Stéthoscope (Écoute)"
+  tool="aucun"
+  time="2 min"
+>
+  Si vous n'avez pas de matériel, utilisez un long tournevis.
+  - Moteur tournant. Posez la pointe du tournevis sur le corps de l'injecteur et collez votre oreille sur le manche.
+  - Vous devez entendre un **"Tic-Tic-Tic-Tic"** métallique et régulier, très net.
+  - S'il est silencieux ou que le son est très feutré par rapport aux autres, l'aiguille est grippée ou ne s'ouvre pas.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="L'Oscilloscope"
+>
+  Le test ultime se fait à l'oscilloscope sur le fil de commande. Quand l'ECU lâche la masse, le champ magnétique de l'injecteur s'effondre et crée un pic de tension (Flyback Voltage) d'environ 60 à 80 Volts. L'absence de ce pic indique une bobine en court-circuit.
+</ConfirmationBox>

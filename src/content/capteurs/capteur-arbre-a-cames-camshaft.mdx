@@ -1,0 +1,60 @@
+---
+title: "Le Capteur d'Arbre à Cames (CMP)"
+description: "Comment l'ECU différencie le temps de compression du temps d'échappement. Test de synchronisation PMH / Arbre à cames à l'oscilloscope."
+pillar: "diagnostic"
+category: "capteurs"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["oscilloscope", "scanner"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le vilebrequin (PMH) fait deux tours pendant que l'arbre à cames (CMP) n'en fait qu'un. Sans capteur d'arbre à cames, l'ECU sait que le piston numéro 1 est en haut, mais il ne sait pas s'il est prêt à exploser (Compression) ou s'il vide ses gaz (Échappement). C'est vital pour l'injection séquentielle.
+
+<DiagnosticTree 
+  symptom="Panne de Capteur Arbre à Cames"
+  options={[
+    { label: "Moteur cale et ne redémarre plus ?", result: "Fréquent sur certains diesels (Besoin absolu de la synchro)." },
+    { label: "Moteur démarre longuement (Cranking long) ?", result: "L'ECU injecte au hasard (Mode semi-séquentiel) pour démarrer." }
+  ]}
+/>
+
+### Le problème de Synchronisation
+
+Si la courroie de distribution ou la chaîne est décalée (ne serait-ce que d'une dent), l'ECU le verra. Le signal du PMH et le signal de l'Arbre à Cames ne s'aligneront plus correctement. Cela génère les codes P0016 ou P0340.
+
+<TestStepCard 
+  title="1. Lire le statut de Synchro (Valise)"
+  tool="scanner"
+  time="5 min"
+>
+  Avant de tout démonter :
+  - Allez dans les Live Data de la valise, section Moteur.
+  - Cherchez le PID : **État de synchronisation Arbre à cames / Vilebrequin**.
+  - Lancez le démarreur. L'état doit passer de "NON" à "OUI".
+  - S'il reste sur "NON", il y a un défaut de capteur, de faisceau, ou la distribution est décalée.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Test ultime : La corrélation à l'Oscilloscope"
+  tool="oscilloscope"
+  time="15 min"
+>
+  Le seul moyen sûr de vérifier le calage de la distribution sans ouvrir le moteur :
+  - Voie 1 : Fil de signal du capteur PMH (Crank).
+  - Voie 2 : Fil de signal du capteur d'Arbre à Cames (Cam).
+  - Faites tourner le moteur. Mettez la capture sur pause.
+  - Comparez la superposition des deux courbes avec une base de données connue (Waveform Library). 
+  - Si le signal de l'arbre à cames est décalé vers la droite par rapport au modèle constructeur, votre chaîne de distribution est allongée.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="Type de capteur"
+>
+  De nos jours, 95% des capteurs d'arbre à cames sont de type Effet Hall (3 fils) car ils doivent être très précis à très basse vitesse de rotation. Leurs tests de tension (5V, Masse, Signal) sont identiques à ceux du capteur PMH Hall.
+</ConfirmationBox>

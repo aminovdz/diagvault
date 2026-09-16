@@ -1,0 +1,64 @@
+---
+title: "Le Voltage Fantôme (Ghost Voltage)"
+description: "Pourquoi votre multimètre affiche 12 Volts sur un fil complètement débranché. Comprendre l'impédance et le voltage fantôme (Ghost Voltage)."
+pillar: "diagnostic"
+category: "electricite"
+system: "bsi"
+difficulty: "intermediaire"
+risk: "moyen"
+requiredTools: ["multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+C'est l'expérience la plus frustrante de l'électricien débutant. Vous testez un fil complètement débranché des deux côtés, et pourtant votre multimètre numérique de haute qualité vous affiche 8 Volts, ou 12 Volts ! Vous passez des heures à chercher un faux contact qui n'existe pas. Vous êtes victime du "Ghost Voltage".
+
+<DiagnosticTree 
+  symptom="Lecture Multimètre Incompréhensible"
+  options={[
+    { label: "12V sur un fil coupé ?", result: "Couplage inductif (Ghost Voltage)" },
+    { label: "Le voltage tombe à 0 quand on branche l'ampoule ?", result: "C'est bien un voltage fantôme (sans Ampérage)" }
+  ]}
+/>
+
+### D'où vient ce voltage ?
+
+<TestStepCard 
+  title="1. La haute impédance des multimètres modernes"
+  tool="multimetre"
+  time="2 min"
+>
+  Pour ne pas endommager les calculateurs, les multimètres numériques (DMM) sont construits avec une résistance interne gigantesque (10 Mégohms). 
+  Leur sensibilité est si extrême qu'ils sont capables de capter le moindre champ électromagnétique. Ils peuvent même mesurer l'électricité statique de votre corps.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Le couplage inductif (L'effet transformateur)"
+  tool="aucun"
+  time="5 min"
+>
+  Dans un faisceau automobile (Wiring Harness), des dizaines de fils sont serrés les uns contre les autres.
+  Si le fil n°1 est un gros fil d'alimentation transportant beaucoup de courant (ex: phare allumé), il crée un champ magnétique autour de lui.
+  Si le fil n°2 (qui est débranché et ne sert à rien) court juste à côté du fil n°1, le champ magnétique va générer une tension (Voltage) dans le fil n°2. 
+  Votre multimètre hypersensible détectera ces 12V par "induction" !
+</TestStepCard>
+
+<TestStepCard 
+  title="3. L'exorcisme : Tuer le fantôme"
+  tool="aucun"
+  time="5 min"
+>
+  Comment savoir si ce 12V est réel (court-circuit au positif) ou si c'est un fantôme ?
+  - Un voltage fantôme n'a **absolument aucun ampérage** (aucune puissance) derrière lui.
+  - Utilisez votre ampoule témoin (Test Light) sur le fil. L'ampoule ne s'allumera jamais, et si vous mettez le multimètre en parallèle, les 12V tomberont instantanément à 0V ! La minuscule résistance de l'ampoule a suffi à écraser le champ magnétique.
+  - Certains multimètres très haut de gamme pour électriciens (ex: Fluke) possèdent un mode "LoZ" (Low Impedance). Ce mode connecte une petite résistance interne pour tuer le Ghost Voltage.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="L'autre explication"
+>
+  Si le fil est connecté à l'ECU d'un côté et débranché du capteur de l'autre, vous mesurez souvent le "Bias Voltage" ou "Pull-up" de l'ECU (souvent 5V). Ce n'est pas un fantôme, c'est l'ECU qui surveille le circuit ouvert !
+</ConfirmationBox>

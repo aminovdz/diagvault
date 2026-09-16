@@ -1,0 +1,57 @@
+---
+title: "P0128 - Température du liquide de refroidissement inférieure à la consigne du thermostat"
+description: "Le moteur ne chauffe pas assez vite. Découvrez comment vérifier si votre thermostat reste ouvert ou si la sonde de température (CTS) ment à l'ECU."
+pillar: "diagnostic"
+category: "dtc"
+system: "moteur"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["scanner", "multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le code **P0128** indique que le moteur met beaucoup trop de temps à atteindre sa température de fonctionnement (généralement 85°C - 90°C), ou que la température chute en roulant. Un moteur trop froid consomme plus de carburant et encrasse le filtre à particules (FAP) et le catalyseur.
+
+<DiagnosticTree 
+  symptom="P0128 : Moteur Trop Froid"
+  options={[
+    { label: "Thermostat coincé ouvert ?", result: "Le radiateur chauffe immédiatement" },
+    { label: "Capteur CTS qui ment ?", result: "Vérifier la valeur à froid (KOEO)" },
+    { label: "Manque de liquide ?", result: "Vérifier le niveau (bulle d'air sur la sonde)" }
+  ]}
+/>
+
+### Diagnostic pas-à-pas
+
+<TestStepCard 
+  title="1. Contrôle de Plausibilité de la sonde CTS à Froid"
+  tool="scanner"
+  time="5 min"
+>
+  L'ECU déclenche ce code en lisant la sonde de température d'eau (Coolant Temperature Sensor).
+  - Après une nuit d'arrêt (moteur froid), mettez le contact sans démarrer (KOEO).
+  - Branchez la valise et regardez les paramètres en direct (Live Data).
+  - La Température de l'Air (IAT) et la Température d'Eau (CTS) **doivent être identiques** (la température ambiante, ex: 15°C). Si l'eau indique -40°C ou 50°C, la sonde est HS ou le faisceau est coupé.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Le Test du Thermostat (La Durite Supérieure)"
+  tool="aucun"
+  time="15 min"
+>
+  Le thermostat (calorstat) doit rester **complètement fermé** tant que le moteur n'a pas atteint environ 85°C.
+  - Démarrez le moteur à froid.
+  - Touchez la grosse durite en caoutchouc qui va du boîtier d'eau vers le HAUT du radiateur.
+  - Au début, elle doit rester complètement froide.
+  - Si cette durite commence à tiédir au bout de 2 minutes (alors que l'aiguille du tableau de bord décolle à peine), **le thermostat est bloqué ouvert**. L'eau circule dans le radiateur en permanence, empêchant le moteur de chauffer.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Attention aux régénérations FAP"
+>
+  Un code P0128 sur un moteur diesel empêchera souvent l'ECU de lancer la régénération du Filtre à Particules. Ne négligez pas ce code, ou votre FAP se bouchera en quelques semaines !
+</ConfirmationBox>

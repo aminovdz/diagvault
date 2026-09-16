@@ -1,0 +1,66 @@
+---
+title: "P0520 - Circuit de Capteur de Pression d'Huile Moteur (Oil Pressure Sensor Circuit)"
+description: "Voyant d'huile allumé et code P0520. S'agit-il du capteur défectueux (pas grave) ou d'une vraie chute de pression (moteur mort) ? Ne prenez aucun risque."
+pillar: "diagnostic"
+category: "dtc"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "eleve"
+requiredTools: ["multimetre", "aucun"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le **P0520** indique une défaillance électrique sur le circuit du pressostat ou capteur de pression d'huile. Le danger extrême de ce code est de croire que c'est "juste le capteur" et de continuer à rouler. Si la pression d'huile est réellement à zéro, le moteur serre en quelques minutes.
+
+<DiagnosticTree 
+  symptom="P0520 : Circuit Pression d'Huile"
+  options={[
+    { label: "Vraie pression d'huile ?", result: "Vérifier avec un manomètre mécanique" },
+    { label: "Capteur qui fuit ?", result: "L'huile remonte par les pins électriques" },
+    { label: "Faisceau à la masse ?", result: "Fil coincé sous le collecteur" }
+  ]}
+/>
+
+### Comment s'assurer que le moteur est sauf
+
+<TestStepCard 
+  title="1. Inspection visuelle (Le test de fuite interne)"
+  tool="aucun"
+  time="5 min"
+>
+  Le grand classique des capteurs de pression d'huile (particulièrement FCA / Chrysler Pentastar 3.6L) : la membrane interne cède. L'huile moteur traverse le capteur sous pression et remonte dans la prise électrique.
+  - Débranchez le connecteur du capteur de pression d'huile.
+  - Si l'intérieur de la prise électrique est **rempli d'huile moteur fraîche**, ne cherchez pas plus loin. Le capteur est mort.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Validation avec un Manomètre Mécanique"
+  tool="aucun"
+  time="30 min"
+>
+  Si le capteur est sec mais que le code ou le voyant rouge persiste, IL FAUT confirmer la pression réelle.
+  - Dévissez le capteur d'huile du bloc moteur.
+  - Vissez à la place un manomètre mécanique analogique.
+  - Démarrez (attention à ne pas accélérer si la pression est nulle). Vous devriez voir environ 1 à 2 bars au ralenti à chaud, et plus de 3 bars en accélérant. Si la pression mécanique est bonne, le circuit de capteur/câblage est bien en cause. Si la pression mécanique est nulle, éteignez immédiatement, la pompe à huile est HS ou la crépine est bouchée.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Test du circuit (Voltage Pull-up)"
+  tool="multimetre"
+  time="10 min"
+>
+  S'il s'agit d'un pressostat simple (switch 1 fil) :
+  L'ECU envoie souvent 5V (ou 12V) sur le fil. Le capteur met ce fil à la masse quand la pression monte.
+  - Contact mis, fil débranché : vérifiez si vous avez bien la tension venant de l'ECU.
+  - Si vous mettez ce fil à la masse moteur, la jauge au tableau de bord devrait réagir (ou le voyant s'éteindre). Si ça ne réagit pas, le fil est coupé.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Risque Élevé"
+>
+  Ne sous-estimez jamais un voyant rouge de pression d'huile, même avec un P0520. Prenez le temps de brancher le manomètre mécanique avant de rendre le véhicule au client.
+</ConfirmationBox>

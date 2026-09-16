@@ -1,0 +1,62 @@
+---
+title: "Le Capteur de Position Papillon (TPS)"
+description: "Les mystères des papillons motorisés. Apprenez comment le TPS à double potentiomètre de sécurité fonctionne et comment repérer les pistes usées."
+pillar: "diagnostic"
+category: "capteurs"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner", "oscilloscope"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Autrefois relié par un câble d'accélérateur en métal, le papillon moderne est entièrement électrique (Drive-By-Wire). L'ECU a besoin de savoir exactement à quel angle le clapet du papillon est ouvert. C'est le rôle du capteur TPS (Throttle Position Sensor), intégré au corps papillon.
+
+<DiagnosticTree 
+  symptom="Mode Dégradé (Limp Mode)"
+  options={[
+    { label: "Voyant papillon / EPS allumé, régime bloqué à 1500 tr/min ?", result: "L'ECU coupe l'accélération par sécurité." },
+    { label: "Ratés d'accélération à un régime précis ?", result: "Piste en carbone usée (Point mort sur le capteur)." }
+  ]}
+/>
+
+### L'Architecture de Sécurité à Double Piste
+
+Si un capteur d'accélérateur bug et donne "100%" à l'ECU, la voiture accélèrerait toute seule contre un mur. Pour éviter cela, la législation oblige les papillons à utiliser **deux pistes (TPS1 et TPS2)** qui se surveillent mutuellement.
+
+<TestStepCard 
+  title="1. La logique des pistes inversées"
+  tool="scanner"
+  time="5 min"
+>
+  Sur la valise, affichez TPS 1 et TPS 2 (en Volts). Contact mis, moteur arrêté.
+  Appuyez lentement sur la pédale de gaz.
+  - Souvent, **TPS 1 monte** de 0.5V jusqu'à 4.5V.
+  - Pendant ce temps, **TPS 2 descend** de 4.5V jusqu'à 0.5V.
+  - La somme des deux tensions doit TOUJOURS être égale à 5V (0.5 + 4.5 = 5, 2.5 + 2.5 = 5).
+  - Si la piste 1 s'use et tombe à zéro, la somme ne fera plus 5V. L'ECU détecte la panne immédiatement (Code P2135) et coupe le moteur.
+</TestStepCard>
+
+### Le test des "Micro-coupures" (Glitch Test)
+
+<TestStepCard 
+  title="2. Le balayage lent à l'Oscilloscope"
+  tool="oscilloscope"
+  time="10 min"
+>
+  La valise de diagnostic est souvent trop lente pour capter une micro-usure sur la piste carbone du potentiomètre. Un raté qui dure 0.1 seconde n'apparaîtra pas sur l'écran.
+  - Branchez la voie 1 sur TPS1, la voie 2 sur TPS2.
+  - Réglez la base de temps sur 1 ou 2 secondes par division.
+  - Ouvrez et fermez le papillon à la main TRÈS LENTEMENT.
+  - La ligne doit monter de manière parfaitement lisse, sans aucun "pic" (Glitch) vers le bas. S'il y a un trou dans le tracé, la piste est usée à cet angle précis.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="Apprentissage Papillon"
+>
+  Après avoir nettoyé la calamine d'un boîtier papillon ou l'avoir remplacé, il faut obligatoirement réinitialiser ses valeurs d'apprentissage (Throttle Adaptation) via la valise, sinon le ralenti sera à 1500 tr/min.
+</ConfirmationBox>

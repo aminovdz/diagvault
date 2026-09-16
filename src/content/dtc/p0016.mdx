@@ -1,0 +1,46 @@
+---
+title: "P0016 - Corrélation Vilebrequin / Arbre à cames"
+description: "Diagnostic d'un décalage de distribution ou d'un défaut de VVT à l'origine du code P0016 (Corrélation PMH/AAC)."
+pillar: "diagnostic"
+category: "dtc"
+system: "moteur"
+symptom: ["Démarrage difficile", "Manque de puissance", "Ralenti bruyant"]
+dtc: ["P0016"]
+sensor: ["Capteur PMH", "Capteur AAC"]
+difficulty: "expert"
+risk: "eleve"
+requiredTools: ["oscilloscope", "scanner"]
+published_date: 2024-03-20
+author: "DiagVault"
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+
+## Le Piège du P0016
+L'ECU attend de voir le signal de l'arbre à cames (AAC) à un moment très précis par rapport au signal du vilebrequin (PMH). Si cet écart dépasse la tolérance, il lève le code P0016.
+Ce code indique presque toujours un problème **mécanique** (chaîne allongée, courroie décalée d'une dent) ou un problème **hydraulique** (solénoïde VVT bloqué). Ne changez pas les capteurs PMH/AAC sans avoir vérifié à l'oscilloscope !
+
+## 🧪 Méthodologie de Test
+
+<TestStepCard 
+  stepNumber={1}
+  title="Test du Solénoïde VVT (Déphaseur)"
+  tool="scanner"
+  action="Lisez le 'VVT Angle' (consigne vs réel). Faites un 'Active Test' du solénoïde d'arbre à cames moteur au ralenti."
+  expectedResult="Le moteur doit caler ou brouter fortement lorsque vous activez le VVT à 100%."
+  failureResult="Si rien ne se passe, le solénoïde est bloqué (souvent par des impuretés dans l'huile) ou l'engrenage du déphaseur est mort. L'AAC reste bloqué dans une mauvaise position, créant le P0016."
+/>
+
+<TestStepCard 
+  stepNumber={2}
+  title="Mesure de Corrélation In-Cylinder (Oscilloscope)"
+  tool="oscilloscope"
+  action="Branchez la voie 1 sur le signal du capteur PMH (CKP) et la voie 2 sur le capteur AAC (CMP)."
+  expectedResult="Comparez votre capture d'écran avec une base de données de signaux (known-good waveform)."
+  failureResult="Si les signaux sont parfaitement nets mais décalés (par exemple le front montant de l'AAC tombe sur la 15ème dent du PMH au lieu de la 12ème), le moteur n'est plus calé."
+/>
+
+<ConfirmationBox 
+  title="Verdict P0016"
+  text="Si le déphaseur VVT fonctionne (et que la crépine du solénoïde est propre), et que l'oscilloscope prouve un décalage physique entre les deux capteurs, la chaîne de distribution est étirée ou le tendeur a lâché. Il faut ouvrir la distribution."
+/>

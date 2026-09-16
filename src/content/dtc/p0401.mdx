@@ -1,0 +1,66 @@
+---
+title: "P0401 - Débit EGR Insuffisant (Exhaust Gas Recirculation Insufficient Flow)"
+description: "P0401 ne signifie pas toujours Vanne EGR HS. Apprenez à vérifier les conduits calaminés, le capteur DPFE, et l'électrovanne de dépression."
+pillar: "diagnostic"
+category: "dtc"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner", "multimetre", "machine_a_fumee"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le code **P0401** apparaît lorsque le calculateur moteur demande l'ouverture de la vanne EGR mais ne détecte pas la chute d'air frais correspondante via le débitmètre (MAF) ou le capteur de pression absolue (MAP/DPFE). La vanne EGR est très souvent changée pour rien alors que le conduit est bouché.
+
+<DiagnosticTree 
+  symptom="P0401 : Débit EGR Insuffisant"
+  options={[
+    { label: "Commande Active ?", result: "Tester via la valise (Active Test)" },
+    { label: "Baisse du MAF ?", result: "Vérifier le débitmètre au ralenti" },
+    { label: "Conduits bouchés ?", result: "Nettoyage manuel requis" },
+    { label: "Dépression OK ?", result: "Vérifier pompe à vide (si pneumatique)" }
+  ]}
+/>
+
+### Les Étapes Clés
+
+<TestStepCard 
+  title="1. L'Active Test au Scanner (Test MAF vs EGR)"
+  tool="scanner"
+  time="10 min"
+>
+  Le calculateur sait que l'EGR s'ouvre parce qu'il regarde le débitmètre d'air (MAF). Si l'EGR s'ouvre, le moteur avale moins d'air frais, donc la valeur du MAF doit chuter.
+  - Allez dans les Live Data. Regardez la valeur du MAF au ralenti (ex: 8 g/s).
+  - Forcez l'ouverture de l'EGR à 50% via les tests actionneurs.
+  - **Le MAF doit chuter drastiquement** (ex: passer à 4 g/s). 
+  - Si le MAF ne bouge pas : L'EGR ne s'ouvre pas physiquement, OU le circuit d'échappement est bouché par la calamine.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Contrôle de l'actionnement (Pneumatique ou Électrique)"
+  tool="multimetre"
+  time="15 min"
+>
+  **Si l'EGR est pneumatique :** 
+  Débranchez la durite de dépression. Branchez une pompe à dépression manuelle et appliquez du vide. Si le moteur broute et cale, la vanne et les conduits sont OK. Le problème vient de l'électrovanne de commande ou d'une durite poreuse (utilisez une machine à fumée).
+  **Si l'EGR est électrique :**
+  Vérifiez les 5 fils (2 pour le moteur, 3 pour le potentiomètre de recopie). Vérifiez l'alimentation 12V et la masse.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Inspection Physique de la Calamine"
+  tool="aucun"
+  time="45 min"
+>
+  Démontez le tuyau qui relie la vanne EGR au collecteur d'admission. Très souvent (notamment sur le 1.6 TDI ou les moteurs Honda/Toyota), le port dans le collecteur d'admission est complètement obstrué par une pâte noire (mélange suie EGR + vapeurs d'huile du reniflard).
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="La Règle d'Or"
+>
+  Si votre test de dépression (ou test actif) fait caler le moteur au ralenti, la vanne EGR fonctionne parfaitement et le conduit n'est pas bouché. Le problème vient d'ailleurs (souvent l'électrovanne de commande pneumatique ou un débitmètre MAF fatigué qui ment sur ses valeurs).
+</ConfirmationBox>

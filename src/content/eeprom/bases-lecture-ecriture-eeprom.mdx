@@ -1,0 +1,64 @@
+---
+title: "Bases de la lecture EEPROM (24c, 93c, 95c)"
+description: "Introduction à la lecture EEPROM : Identification des puces 8 pattes (24c, 93c, 95c), utilisation d'un clip SOIC8 vs dessoudage, et choix du programmateur."
+pillar: "programmation"
+category: "eeprom"
+system: "ecu"
+difficulty: "debutant"
+risk: "moyen"
+requiredTools: ["programmateur", "fer_a_souder"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+L'EEPROM (Electrically Erasable Programmable Read-Only Memory) est la petite puce de mémoire qui stocke les données vitales du véhicule : kilométrage, code PIN, clés, configuration (codage). Savoir la lire et l'écrire est la compétence fondatrice du Chiptuning et de la réparation électronique automobile.
+
+<DiagnosticTree 
+  symptom="Lecture d'une EEPROM"
+  options={[
+    { label: "Puce I2C (ex: 24C16) ?", result: "Protocole très commun (dashboards)" },
+    { label: "Puce SPI (ex: 95160, 95320) ?", result: "Utilisé dans les ECU Moteur et BSI" },
+    { label: "Puce Microwire (ex: 93C66) ?", result: "Souvent en 8 bits ou 16 bits" }
+  ]}
+/>
+
+### Méthodologie de Lecture
+
+<TestStepCard 
+  title="1. Identifier la puce et son orientation"
+  tool="aucun"
+  time="5 min"
+>
+  L'EEPROM est généralement une puce noire à 8 pattes (Package SOIC8 ou TSSOP8).
+  - Cherchez au microscope (ou à la loupe) la référence inscrite dessus (ex: ST 95160, 24LC04).
+  - **TRÈS IMPORTANT :** Repérez le petit "point" ou le bord biseauté sur le dessus de la puce. Il indique la position de la "Pin 1". Si vous lisez ou soudez la puce à l'envers, elle grille instantanément !
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Clip SOIC8 vs Dessoudage"
+  tool="fer_a_souder"
+  time="15 min"
+>
+  Il existe des "Pinces" (Clip SOIC8) qui permettent de pincer la puce directement sur la carte mère sans la dessouder (In-Circuit).
+  - **Le problème du Clip :** Le courant du programmateur va alimenter la puce, mais il va fuir sur le reste de la carte mère et réveiller le microprocesseur principal. Cela crée des interférences, et la lecture EEPROM sera corrompue (fichier vide ou plein d'erreurs).
+  - **La règle d'or :** Pour une fiabilité à 100%, utilisez une station à air chaud, dessoudez la puce, et lisez-la sur l'adaptateur ZIF de votre programmateur.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Choisir le programmateur"
+  tool="programmateur"
+  time="5 min"
+>
+  Pour de simples EEPROM, inutile d'investir dans un KESS3 à 5000€.
+  - Des outils abordables comme le xGecu T48 (TL866) ou l'UPA-USB sont d'une fiabilité redoutable pour les familles 24C/93C/95C.
+  - Sélectionnez la référence exacte de la puce dans le logiciel, assurez-vous du bon voltage (souvent 5V ou 3.3V), cliquez sur READ, et enregistrez immédiatement le fichier (DUMP.bin).
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Propreté des pins"
+>
+  Si vous utilisez un programmateur, nettoyez toujours les pattes de la puce EEPROM avec du flux et de l'alcool isopropylique après l'avoir dessoudée. Un reste de vernis de protection (Conformal Coating) sur une patte empêchera la lecture correcte.
+</ConfirmationBox>

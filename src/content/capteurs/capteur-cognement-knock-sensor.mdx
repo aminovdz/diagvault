@@ -1,0 +1,57 @@
+---
+title: "Le Capteur de Cliquetis (Knock Sensor)"
+description: "Bruits métalliques à l'accélération ? Le capteur de cliquetis est le microphone du moteur qui permet à l'ECU d'éviter la destruction des pistons."
+pillar: "diagnostic"
+category: "capteurs"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["oscilloscope"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le cliquetis (Knock ou Auto-allumage) se produit lorsque le mélange air/essence explose trop tôt, avant que la bougie ne s'allume. Deux fronts de flammes s'entrechoquent avec une violence inouïe. Cela génère un bruit métallique ("Ping") et peut trouer un piston en quelques minutes. Le capteur de cliquetis est un cristal piézo-électrique vissé sur le bloc moteur qui "écoute" ces vibrations destructrices.
+
+<DiagnosticTree 
+  symptom="Réaction de l'ECU au Cliquetis"
+  options={[
+    { label: "Bruit de Knock détecté ?", result: "L'ECU retarde l'avance à l'allumage (Retard Timing)." },
+    { label: "Conséquence ?", result: "Baisse de puissance moteur, mais protection des pistons." }
+  ]}
+/>
+
+### Comment tester un composant acoustique ?
+
+Le capteur piézo-électrique génère son propre courant (Voltage AC) lorsqu'on le frappe ou qu'il vibre, exactement comme le capteur de certaines guitares électriques.
+
+<TestStepCard 
+  title="1. Le test du petit coup de marteau"
+  tool="oscilloscope"
+  time="5 min"
+>
+  - Branchez la voie 1 de l'oscilloscope sur le fil de signal du capteur (Backprobe).
+  - Moteur à l'arrêt, contact mis.
+  - Réglez l'oscilloscope sur Voltage AC (Échelle très petite, 500 mV ou 1V) avec une base de temps rapide (20 ms).
+  - Prenez un petit marteau, ou le manche d'un gros tournevis, et donnez un petit coup sec sur le bloc moteur, près du capteur.
+  - Vous devriez voir une pointe (Spike) de voltage très brève sur l'écran de l'oscilloscope à chaque coup. Si vous voyez les pics, le capteur est vivant.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Le diagnostic des faux positifs"
+  tool="scanner"
+  time="5 min"
+>
+  L'ECU est aveugle, il ne fait qu'écouter le capteur. S'il y a un bruit métallique constant dans le moteur (poussoir hydraulique claquant, chaîne de distribution détendue, support moteur métallique HS), le capteur croira entendre du cliquetis !
+  - Regardez le PID "Knock Retard" (Retrait d'avance à l'allumage).
+  - Si l'ECU retire 5° ou 10° d'avance en permanence, votre moteur manque de puissance, mais ce n'est peut-être pas un problème d'injection. C'est peut-être simplement un bout de tôle de protection d'échappement qui vibre à 3000 tr/min.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Le Couple de Serrage"
+>
+  Un capteur de cliquetis ne se serre jamais "à la main" ou "au pif". Il DOIT être serré avec une clé dynamométrique (souvent autour de 20 Nm, selon le constructeur). S'il est trop serré, il deviendra trop sensible et verra du cliquetis partout. Pas assez serré, il ne captera rien du tout.
+</ConfirmationBox>

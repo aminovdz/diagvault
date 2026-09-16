@@ -1,0 +1,70 @@
+---
+title: "Pression Rail (Haute Pression Carburant) : Consigne vs Réel"
+description: "L'indicateur absolu pour les problèmes de démarrage et de calage en charge. Apprenez à superposer la consigne (Setpoint) et la pression réelle."
+pillar: "diagnostic"
+category: "livedata"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le système d'injection directe (Diesel Common Rail ou Essence GDI/TFSI) repose entièrement sur la pression générée par la pompe Haute Pression (HP) et maintenue dans la rampe commune (Rail). Analyser la Live Data de cette pression est le seul moyen de trouver l'origine d'un manque de puissance ou d'un refus de démarrage.
+
+<DiagnosticTree 
+  symptom="Live Data : Pression Rail"
+  options={[
+    { label: "Sous les 250 bars au démarreur ?", result: "L'ECU interdit le démarrage" },
+    { label: "Écart consigne/réel en charge ?", result: "Filtre bouché ou fuite injecteur" },
+    { label: "Pression oscille au ralenti ?", result: "Régulateur IMV/DRV encrassé" }
+  ]}
+/>
+
+### Comment lire la pression du Rail
+
+<TestStepCard 
+  title="1. La règle d'autorisation de démarrage (Cranking)"
+  tool="scanner"
+  time="5 min"
+>
+  Si le véhicule refuse de démarrer :
+  - Affichez la "Pression Rampe Carburant" (Fuel Rail Pressure) sur votre valise.
+  - Actionnez le démarreur pendant 5 secondes.
+  - Sur un Diesel Common Rail, l'ECU n'ouvrira pas les injecteurs tant que la pression n'atteint pas **250 à 300 Bars** (25 000 à 30 000 kPa / ~4000 PSI). 
+  - Si la pression plafonne à 80 Bars, le moteur ne démarrera jamais. Cherchez une pompe de gavage faible, ou des injecteurs qui fuient par le retour.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Le Test Consigne vs Réel en Charge"
+  tool="scanner"
+  time="10 min"
+>
+  Pour un manque de puissance en roulant (calage lors des dépassements) :
+  - Dans la valise, affichez deux paramètres sur le même graphique : "Pression Rail (Consigne/Demandée)" et "Pression Rail (Réelle/Mesurée)".
+  - Faites un essai routier et accélérez pied au plancher en 3ème.
+  - La pression demandée va grimper instantanément à 1600 / 2000 Bars.
+  - La pression réelle **doit suivre la courbe demandée presque instantanément**. 
+  - Si la pression réelle s'effondre et reste 500 Bars en dessous de la consigne, la pompe HP n'arrive pas à fournir le volume nécessaire (Filtre gasoil bouché, pompe fatiguée).
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Test de stabilité au Ralenti (Le Régulateur de Pression)"
+  tool="scanner"
+  time="5 min"
+>
+  Si le ralenti est instable, "pompe" (Hunting Idle) :
+  - Au ralenti, la consigne est d'environ 300 Bars.
+  - La pression réelle doit rester à 300 Bars (avec une variation mineure de +/- 10 Bars).
+  - Si la pression saute violemment de 250 Bars à 400 Bars en boucle, le régulateur de pression (IMV / DRV) logé sur la pompe ou la rampe est mécaniquement grippé et n'arrive pas à lisser la pression.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="Capteur Haute Pression"
+>
+  Un capteur haute pression défectueux affiche souvent une pression énorme (ex: 2000 bars) alors que le moteur est arrêté (KOEO). Vérifiez toujours la cohérence à l'arrêt !
+</ConfirmationBox>

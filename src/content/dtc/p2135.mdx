@@ -1,0 +1,66 @@
+---
+title: "P2135 - Corrélation Tension Capteur de Position Papillon / Pédale (TPS A/B)"
+description: "Défaut d'accélérateur électronique. L'ECU passe en mode dégradé car les deux pistes du potentiomètre du papillon (TPS) se contredisent."
+pillar: "diagnostic"
+category: "dtc"
+system: "moteur"
+difficulty: "avance"
+risk: "moyen"
+requiredTools: ["scanner", "multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le DTC **P2135** touche les systèmes d'accélération électronique (Drive-by-Wire). Par sécurité, les capteurs de position du papillon (TPS) et de la pédale (APP) utilisent toujours **deux pistes distinctes** (A et B). L'ECU compare en permanence les valeurs des deux pistes. S'il y a une incohérence mathématique entre elles, l'ECU coupe l'accélération (Reduced Engine Power).
+
+<DiagnosticTree 
+  symptom="P2135 : Corrélation TPS A/B"
+  options={[
+    { label: "Piste usée ?", result: "Bruit ou coupure sur le graphe (Live Data)" },
+    { label: "Connecteur papillon ?", result: "Vibrations créant un faux contact (Fretting)" },
+    { label: "Ligne 5V corrompue ?", result: "Vérifier la tension d'alimentation" }
+  ]}
+/>
+
+### Méthode de diagnostic (Test des Pistes)
+
+<TestStepCard 
+  title="1. Observation Graphique des Pistes (Live Data)"
+  tool="scanner"
+  time="10 min"
+>
+  L'ECU compare TPS 1 et TPS 2. Généralement, l'une va de 0.5V à 4.5V (en ouvrant le papillon), et l'autre fait l'inverse (de 4.5V à 0.5V), ou bien l'une fait toujours le double de l'autre. La somme mathématique (ou le ratio) est surveillée.
+  - Mettez le contact (moteur arrêté).
+  - Affichez TPS 1 (Volts) et TPS 2 (Volts) sous forme de **graphique** sur la valise.
+  - Enfoncez très lentement la pédale d'accélérateur jusqu'au fond, puis relâchez très lentement.
+  - Observez les lignes : S'il y a des "trous" ou des sauts soudains de voltage sur le graphique au milieu de la course, la piste carbone du capteur est morte. Remplacez le boîtier papillon.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Le Wiggle Test (Test de faux contact)"
+  tool="scanner"
+  time="5 min"
+>
+  Le problème le plus courant (notamment chez GM et PSA) n'est pas le papillon, mais le faisceau. Les vibrations du moteur endommagent les pins du connecteur (usure de fretting).
+  - Laissez le graphique affiché sur la valise au ralenti.
+  - Secouez énergiquement le faisceau électrique qui se branche sur le boîtier papillon.
+  - Si les valeurs de tension s'emballent sur la valise et déclenchent le P2135, le connecteur (Pigtail) est défectueux et doit être remplacé.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Les alimentations 5V"
+  tool="multimetre"
+  time="15 min"
+>
+  Le boîtier papillon reçoit (souvent) un fil de masse, deux fils pour le moteur électrique, et DEUX fils 5V (un pour chaque piste).
+  Si l'un des 5V chute (court-circuit ailleurs sur le moteur), l'une des pistes donnera un mauvais voltage, créant le P2135. Mesurez que les 5V sont bien présents et stables.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Sécurité"
+>
+  Si vous devez changer le boîtier papillon, n'oubliez pas de lancer la procédure d'apprentissage (Throttle Body Relearn) avec la valise. Sans cela, le moteur risque de caler ou d'avoir un ralenti extrêmement haut.
+</ConfirmationBox>

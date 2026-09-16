@@ -1,0 +1,69 @@
+---
+title: "Pression Turbo (Boost) : Consigne vs Réelle"
+description: "Pression de suralimentation : comment comparer la consigne de l'ECU avec la valeur réelle pour déduire une géométrie variable grippée ou une fuite."
+pillar: "diagnostic"
+category: "livedata"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Analyser la "Pression de Suralimentation" (Boost Pressure / Manifold Absolute Pressure) en direct permet de déterminer immédiatement la santé du turbocompresseur, de son circuit de dépression, et l'étanchéité de l'échangeur (Intercooler).
+
+<DiagnosticTree 
+  symptom="Live Data : Pression Turbo"
+  options={[
+    { label: "Pression réelle ne suit pas la consigne (Faible) ?", result: "Fuite d'air, N75 HS, ou GV grippée ouverte" },
+    { label: "Pression réelle dépasse la consigne (Spike) ?", result: "GV grippée fermée (Overboost)" },
+    { label: "Pression ne redescend pas ?", result: "Électrovanne (Wastegate/N75) bloquée" }
+  ]}
+/>
+
+### Comment capturer le dysfonctionnement
+
+<TestStepCard 
+  title="1. La Cohérence à l'arrêt (KOEO)"
+  tool="scanner"
+  time="2 min"
+>
+  Avant de tester le turbo, testez le capteur (MAP) !
+  Contact mis, moteur éteint, les valeurs de "Pression Atmosphérique" et de "Pression de Suralimentation" doivent être **identiques** (environ 1000 mbar). Si le capteur turbo lit déjà 1500 mbar sans que le moteur ne tourne, le capteur est HS.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Le Test Routier (Full Load)"
+  tool="scanner"
+  time="15 min"
+>
+  Sélectionnez sur la valise (en mode graphique idéalement) :
+  - Régime moteur (RPM)
+  - Pression de Suralimentation Consigne (Specified Boost)
+  - Pression de Suralimentation Réelle (Actual Boost)
+
+  Mettez-vous en 3ème vitesse à 1500 tr/min. Écrasez l'accélérateur à fond jusqu'à 3500 tr/min.
+  - La consigne va demander (par exemple) 2300 mbar.
+  - La pression réelle doit suivre la courbe de consigne avec un décalage minime (Lag).
+  - **Symptôme de fuite (Underboost) :** Si la réelle plafonne à 1600 mbar, vous avez probablement une grosse fuite sur l'échangeur, ou une aube de turbo fondue.
+  - **Symptôme de grippage (Overboost) :** Si la réelle explose à 2800 mbar avant que l'ECU ne coupe le moteur (Limp Mode), la géométrie variable est coincée par la calamine (ou l'électrovanne reste bloquée).
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Test du Pourcentage de la N75 (Wastegate Duty Cycle)"
+  tool="scanner"
+  time="10 min"
+>
+  Pendant l'essai routier, ajoutez la ligne "Électrovanne de régulation pression turbo" (%).
+  Si l'ECU essaie de baisser la pression, il va modifier ce pourcentage à ses limites extrêmes (ex: 5% ou 95%). Si le pourcentage est à son maximum absolu mais que la pression réelle refuse toujours de baisser (Overboost), c'est la preuve que l'électrovanne est inefficace ou que le mécanisme du turbo est grippé mécaniquement.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Régénération FAP"
+>
+  Sur les diesels modernes, un FAP (Filtre à Particules) complètement colmaté crée une contre-pression énorme (Backpressure). Les gaz d'échappement ne peuvent plus sortir, ce qui étouffe la turbine du turbo. Le turbo n'atteindra jamais sa consigne, non pas parce qu'il est défectueux, mais parce qu'il est asphyxié.
+</ConfirmationBox>

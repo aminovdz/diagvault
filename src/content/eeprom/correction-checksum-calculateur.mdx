@@ -1,0 +1,66 @@
+---
+title: "L'importance vitale du Checksum (Somme de Contrôle)"
+description: "L'importance vitale du Checksum (somme de contrôle) lors de la modification d'un fichier EEPROM ou Flash. Évitez de bricker le calculateur (Checksum Error)."
+pillar: "programmation"
+category: "eeprom"
+system: "ecu"
+difficulty: "expert"
+risk: "eleve"
+requiredTools: ["aucun"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Que vous fassiez un IMMO OFF, une suppression EGR/FAP, ou un ajustement de kilométrage dans une EEPROM, vous modifiez les données Hexadécimales du fichier original. Mais les calculateurs sont dotés d'un système de sécurité intégré : le Checksum.
+
+<DiagnosticTree 
+  symptom="Fichier modifié écrit dans l'ECU"
+  options={[
+    { label: "Moteur refuse de démarrer (Ventilateur à fond) ?", result: "Erreur Checksum Flash (L'ECU est briqué)" },
+    { label: "Défaut EEPROM Checksum Error ?", result: "Défaut interne au compteur ou à l'ECU" },
+    { label: "Fichier écrit mais ignoré ?", result: "Le processeur a détecté la corruption" }
+  ]}
+/>
+
+### Qu'est-ce qu'un Checksum ?
+
+<TestStepCard 
+  title="1. Le concept mathématique"
+  tool="aucun"
+  time="5 min"
+>
+  Le Checksum (somme de contrôle) est une signature mathématique.
+  - À la fin du fichier de l'ECU, quelques bytes (octets) enregistrent le résultat d'une longue addition mathématique de TOUS les octets qui les précèdent.
+  - À chaque mise sous contact, le processeur de l'ECU recalcule cette addition totale.
+  - Si vous avez changé un "01" en "00" (pour faire un EGR OFF), le résultat total du fichier n'est plus le même. L'ECU compare le nouveau total avec le Checksum enregistré à la fin du fichier. S'ils diffèrent, l'ECU comprend que son code a été altéré et **se bloque par sécurité**.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Qui calcule le Checksum ?"
+  tool="programmateur"
+  time="10 min"
+>
+  Pour que votre modification fonctionne, il faut recalculer le Checksum pour qu'il corresponde à votre nouveau fichier.
+  - **Les outils Master (KESS, Autotuner, Flex) :** Ces outils de chiptuning recalculent le Checksum de la mémoire FLASH automatiquement lors de l'écriture. Vous n'avez rien à faire.
+  - **Édition Manuelle / EEPROM :** Si vous modifiez une EEPROM au programmateur (xGecu, UPA), **l'outil ne calcule pas le Checksum !** Vous devez utiliser un logiciel spécifique (ex: Lsuite, WinOLS, ou un script) pour recalculer la somme de contrôle de l'EEPROM avant d'écrire le fichier.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Les conséquences (L'ECU Briqué)"
+  tool="aucun"
+  time="5 min"
+>
+  Si vous écrivez un fichier avec un mauvais Checksum dans la Flash d'un ECU moteur (via OBD) :
+  - Le flashage ira à 100%.
+  - Vous couperez le contact.
+  - À la remise du contact, la jauge de température d'eau montera à fond, le ventilateur moteur tournera à fond. Le voyant moteur ne s'allumera pas, et la valise n'arrivera plus à communiquer (No Comm). Vous venez de "Bricker" l'ECU. Il faudra l'ouvrir et utiliser le Boot Mode (ou BDM) pour forcer l'écriture du fichier original.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Outils Clones"
+>
+  C'est l'un des grands dangers des outils clones pas chers (KESS/KTAG Chinois) : ils affichent parfois "Checksum OK" mais l'algorithme est buggé, et le calcul est faux. L'ECU plantera au redémarrage.
+</ConfirmationBox>

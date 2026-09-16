@@ -1,0 +1,71 @@
+---
+title: "L'Électrovanne VVT (Déphaseur Arbre à Cames)"
+description: "Code P0011 ou P0014 ? Moteur qui claque comme un diesel ? Découvrez comment tester l'électrovanne VVT et pourquoi l'huile est son pire ennemi."
+pillar: "diagnostic"
+category: "actionneurs"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner", "multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le système VVT (Variable Valve Timing / VANOS) permet de décaler l'arbre à cames (l'ouvrir plus tôt ou plus tard) pour gagner de la puissance à haut régime et réduire la pollution au ralenti. L'ECU ne pousse pas l'arbre à cames à la main : il utilise l'Électrovanne VVT (OCV - Oil Control Valve) pour envoyer l'huile du moteur sous haute pression dans le pignon déphaseur.
+
+<DiagnosticTree 
+  symptom="Panne de VVT"
+  options={[
+    { label: "Moteur cale au ralenti, broute ou claque ?", result: "Le déphaseur est bloqué en position haute vitesse (Over-advanced)." },
+    { label: "Code P0011 ou P0014 (Over-advanced) ?", result: "L'électrovanne est coincée par des boues d'huile." }
+  ]}
+/>
+
+### Diagnostic et Nettoyage
+
+La panne numéro 1 des systèmes VVT est due à un manque d'entretien. Si l'huile moteur n'est pas vidangée tous les ans, des boues se forment. Les petits filtres (tamis) de l'électrovanne se bouchent. L'huile ne passe plus.
+
+<TestStepCard 
+  title="1. Inspection visuelle de la vanne"
+  tool="aucun"
+  time="10 min"
+>
+  L'électrovanne VVT (OCV) est généralement très facile d'accès (plantée sur le dessus de la culasse, près de la distribution).
+  - Débranchez la prise et dévissez le boulon de 10mm.
+  - Tirez la vanne en la faisant légèrement pivoter (il y a un joint torique).
+  - Inspectez les petites grilles métalliques. Si elles sont noires et bouchées de calamine ou de limaille, l'huile ne peut pas actionner le système VVT. Nettoyez-les au nettoyant frein.
+</TestStepCard>
+
+### Diagnostic Électrique (Test Actionneur)
+
+<TestStepCard 
+  title="2. Le Test de Claquement (Click Test)"
+  tool="multimetre"
+  time="5 min"
+>
+  La vanne est un simple solénoïde avec un piston interne qui monte et descend.
+  - Avec la vanne démontée (dans votre main), prenez deux fils et branchez-la brièvement sur le + et le - de la batterie de la voiture.
+  - Vous devez entendre un **"CLAC" métallique très net et puissant**. Le piston interne doit faire un mouvement rapide.
+  - Si le bruit est mou ou inexistant, l'électro-aimant est fatigué ou grippé.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Test d'Actionnement (Active Test)"
+  tool="scanner"
+  time="5 min"
+>
+  Le test ultime du déphaseur entier :
+  - Laissez l'électrovanne sur la voiture. Démarrez le moteur (laissez-le au ralenti).
+  - Allez dans votre valise, section "Tests Actionneurs".
+  - Forcez l'électrovanne VVT à "ON" (100%).
+  - En balançant toute la pression d'huile au ralenti, l'arbre à cames va se décaler violemment. **Le moteur doit se mettre à claquer, trembler ou caler instantanément.** S'il cale, félicitations, votre système hydraulique, votre électrovanne et votre pignon VVT fonctionnent parfaitement !
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="La Pression d'Huile"
+>
+  Un système VVT a besoin d'une forte pression d'huile pour fonctionner. Si votre pompe à huile est fatiguée, l'électrovanne aura beau s'ouvrir, l'arbre à cames ne bougera pas. Avant de changer le pignon déphaseur, vérifiez toujours la pression d'huile avec un manomètre mécanique !
+</ConfirmationBox>

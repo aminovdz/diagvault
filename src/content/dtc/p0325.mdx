@@ -1,0 +1,64 @@
+---
+title: "P0325 - Circuit du Capteur de Cliquetis 1 (Knock Sensor Circuit)"
+description: "P0325 indique un problème de signal du capteur de cliquetis. Ne confondez pas un vrai cliquetis mécanique avec une défaillance électrique du capteur piezo."
+pillar: "diagnostic"
+category: "dtc"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "moyen"
+requiredTools: ["oscilloscope", "multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le code **P0325** concerne le circuit électrique du capteur de cliquetis (Knock Sensor). L'ECU ne reçoit pas la fréquence de résonance attendue pour surveiller l'auto-allumage (cliquetis) du moteur. Résultat : l'ECU retire énormément d'avance à l'allumage par sécurité, causant une grosse perte de puissance.
+
+<DiagnosticTree 
+  symptom="P0325 : Circuit Capteur Cliquetis"
+  options={[
+    { label: "Capteur mal serré ?", result: "Vérifier le couple de serrage" },
+    { label: "Faisceau cassé ?", result: "Test de continuité vers l'ECU" },
+    { label: "Cristal piezo cassé ?", result: "Tester le signal au marteau (Tap Test)" }
+  ]}
+/>
+
+### Protocole de Test "Tap Test"
+
+<TestStepCard 
+  title="1. Vérification du Voltage de référence (Bias Voltage)"
+  tool="multimetre"
+  time="10 min"
+>
+  Sur beaucoup de véhicules (ex: Honda, Toyota), l'ECU envoie une tension continue de référence (environ 2.5V ou 5V) sur le fil du capteur pour s'assurer que le fil n'est pas coupé.
+  - Débranchez le capteur. 
+  - Mettez le contact.
+  - Mesurez le voltage sur le fil côté faisceau. Si vous avez 0V, l'ECU ou le fil est défectueux.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Le Test de Simulation (Tap Test)"
+  tool="oscilloscope"
+  time="15 min"
+>
+  Un capteur de cliquetis fonctionne comme un microphone (cristal piézoélectrique). Il crée un courant AC lorsqu'il ressent des vibrations.
+  - Branchez un oscilloscope sur le fil de signal du capteur (Backprobe).
+  - Prenez un petit marteau (ou l'arrière d'un long tournevis) et tapez **doucement** sur le bloc moteur en fonte à côté du capteur (ne tapez jamais le capteur lui-même !).
+  - L'oscilloscope doit afficher des pics de tension AC (courant alternatif) très nets à chaque coup. S'il n'y a aucun signal, le capteur est HS.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Le couple de serrage (Crucial)"
+  tool="aucun"
+  time="5 min"
+>
+  Si un autre mécanicien a changé le capteur récemment et que le P0325 est apparu, vérifiez le serrage. Le capteur de cliquetis doit être serré à un **couple de serrage exact** (souvent autour de 20 Nm) sur un bloc moteur exempt de rouille. Trop serré ou pas assez, il devient "sourd" ou capte trop de bruit.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="Vrai cliquetis (P0300) vs Circuit (P0325)"
+>
+  Si le moteur cliquette réellement à cause d'une mauvaise essence (octane trop bas), vous aurez un code d'erreur de correction d'avance, pas un code de circuit P0325.
+</ConfirmationBox>

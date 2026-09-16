@@ -1,0 +1,71 @@
+---
+title: "Le Capteur de Pression Rail (FRP)"
+description: "Pression Rail trop basse ? Apprenez à lire et tester le capteur FRP sur les systèmes d'injection directe (Diesel Common Rail et Essence GDI)."
+pillar: "diagnostic"
+category: "capteurs"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner", "multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Sur un moteur Common Rail (HDI, TDI, DCI) ou essence à injection directe (TSI, TFSI), la pompe haute pression compresse le carburant dans une rampe commune (le Rail). Le capteur de Pression Rail (FRP - Fuel Rail Pressure) dit à l'ECU si la pression est suffisante pour ouvrir les injecteurs. Sans pression minimale (environ 250 bars sur un Diesel), l'ECU refuse de démarrer.
+
+<DiagnosticTree 
+  symptom="Le Moteur refuse de démarrer"
+  options={[
+    { label: "Pression Rail lue à 0 bar au démarreur ?", result: "Pompe de gavage HS, Pompe HP HS, ou capteur débranché." },
+    { label: "Pression Rail bloquée à 2500 bars contact mis ?", result: "Court-circuit à 5V sur le fil du capteur." }
+  ]}
+/>
+
+### Diagnostic au Scanner
+
+La première étape sur un véhicule Diesel qui refuse de démarrer.
+
+<TestStepCard 
+  title="1. La pression de consigne vs pression réelle"
+  tool="scanner"
+  time="5 min"
+>
+  - Allez dans les Live Data. Affichez "Pression Rail Consigne" (ce que veut l'ECU) et "Pression Rail Réelle" (ce que lit le capteur).
+  - Sous l'action du démarreur, l'ECU demande généralement entre 250 et 300 bars.
+  - Si la pression réelle monte péniblement à 100 bars et stagne, le moteur ne démarrera jamais. Ce n'est **généralement pas** la faute du capteur. Vous avez une fuite massive de carburant (un injecteur qui pisse dans son retour, ou un régulateur de pression bloqué ouvert).
+</TestStepCard>
+
+### Test Électrique du Capteur
+
+Le FRP est un capteur piézo-résistif à 3 fils : 5V, Masse, Signal (0-5V).
+
+<TestStepCard 
+  title="2. Test du Voltage au repos"
+  tool="multimetre"
+  time="5 min"
+>
+  Contact mis, moteur arrêté. Piquez le fil de signal.
+  - La pression dans le rail doit être redescendue à Zéro bar.
+  - Le capteur doit envoyer une tension de repos exacte : la norme mondiale pour presque tous les Bosch/Delphi est de **0.50 Volts**.
+  - Si vous lisez 0.0V : Fil sectionné ou Court-circuit à la masse (Code P0192).
+  - Si vous lisez 5.0V : Court-circuit au positif (Code P0193) ou fil de masse arraché ! (Le 5V d'alim ne peut pas s'évacuer et remonte par le fil de signal).
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Simulation d'un capteur (Diagnostic avancé)"
+  tool="multimetre"
+  time="5 min"
+>
+  Si le capteur est suspect, vous pouvez "mentir" à l'ECU.
+  - Débranchez la prise du capteur. L'ECU devrait lire 0V (ou 5V selon son Pull-up).
+  - Si vous touchez le fil de signal avec vos doigts mouillés reliés au pôle + de la batterie (à vos risques), le faible courant de votre corps injectera environ 1 à 2 Volts dans le fil. La valise diagnostique verra soudainement 600 bars de pression ! Cela prouve que le faisceau jusqu'à l'ECU est en parfait état, le capteur est donc coupable.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="DANGER HAUTE PRESSION"
+>
+  Ne dévissez jamais un capteur de pression rail moteur tournant. Un jet de gazole à 2000 bars transperce la peau, le muscle, l'os, et provoque un empoisonnement du sang fatal en quelques heures.
+</ConfirmationBox>

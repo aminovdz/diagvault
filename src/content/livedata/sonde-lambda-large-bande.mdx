@@ -1,0 +1,69 @@
+---
+title: "Sonde Lambda Large Bande (O2 Wideband Equivalence Ratio)"
+description: "Apprenez à lire les sondes lambda modernes (Wideband) avec le courant (mA) et le ratio d'équivalence (Lambda 1.0) plutôt que l'oscillation de voltage."
+pillar: "diagnostic"
+category: "livedata"
+system: "moteur"
+difficulty: "expert"
+risk: "faible"
+requiredTools: ["scanner"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Les sondes Lambda classiques (Zirconium - 4 fils) oscillaient constamment entre le riche (0.8V) et le pauvre (0.2V). Les sondes modernes **Large Bande (Wideband - 5 ou 6 fils)** ne fonctionnent plus en voltage oscillant, mais mesurent la quantité précise d'oxygène en utilisant un courant de pompage (mA). 
+
+<DiagnosticTree 
+  symptom="Live Data : Lambda Large Bande"
+  options={[
+    { label: "Ratio d'équivalence > 1.0 ?", result: "Mélange PAUVRE (Excès d'air)" },
+    { label: "Ratio d'équivalence < 1.0 ?", result: "Mélange RICHE (Excès d'essence)" },
+    { label: "Courant (mA) coincé à 0 ?", result: "Sonde débranchée ou cellule pompe HS" }
+  ]}
+/>
+
+### Comprendre les valeurs
+
+<TestStepCard 
+  title="1. Le Ratio d'équivalence (Equivalence Ratio / Lambda)"
+  tool="scanner"
+  time="5 min"
+>
+  C'est la valeur la plus simple à lire. Le but de l'ECU est de maintenir la valeur **Lambda à exactement 1.00** au ralenti et à vitesse stabilisée.
+  - **Lambda 1.00** = Stœchiométrique parfait (14.7 grammes d'air pour 1 gramme d'essence).
+  - **Lambda 1.10** = 10% trop pauvre (Vacuum leak, filtre à essence bouché).
+  - **Lambda 0.90** = 10% trop riche (Injecteur fuyard).
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Le Courant de Pompage (mA)"
+  tool="scanner"
+  time="5 min"
+>
+  L'ECU envoie un courant (en milliampères) dans la "cellule de pompe" de la sonde pour forcer l'équilibre.
+  - **0 mA** correspond à un mélange parfait (Lambda 1.0).
+  - Un courant **positif (ex: +1.5 mA)** signifie que l'échappement est plein d'oxygène (Pauvre).
+  - Un courant **négatif (ex: -1.5 mA)** signifie qu'il n'y a pas d'oxygène (Riche).
+  - *Note technique : Sur certaines marques (Toyota/Denso), cette logique peut être inversée.*
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Le test de réactivité (Snap Throttle)"
+  tool="scanner"
+  time="10 min"
+>
+  Une sonde Large Bande morte reste figée à Lambda 1.0, même si le mélange réel est mauvais. Pour la forcer à réagir :
+  - Moteur au ralenti, donnez un très grand coup d'accélérateur (pédale à fond, puis relâchement brutal).
+  - À l'accélération, l'ECU injecte massivement, le Lambda doit chuter instantanément (ex: 0.85 = Riche).
+  - Au relâchement de la pédale (frein moteur, injection coupée = Fuel Cut-off), l'échappement ne se remplit que d'air pur. Le Lambda doit exploser (ex: 1.2+ = Pauvre).
+  - Si la valeur reste collée à 1.0 (ou 0 mA) pendant cette manœuvre, la sonde est "paresseuse" (lazy) ou morte.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="Capteur Aval"
+>
+  La sonde après catalyseur (Aval / Sensor 2) reste souvent une bonne vieille sonde Zirconium classique. Elle DOIT rester stable autour de 0.6V - 0.7V. Si elle se met à faire le yoyo (comme une sonde amont), c'est votre catalyseur qui est vide ou mort (Code P0420).
+</ConfirmationBox>

@@ -1,0 +1,73 @@
+---
+title: "Les Bougies de Préchauffage (Diesel)"
+description: "Démarrage difficile par temps froid ou voyant moteur allumé ? Testez vos bougies de préchauffage sans les casser dans la culasse."
+pillar: "diagnostic"
+category: "actionneurs"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "moyen"
+requiredTools: ["multimetre", "pince_amperemetrique"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Contrairement à l'essence, un moteur diesel n'utilise pas d'étincelle. Le carburant s'auto-enflamme grâce à l'énorme chaleur générée par la compression de l'air. Par temps glacial, les parois du moteur absorbent cette chaleur, et l'air n'est plus assez chaud pour exploser. Les bougies de préchauffage (Glow Plugs) chauffent à plus de 1000°C en quelques secondes pour aider le démarrage et réduire les émissions (post-chauffage).
+
+<DiagnosticTree 
+  symptom="Symptômes Bougies HS"
+  options={[
+    { label: "Moteur broute ou tourne sur 3 pattes pendant 10 secondes à froid ?", result: "Une ou plusieurs bougies sont grillées." },
+    { label: "Voyant FAP (DPF) allumé en permanence ?", result: "De nombreux ECU interdisent la régénération du FAP si les bougies sont en défaut (Code P0670)." }
+  ]}
+/>
+
+### Le Test Électrique (Test de Résistance)
+
+N'essayez jamais de dévisser une bougie de préchauffage simplement pour vérifier si elle fonctionne. Les bougies grippées ont tendance à casser net dans la culasse, ce qui nécessite le démontage complet du moteur. **Testez-les toujours électriquement.**
+
+<TestStepCard 
+  title="1. Le test au Multimètre (Méthode basique)"
+  tool="multimetre"
+  time="5 min"
+>
+  - Retirez délicatement le connecteur (capuchon) de la tête de la bougie.
+  - Réglez votre multimètre sur la plus petite échelle d'Ohms (200).
+  - Placez la pointe noire sur le bloc moteur (Masse) et la pointe rouge sur le bout fileté de la bougie.
+  - Une bougie saine affiche une résistance extrêmement faible : **Entre 0.5 et 1.5 Ohms**.
+  - Si vous lisez "OL" (Circuit Ouvert) ou plus de 10 Ohms, la résistance interne est fondue, la bougie est morte.
+</TestStepCard>
+
+### Le Test de Puissance (Ampérage)
+
+<TestStepCard 
+  title="2. Le Test à la Pince Ampèremétrique"
+  tool="pince_amperemetrique"
+  time="5 min"
+>
+  C'est la méthode professionnelle. Une bougie peut avoir la bonne résistance à froid (0.8 Ohm), mais s'effondrer dès qu'on lui envoie de la puissance.
+  - Branchez la pince ampèremétrique sur le gros fil d'alimentation qui sort du boîtier de commande de préchauffage (Relais).
+  - Mettez le contact par temps froid (pour forcer le préchauffage).
+  - Une seule bougie consomme un pic de 15 à 20 Ampères au début, puis se stabilise à environ 10 Ampères.
+  - Pour un moteur 4 cylindres (4 bougies), vous devriez lire un pic massif autour de **70 à 80 Ampères**.
+  - Si vous ne lisez que 40 Ampères, cela veut dire que seules 2 bougies sur 4 consomment de l'énergie.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Diagnostiquer le Boîtier de commande"
+  tool="multimetre"
+  time="5 min"
+>
+  Si aucune bougie ne fonctionne, le problème vient sûrement de l'unité de commande (Glow Plug Module).
+  - Branchez le multimètre sur le fil d'une bougie, mettez le contact (moteur froid).
+  - Vous devez voir la tension monter à 12V (ou 5V/7V sur les bougies modernes pulsées) pendant quelques secondes.
+  - S'il n'y a rien, vérifiez le gros fusible "Maxi-Fuse" du boîtier (souvent 70A ou 80A), ou remplacez le boîtier lui-même (Panne très courante chez BMW M47/M57).
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="RISQUE DE CASSE MAJEUR"
+>
+  Avant de dévisser une bougie HS, injectez du dégrippant pendant 3 jours consécutifs. **Dévissez TOUJOURS moteur très chaud (90°C).** Utilisez une clé dynamométrique en mode "Dévissage" réglée sur la limite de rupture de la bougie (ex: 35 Nm). Si la clé claque, arrêtez tout, la bougie va casser.
+</ConfirmationBox>

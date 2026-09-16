@@ -1,0 +1,68 @@
+---
+title: "P0087 - Pression de rampe commune trop basse (Fuel Rail Pressure Too Low)"
+description: "Diagnostic complet du code P0087. Ne changez pas la pompe HP aveuglément. Méthodologie de test des retours d'injecteurs et de la soupape régulatrice."
+pillar: "diagnostic"
+category: "dtc"
+system: "moteur"
+difficulty: "avance"
+risk: "moyen"
+requiredTools: ["scanner", "kit_retour_injecteur", "multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le code **P0087** indique que l'ECU détecte une pression dans la rampe commune (Common Rail) inférieure à la valeur de consigne. La réaction classique est de remplacer la pompe Haute Pression (HP) ou le capteur de pression, mais dans 80% des cas, le problème est ailleurs.
+
+<DiagnosticTree 
+  symptom="P0087 : Pression Rail Trop Basse"
+  options={[
+    { label: "Basse Pression OK ?", result: "Vérifier Pompe Gavage & Filtre" },
+    { label: "Fuite Injecteurs ?", result: "Test des retours (Gobelets)" },
+    { label: "Régulateur IMV ?", result: "Vérifier commande RCO (PWM)" },
+    { label: "Pompe HP ?", result: "Test avec faux actuateur" }
+  ]}
+/>
+
+### Méthodologie de Diagnostic Logique
+
+<TestStepCard 
+  title="1. Contrôle du circuit Basse Pression (Gavage)"
+  tool="scanner"
+  time="10 min"
+>
+  L'ECU ne peut pas générer de Haute Pression s'il n'est pas alimenté correctement en Basse Pression.
+  - Utilisez la valise pour lire la pression de la pompe de gavage (si capteur présent) ou branchez un manomètre basse pression en entrée de pompe HP.
+  - La valeur doit être stable (généralement entre 3 et 5 bars selon les constructeurs).
+  - **Attention au filtre à carburant :** Un filtre colmaté est la cause numéro 1 d'un P0087 sous forte charge.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Test des retours d'injecteurs (Leak-off Test)"
+  tool="kit_retour_injecteur"
+  time="30 min"
+>
+  Si un injecteur reste "ouvert" sur son circuit de retour, la pression s'échappe vers le réservoir et la pompe HP ne peut plus compenser.
+  1. Débranchez les tuyaux de retour des injecteurs.
+  2. Branchez vos éprouvettes.
+  3. Faites tourner le moteur au ralenti pendant 2 à 3 minutes.
+  4. Comparez les volumes. Un injecteur qui remplit son éprouvette beaucoup plus vite que les autres (généralement > 30% d'écart) a une fuite interne et cause la chute de pression.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Test de la Soupape Régulatrice de Pression (IMV/DRV)"
+  tool="multimetre"
+  time="15 min"
+>
+  Vérifiez le rapport cyclique d'ouverture (RCO / PWM) via la valise (Live Data).
+  - Au ralenti, le pourcentage de commande doit être stable. S'il fluctue énormément, le régulateur compense une fuite, ou le régulateur lui-même est grippé.
+  - Si vous débranchez le régulateur (attention, selon si c'est normalement ouvert ou fermé), la pression doit monter au maximum.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="Conclusion du Diagnostic"
+>
+  Si la basse pression est bonne, que les injecteurs ne fuient pas et que le régulateur est commandé correctement, c'est **seulement à ce moment-là** que vous pouvez condamner la pompe Haute Pression. Remplacez toujours le filtre à carburant en cas d'intervention sur ce circuit.
+</ConfirmationBox>

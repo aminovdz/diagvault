@@ -1,0 +1,69 @@
+---
+title: "Procédure AKL (All Keys Lost) : Méthodologie"
+description: "Procédure AKL (Toutes Clés Perdues). Comment générer une clé en lisant l'EEPROM de l'antidémarrage (BSI, UCH, CAS) sans clé maître."
+pillar: "programmation"
+category: "immo"
+system: "immo"
+difficulty: "expert"
+risk: "eleve"
+requiredTools: ["programmateur"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+La situation AKL (All Keys Lost / Toutes Clés Perdues) est le défi ultime en programmation automobile. Sans clé valide pour mettre le contact (Ignition ON), de nombreux modules refusent de communiquer par la prise OBD. Il faut alors intervenir directement sur l'électronique (Bench / EEPROM).
+
+<DiagnosticTree 
+  symptom="Situation : Toutes clés perdues"
+  options={[
+    { label: "Possibilité de mettre le contact ?", result: "Forcer le contact (Relais) ou lire via OBD" },
+    { label: "Communication OBD refusée ?", result: "Démonter le module Immo (BSI/UCH/CAS/CEM)" },
+    { label: "Type de transpondeur ?", result: "Générer un transpondeur Dealer Key" }
+  ]}
+/>
+
+### Les Étapes de la Programmation AKL
+
+<TestStepCard 
+  title="1. Identifier le module maître (Immobilizer)"
+  tool="aucun"
+  time="10 min"
+>
+  Avant de démonter, il faut savoir **quel boîtier stocke les clés**.
+  - **PSA (Peugeot/Citroën) :** La BSI (Boîtier de Servitude Intelligent).
+  - **Renault :** L'UCH (Unité de Contrôle Habitacle) ou le HFM (Mains libres).
+  - **BMW :** Le module EWS, CAS, ou FEM/BDC.
+  - **VAG (VW/Audi) :** Le compteur (Dash), le boîtier Kessy, ou la BCM2.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Extraction des données de sécurité (DUMP)"
+  tool="programmateur"
+  time="45 min"
+>
+  Sans OBD, démontez le module identifié à l'étape 1.
+  - Ouvrez le boîtier pour accéder au circuit imprimé.
+  - Lisez la mémoire **EEPROM** (ex: 95160, 24C16) ou le **Microcontrôleur (MCU)** (ex: Motorola, NEC, Renesas) à l'aide d'un programmateur (UPA, xGecu, Hexprog).
+  - Ce fichier lu (Dump) contient le Code PIN (ou ISN/CS) et la liste des clés autorisées.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Génération du Transpondeur (Dealer Key / Make Key File)"
+  tool="programmateur"
+  time="15 min"
+>
+  Ouvrez le fichier Dump extrait dans un logiciel de transpondeur (ex: Tango, VVDI2, TMPro2).
+  - Le logiciel analyse le fichier et affiche les "Slots" (Emplacements) des clés perdues.
+  - Insérez une puce transpondeur vierge (ex: PCF7936, ID48) dans le lecteur de votre outil.
+  - Sélectionnez un emplacement vide et cliquez sur "Write Key". 
+  - L'outil écrit les données cryptées dans la puce (Dealer Key), et, sur les systèmes anciens, génère un **nouveau fichier Dump** modifié qu'il faut réécrire dans le module.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="AKL sur les véhicules récents"
+>
+  Sur les véhicules post-2015 (MQB VAG, BMW FEM, Renault AES), l'AKL nécessite souvent d'être en ligne avec les serveurs du constructeur, ou de synchroniser les données de l'ECU moteur (ISN) avec celles de l'habitacle. La simple lecture EEPROM ne suffit plus.
+</ConfirmationBox>

@@ -1,0 +1,72 @@
+---
+title: "Le Capteur MAP (Manifold Absolute Pressure)"
+description: "Mesurer la dépression dans le collecteur. Pourquoi le MAP est le juge de paix des prises d'air, de la distribution décalée et du turbo."
+pillar: "diagnostic"
+category: "capteurs"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner", "multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le capteur MAP mesure la pression d'air à l'intérieur du collecteur d'admission. Sur un moteur atmosphérique, cette pression est négative (c'est une aspiration, ou vide/vacuum) car le papillon est fermé et bloque l'air. Sur un moteur turbo en charge, cette pression devient positive (suralimentation).
+
+<DiagnosticTree 
+  symptom="Comprendre la Pression MAP"
+  options={[
+    { label: "Moteur à l'arrêt, contact mis ?", result: "MAP = Pression atmosphérique (ex: 1000 mbar / 1 Bar)." },
+    { label: "Moteur au ralenti parfait ?", result: "MAP bas, dépression forte (ex: 300 à 350 mbar)." },
+    { label: "Pédale à fond en roulant ?", result: "Le MAP rejoint la pression atmo (Atmo) ou la dépasse (Turbo)." }
+  ]}
+/>
+
+### Diagnostic des problèmes de Ralenti
+
+Un moteur essence qui a un ralenti instable ou qui consomme trop est souvent trahi par son capteur MAP.
+
+<TestStepCard 
+  title="1. Identifier une prise d'air (Vacuum Leak)"
+  tool="scanner"
+  time="5 min"
+>
+  Au ralenti, le collecteur d'admission est censé être hermétique, créant une forte aspiration (vide).
+  - Valeur idéale au ralenti : **Environ 30 kPa (300 mbar)**.
+  - S'il y a une prise d'air (un tuyau déchiré après le papillon), l'air rentre frauduleusement. Le vide s'effondre.
+  - La valeur du MAP va monter vers **40, 50, ou 60 kPa** au ralenti. L'ECU croit que vous accélérez et injecte trop d'essence.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. MAP haut = Problème Mécanique ?"
+  tool="aucun"
+  time="5 min"
+>
+  Si le MAP lit 600 mbar au ralenti mais que vous ne trouvez **aucune prise d'air** avec une machine à fumée, le problème est mécanique :
+  - **Distribution décalée** : Les soupapes ne s'ouvrent/se ferment pas au bon moment, le moteur respire mal et ne crée pas de vide.
+  - **Échappement bouché (Catalyseur)** : Les gaz d'échappement remontent dans le collecteur et écrasent le vide.
+</TestStepCard>
+
+### Test Électrique du Capteur MAP
+
+Le capteur MAP est un capteur 3 fils classique : Alimentation 5V (venant de l'ECU), Masse, et Signal de retour (0 à 5V).
+
+<TestStepCard 
+  title="3. Test du Signal 5V"
+  tool="multimetre"
+  time="5 min"
+>
+  - Piquez le fil de signal (Backprobe) avec le multimètre.
+  - Contact mis, moteur arrêté (Pression atmosphérique) : Vous devez lire une tension haute, souvent **autour de 4.5V** (sur un MAP classique atmosphérique).
+  - Démarrez le moteur (Ralenti = Vide maximum) : La tension doit chuter drastiquement, souvent **autour de 1.0V à 1.5V**.
+  - Donnez un grand coup de gaz : La tension doit rebondir instantanément vers 4.5V puis retomber.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="MAP vs MAF"
+>
+  Certaines voitures (ex: Renault Twingo 1) n'ont pas de débitmètre (MAF) et calculent l'air uniquement avec le capteur MAP (Système Speed-Density). D'autres voitures (ex: VW, Ford) utilisent les deux. Si le MAF est en panne, l'ECU utilisera le MAP comme roue de secours.
+</ConfirmationBox>

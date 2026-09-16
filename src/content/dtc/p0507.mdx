@@ -1,0 +1,65 @@
+---
+title: "P0507 - Régime de Ralenti Supérieur aux Valeurs Prévues (Idle Control System)"
+description: "Le moteur tourne à 1200 tr/min au lieu de 800 ? Trouvez l'entrée d'air parasite (vacuum leak) ou calibrez le boîtier papillon encrassé."
+pillar: "diagnostic"
+category: "dtc"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner", "machine_a_fumee"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le **P0507** indique que le calculateur moteur n'arrive plus à abaisser le régime de ralenti (ex: le moteur reste bloqué à 1200 tr/min au lieu des 800 tr/min prévus). L'ECU ferme le boîtier papillon (ou l'actuateur IAC) au maximum, mais le régime reste trop haut. L'explication logique ? De l'air entre ailleurs.
+
+<DiagnosticTree 
+  symptom="P0507 : Ralenti Trop Haut"
+  options={[
+    { label: "Fuite de vide (Vacuum Leak) ?", result: "De l'air non mesuré entre dans l'admission" },
+    { label: "Boîtier Papillon (Throttle) sale ?", result: "Calibrage ou nettoyage requis" },
+    { label: "Valve PCV bloquée ?", result: "Aspire trop d'air du carter" }
+  ]}
+/>
+
+### Diagnostic et Résolution
+
+<TestStepCard 
+  title="1. Recherche de Fuite d'Air (Prise d'air)"
+  tool="machine_a_fumee"
+  time="15 min"
+>
+  L'air, c'est le régime moteur. Si de l'air entre après le papillon des gaz, le régime montera, même si le papillon est fermé.
+  - Inspectez visuellement le tuyau du servofrein (mastervac), les petites durites de vide et la valve de purge canister.
+  - L'outil idéal : la **machine à fumée**. Injectez de la fumée dans l'admission moteur éteint. Si vous voyez de la fumée sortir par le joint de collecteur d'admission, vous avez trouvé votre P0507.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Papillon motorisé et Apprentissage (Adaptation)"
+  tool="scanner"
+  time="10 min"
+>
+  Si le boîtier papillon est propre et qu'aucune fuite n'est trouvée.
+  - Regardez dans les Live Data le "Throttle Position" au ralenti. S'il est à 0%, l'ECU essaie de baisser le régime.
+  - Parfois, après un nettoyage de papillon ou un changement de batterie, l'ECU perd la valeur de position fermée.
+  - Utilisez la valise diagnostique pour effectuer l'apprentissage / calibrage (Throttle Body Alignment / Idle Learn Procedure).
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Test du servofrein (Mastervac)"
+  tool="aucun"
+  time="5 min"
+>
+  Le servofrein utilise une énorme quantité de dépression venant de l'admission. Si sa membrane interne est percée, c'est une prise d'air massive. 
+  - Au ralenti, pincez fortement la grosse durite qui va au servofrein avec une pince étau (protégez la durite). 
+  - Si le régime redescend immédiatement à la normale, le mastervac fuit de l'intérieur.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="success"
+  title="Astuce VCDS / Lexia"
+>
+  Sur de nombreux véhicules, un code P0507 empêche la climatisation de fonctionner (l'ECU coupe le compresseur pour ne pas caler un moteur dont le ralenti est instable). Réparez le ralenti, la clim reviendra !
+</ConfirmationBox>

@@ -1,0 +1,67 @@
+---
+title: "P0234 - Surpression du Turbocompresseur (Turbocharger Overboost Condition)"
+description: "Résolvez le P0234 : Le moteur passe en mode dégradé (Limp Mode) suite à une surpression de turbo. Testez la géométrie variable (GV) et la N75."
+pillar: "diagnostic"
+category: "dtc"
+system: "moteur"
+difficulty: "avance"
+risk: "moyen"
+requiredTools: ["scanner", "multimetre"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le **P0234** apparaît lorsque le capteur MAP enregistre une pression de suralimentation supérieure à la limite fixée par l'ECU pendant plus de quelques secondes. L'ECU coupe alors immédiatement la commande du turbo pour protéger le moteur (Limp Mode).
+
+<DiagnosticTree 
+  symptom="P0234 : Surpression Turbo"
+  options={[
+    { label: "Tige GV grippée ?", result: "Testez manuellement la biellette" },
+    { label: "Électrovanne (N75) ?", result: "Vérifiez la dépression en sortie" },
+    { label: "Capteur MAP dérive ?", result: "Contrôlez la pression moteur à l'arrêt" }
+  ]}
+/>
+
+### Plan d'attaque du Diagnostic
+
+<TestStepCard 
+  title="1. Cohérence du Capteur MAP (Key On Engine Off)"
+  tool="scanner"
+  time="5 min"
+>
+  Avant d'accuser la mécanique, assurez-vous que le capteur ne ment pas.
+  - Mettez le contact sans démarrer le moteur (KOEO).
+  - Lisez la Pression Atmosphérique (Baro) et la Pression de Suralimentation (Boost/MAP).
+  - Les deux doivent être strictement identiques (environ 1 bar / 1000 mbar). Si le MAP affiche déjà 1.5 bar moteur éteint, changez le capteur.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Test de la Géométrie Variable (GV) Grippée"
+  tool="aucun"
+  time="15 min"
+>
+  C'est la cause la plus courante (particulièrement sur les TDI). Les aubes de la géométrie variable se chargent en suie et restent bloquées en position "pression maximale".
+  - Débranchez la durite de dépression de la capsule (wastegate / actuateur de turbo).
+  - Branchez une pompe à dépression manuelle et appliquez du vide.
+  - La tige doit monter et descendre de manière **totalement fluide**, sans aucun point dur, sur environ 1 à 2 centimètres. Si ça accroche, le turbo est grippé (nettoyage ou remplacement requis).
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Test de l'Électrovanne de commande (N75 / TCV)"
+  tool="multimetre"
+  time="20 min"
+>
+  Si la tige bouge librement, c'est peut-être l'électrovanne qui ne relâche pas le vide (ce qui garde le turbo en charge max).
+  - Branchez un manomètre de dépression (vacuum gauge) sur le tuyau allant au turbo.
+  - Dans la valise, allez dans les Tests Actionneurs et variez le ratio de l'électrovanne de 0% à 100%.
+  - L'aiguille de dépression doit suivre fidèlement. Si elle reste coincée à -0.8 bar, l'électrovanne est HS (bloquée ouverte au vide).
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Le danger du P0234"
+>
+  Ne désactivez jamais un P0234 avec une reprogrammation ! Ce code protège votre moteur et votre turbo contre une casse imminente par survitesse de l'axe ou casse des bielles.
+</ConfirmationBox>

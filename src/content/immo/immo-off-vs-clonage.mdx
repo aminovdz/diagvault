@@ -1,0 +1,67 @@
+---
+title: "IMMO OFF vs Clonage : Quelle méthode choisir ?"
+description: "Comprendre la différence entre un IMMO OFF et un clonage de calculateur. Quand supprimer l'antidémarrage et pourquoi privilégier le clonage."
+pillar: "programmation"
+category: "immo"
+system: "immo"
+difficulty: "intermediaire"
+risk: "moyen"
+requiredTools: ["programmateur"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Lorsqu'un calculateur moteur (ECU) est défectueux, il faut le remplacer par un ECU d'occasion. Mais si vous branchez simplement le nouveau calculateur, le véhicule refusera de démarrer à cause de l'antidémarrage (Immobilizer). Deux solutions s'offrent à vous : l'**IMMO OFF** ou le **Clonage**.
+
+<DiagnosticTree 
+  symptom="Choix de la stratégie de remplacement"
+  options={[
+    { label: "ECU d'origine lisible (BDM/Bench) ?", result: "Faire un Clonage complet (Idéal)" },
+    { label: "ECU d'origine calciné/illisible ?", result: "IMMO OFF ou Virginisation nécessaire" },
+    { label: "Véhicule très multiplexé (CAN) ?", result: "L'IMMO OFF peut créer des voyants au tableau de bord" }
+  ]}
+/>
+
+### Clonage : La voie de la perfection
+
+<TestStepCard 
+  title="1. Le principe du Clonage (Clone 1:1)"
+  tool="programmateur"
+  time="45 min"
+>
+  Le clonage consiste à extraire **l'intégralité** des données du calculateur d'origine (Microprocesseur, Flash, EEPROM) et à les écrire dans le calculateur d'occasion (qui doit avoir exactement la même référence matérielle / Hardware Number).
+  - **Avantage majeur :** Le véhicule pense que rien n'a changé. L'antidémarrage fonctionne, les clés d'origine sont gardées, le VIN (numéro de châssis) est correct, et le codage injecteurs est préservé.
+  - **Condition :** Le calculateur d'origine doit encore pouvoir communiquer sur banc (Bench/Boot).
+</TestStepCard>
+
+### IMMO OFF : La solution de secours
+
+<TestStepCard 
+  title="2. Le principe de l'IMMO OFF"
+  tool="programmateur"
+  time="30 min"
+>
+  L'IMMO OFF consiste à modifier le fichier Flash ou EEPROM du calculateur d'occasion pour lui demander d'**ignorer** le signal de l'antidémarrage. 
+  - **Avantage :** Idéal pour une voiture de course (Swap moteur), ou si le calculateur d'origine est totalement détruit (incendie, crash). Le moteur démarrera à 100%.
+  - **Inconvénient (Défaut de sécurité) :** N'importe quelle clé (même un tournevis dans le neiman) pourra démarrer la voiture.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Les conséquences de l'IMMO OFF (Tableau de bord)"
+  tool="aucun"
+  time="5 min"
+>
+  Sur les véhicules des années 90/2000 (EDC15), l'IMMO OFF est transparent.
+  Sur les véhicules modernes (CAN Bus / EDC16, EDC17), si vous faites un IMMO OFF sur l'ECU moteur, le calculateur d'habitacle (BSI / UCH) va continuer de chercher l'ECU. 
+  - Résultat : La voiture démarre, mais le voyant "Antidémarrage défaillant" clignotera en permanence au tableau de bord.
+  - Le réseau CAN peut afficher des erreurs Uxxxx persistantes.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Le bon compromis : La Virginisation"
+>
+  Si l'ECU d'origine est illisible, la meilleure alternative à l'IMMO OFF est le **Vierge (Virginize)**. On remet l'ECU d'occasion à l'état "Neuf sortie d'usine". Il suffira de le rebrancher sur la voiture et de lancer une procédure d'apprentissage avec la valise diagnostique et le code PIN de la voiture pour conserver la sécurité.
+</ConfirmationBox>

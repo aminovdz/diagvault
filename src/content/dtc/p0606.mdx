@@ -1,0 +1,65 @@
+---
+title: "P0606 - Erreur Interne du Calculateur (ECM/PCM Processor)"
+description: "Votre scanner indique P0606 ? Avant de jeter votre calculateur (ECU) à 1000€, lisez ce guide sur la ligne des 5V et la stabilité des masses."
+pillar: "diagnostic"
+category: "dtc"
+system: "ecu"
+difficulty: "expert"
+risk: "eleve"
+requiredTools: ["multimetre", "oscilloscope"]
+published_date: 2026-09-16
+---
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le DTC **P0606** (ou P0601, P0605) est effrayant : il indique textuellement que le processeur du calculateur moteur a subi une erreur interne ou une corruption de mémoire. On le déclare souvent "HS", mais une erreur de voltage externe peut rendre le processeur temporairement fou et générer ce code.
+
+<DiagnosticTree 
+  symptom="P0606 : Erreur Interne ECU"
+  options={[
+    { label: "Effacement possible ?", result: "Hard Reset Batterie" },
+    { label: "Circuit 5V Reference court-circuité ?", result: "Isoler les capteurs" },
+    { label: "Chute de tension Masse ECU ?", result: "Voltage Drop Test (Pin 4/5)" }
+  ]}
+/>
+
+### Les Vérifications Indispensables Avant Remplacement
+
+<TestStepCard 
+  title="1. Hard Reset et Effacement"
+  tool="aucun"
+  time="15 min"
+>
+  Un bug logiciel passager peut déclencher le P0606 (ex: une sous-tension drastique pendant un coup de démarreur l'hiver). 
+  - Débranchez les deux cosses de la batterie.
+  - Touchez les deux cosses ensemble (loin de la batterie !) pendant 1 minute pour vider les condensateurs de l'ECU (Capacitive Discharge).
+  - Rebranchez. Effacez le code. Si le code revient immédiatement au contact (KOEO), le processeur est vraiment en difficulté.
+</TestStepCard>
+
+<TestStepCard 
+  title="2. Le Piège du Réseau 5V (5 Volt Reference)"
+  tool="multimetre"
+  time="30 min"
+>
+  L'ECU possède des régulateurs internes qui transforment le 12V en 5V pour alimenter tous les capteurs vitaux (MAP, APP, TPS, AAC). 
+  - Si **UN SEUL** capteur externe est en court-circuit franc (ex: un capteur de pression de clim oxydé, ou fils fondus sur l'échappement), il court-circuite le régulateur interne de l'ECU.
+  - Le processeur de l'ECU n'a plus assez de courant pour lui-même, il plante, redémarre, et lance le code P0606.
+  - **Action :** Vérifiez qu'il y a bien 5.0V sur la prise d'un capteur. Si vous lisez 1.2V, débranchez les capteurs un par un jusqu'à ce que les 5V reviennent.
+</TestStepCard>
+
+<TestStepCard 
+  title="3. Test des Alimentations et Masses Principales"
+  tool="multimetre"
+  time="20 min"
+>
+  Sortez le schéma de câblage (Wiring Diagram) de l'ECU. 
+  Vérifiez TOUTES les alimentations (Permanent et Après Contact) avec une lampe témoin sous charge. Faites un test de chute de tension (Voltage Drop) sur les pins de masse de l'ECU. Un processeur mal alimenté fait des erreurs de calcul.
+</TestStepCard>
+
+<ConfirmationBox 
+  type="warning"
+  title="Clonage ou Remplacement"
+>
+  Si toutes les masses et alimentations sont parfaites à 100%, et que la ligne 5V n'est pas court-circuitée, l'ECU est malheureusement mort (flash ROM corrompu, ou CPU cramé). Il faudra procéder à un remplacement ou un clonage (Bench/Boot).
+</ConfirmationBox>
