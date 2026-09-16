@@ -1,0 +1,54 @@
+---
+title: "Opel Astra — P0420 après une réparation d'échappement non certifiée"
+title_short: "Opel Astra — P0420"
+description: "Voyant moteur P0420 persistant après changement du catalyseur ? Cas réel illustrant l'importance des sondes Lambda, des fuites et de la qualité des pièces."
+pillar: "diagnostic"
+category: "casreels"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner", "machine_a_fumee"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Un client arrive avec une Opel Astra 1.4 Essence. Son voyant moteur est allumé avec l'éternel code **P0420 - Efficacité du système catalytique en dessous du seuil**. Le client est très frustré : il vient de faire remplacer le catalyseur et la sonde Lambda aval (après cata) dans un centre auto, mais le voyant est revenu 50 km plus tard.
+
+
+## Comment l'ECU calcule l'efficacité du Catalyseur
+
+L'ECU moteur compare en permanence les signaux de deux sondes Lambda (O2 Sensors) :
+- **Sonde 1 (Amont / Avant cata) :** Oscille rapidement entre 0.1V (Pauvre) et 0.9V (Riche). Elle gère le mélange air/essence.
+- **Sonde 2 (Aval / Après cata) :** Doit rester stable autour de 0.6V à 0.7V. Si le cata fait son travail de stockage d'oxygène et de réaction chimique, il n'y a plus d'oscillations en sortie.
+
+<DiagnosticTree symptom="Si la Sonde 2 oscille comme la Sonde 1">
+  <li>Le catalyseur est complètement vide ou mort.</li>
+  <li>Le catalyseur de remplacement "générique" n'a pas assez de métaux précieux (Platinum/Palladium/Rhodium) pour traiter les gaz (très fréquent sur les pièces pas chères d'internet).</li>
+  <li>Il y a une fuite d'échappement entre le moteur et la sonde 2, qui aspire de l'oxygène extérieur par effet Venturi.</li>
+</DiagnosticTree>
+
+<TestStepCard step={1} title="Test de fuite d'échappement à la fumée">
+  Puisque le catalyseur est neuf, il faut éliminer la fuite.
+  <br /> - Branchez la machine à fumée dans le pot d'échappement à l'arrière, bouchez autour avec un cône.
+  <br /> - Moteur éteint, injectez la fumée.
+  <br /> - Inspectez la tresse (partie flexible), les joints de collecteur, et surtout la soudure / bride du nouveau catalyseur. 
+  <br /> - Dans ce cas, une légère fumée sortait de la tresse d'échappement située JUSTE avant le catalyseur. L'air frais entrait, faussant complètement les valeurs d'oxygène.
+</TestStepCard>
+
+## Le diagnostic des sondes à l'oscilloscope ou scanner
+
+<TestStepCard step={2} title="Graphique des sondes Lambda">
+  Après réparation de la fuite, on vérifie si la pièce générique fait le job :
+  <br /> - Moteur très chaud (Cata à 500°C), tracez les courbes de O2 B1S1 et O2 B1S2.
+  <br /> - Provoquez une accélération franche puis relâchez.
+  <br /> - La Sonde 1 doit plonger à 0.1V (coupure d'injection) instantanément. La Sonde 2 doit mettre plusieurs secondes à chuter, le temps de "vider" l'oxygène stocké dans le cata.
+  <br /> - Si la Sonde 2 chute instantanément avec la Sonde 1, le cata générique n'a aucune capacité de stockage.
+</TestStepCard>
+
+<ConfirmationBox>
+  Dans ce cas précis, la réparation de la tresse fuyarde a suffi. Le P0420 n'est plus jamais revenu. Retenez la règle d'or : **Ne remplacez JAMAIS un catalyseur pour un code P0420 sans avoir vérifié à 100% l'absence totale de fuite d'échappement en amont.**
+</ConfirmationBox>

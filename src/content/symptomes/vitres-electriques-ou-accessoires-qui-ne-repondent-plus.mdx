@@ -1,0 +1,53 @@
+---
+title: "Vitres électriques ou accessoires qui ne répondent plus"
+description: "Une vitre ne descend plus ou un siège électrique est bloqué ? Diagnostic du moteur, du faisceau de portière, du commutateur Master et du BCM."
+pillar: "diagnostic"
+category: "symptomes"
+system: "bcm"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["multimetre", "scanner"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Un accessoire électrique de l'habitacle qui ne répond plus est frustrant, mais le circuit reste très basique : Un calculateur (ou fusible) envoie le courant, un interrupteur donne l'ordre, le courant traverse la charnière de la porte, et le moteur électrique tourne.
+
+
+## Rétrécir la zone de recherche
+
+Si TOUTES les vitres ne marchent plus, le problème est global (Fusible maître, BCM, ou la platine conducteur). Si UNE seule vitre est en panne, le problème est localisé sur cette porte.
+
+<DiagnosticTree symptom="Isolation de la panne">
+  <li>**Le bouton de la porte passager ne marche pas, mais celui du conducteur (Maître) arrive à descendre la vitre passager :** Le moteur et le faisceau de la porte passager sont bons. C'est le bouton passager qui est mort.</li>
+  <li>**Le moteur fait un bruit de craquement ou tourne dans le vide :** La panne n'est pas électrique. C'est le mécanisme (câble de lève-vitre) qui a cassé.</li>
+  <li>**Aucun bruit, aucun bouton ne fonctionne pour cette vitre :** Panne électrique pure (Faisceau coupé, Moteur grillé).</li>
+</DiagnosticTree>
+
+## Le grand classique : Le soufflet de charnière
+
+<TestStepCard step={1} title="Inspection du faisceau (Door Jamb)">
+  La cause numéro 1 d'une panne de porte (vitre, enceinte, verrouillage) est mécanique.
+  <br /> - Ouvrez la portière grande ouverte.
+  <br /> - Regardez le soufflet en caoutchouc noir (la gaine) qui relie la porte à la carrosserie.
+  <br /> - Écartez le caoutchouc et inspectez les fils.
+  <br /> - Après 10 ans d'ouvertures et fermetures, les gros fils (souvent la Masse noire ou le Positif) finissent par se sectionner par fatigue mécanique. Si un fil est coupé, ressoudez-le et isolez-le à la gaine thermorétractable.
+</TestStepCard>
+
+## Test de l'alimentation locale
+
+<TestStepCard step={2} title="Alimentation du Moteur">
+  Dégarnissez la porte pour accéder au connecteur du moteur de lève-vitre.
+  <br /> - Mettez votre multimètre dans les deux broches du connecteur (côté voiture, pas côté moteur).
+  <br /> - Actionnez le bouton pour "Descendre" puis "Monter".
+  <br /> - Vous devriez lire **+12V** dans un sens, et **-12V** dans l'autre (le système inverse la polarité pour faire tourner le moteur dans l'autre sens).
+  <br /> - **Si la tension arrive**, le moteur est mort (charbons bloqués). **Si vous avez 0V**, le fil est coupé ou le bouton est défectueux.
+</TestStepCard>
+
+<ConfirmationBox>
+  Une astuce pour un lève-vitre électrique qui semble mort "du jour au lendemain" sans bruit : gardez le bouton de descente appuyé et claquez très fort la portière (ou tapez fermement sur le panneau de porte au niveau du moteur). Le choc physique décoince souvent les charbons du moteur, la vitre va descendre. Cela confirme à 100% que le moteur doit être remplacé.
+</ConfirmationBox>

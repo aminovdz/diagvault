@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/layout/Breadcrumbs.astro';
+
+const paths = [
+  { label: 'Programmation', url: '/programmation' }
+];
+
+const categories = [
+  { slug: 'ecu', title: 'ECU, OBD, Bench & Boot', desc: 'Lecture/écriture cartographie, clonage de calculateurs, adaptation et codage.' },
+  { slug: 'eeprom', title: 'EEPROM & MCU', desc: 'Soudure, lecture de dumps, modification d\'hexadécimal, données brutes.' },
+  { slug: 'immo', title: 'IMMO, BSI & Clés', desc: 'Désynchronisation, viergisation de BSI/UCH/CAS, apprentissage de clés.' }
+];
+---
+
+<BaseLayout title="Hub Programmation & Électronique - DiagVault">
+  <div class="max-w-5xl mx-auto">
+    <Breadcrumbs paths={paths} />
+    
+    <header class="mb-12 text-center max-w-3xl mx-auto">
+      <h1 class="text-4xl md:text-5xl font-heading font-bold text-white mb-4">
+        Programmation & Électronique
+      </h1>
+      <p class="text-xl text-slate-400">
+        Guides techniques pour la lecture/écriture de calculateurs (Flash/EEPROM/MCU), le clonage, l'antidémarrage et les adaptations.
+      </p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {categories.map(cat => (
+        <a href={`/programmation/${cat.slug}`} class="group block p-6 bg-surface border border-slate-800 rounded-xl hover:border-accent-programmation transition-colors h-full flex flex-col">
+          <h2 class="text-xl font-bold text-white mb-2 group-hover:text-accent-programmation transition-colors">{cat.title}</h2>
+          <p class="text-slate-400 text-sm mt-auto">{cat.desc}</p>
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

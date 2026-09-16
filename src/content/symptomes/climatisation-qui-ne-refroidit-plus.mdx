@@ -1,0 +1,52 @@
+---
+title: "Climatisation qui ne refroidit plus"
+description: "L'A/C souffle de l'air chaud ? Diagnostic pas-à-pas : manque de gaz (fuite), embrayage du compresseur, pressostat ou volets de mixage bloqués."
+pillar: "diagnostic"
+category: "symptomes"
+system: "chauffage_climatisation"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner", "multimetre"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Une climatisation qui souffle de l'air ambiant ou chaud n'est pas toujours synonyme d'un compresseur mort. Le système repose sur des pressions (gaz réfrigérant), des sécurités électriques (pressostat) et la gestion de l'air dans l'habitacle (volets).
+
+
+## L'Écoute et la Pression
+
+Le compresseur s'enclenche-t-il vraiment ? Moteur tournant au ralenti, demandez à un ami d'appuyer sur le bouton A/C. 
+
+<DiagnosticTree symptom="Ce qui se passe au niveau du moteur">
+  <li>**Un "CLIC" fort se fait entendre et le régime moteur varie :** L'embrayage magnétique du compresseur s'est engagé. Le système fonctionne électriquement, mais le gaz manque (fuite) ou le compresseur est usé en interne.</li>
+  <li>**Il ne se passe absolument rien :** Le calculateur refuse de déclencher le compresseur. Raisons : pas du tout de gaz (le pressostat bloque tout par sécurité pour ne pas serrer le compresseur), ou l'embrayage est grillé électriquement.</li>
+</DiagnosticTree>
+
+## Le test décisif : La Pression de Gaz (Valise)
+
+<TestStepCard step={1} title="Lire la pression au capteur (Pressostat)">
+  Avant de payer une recharge à l'aveugle, regardez si le système est vide.
+  <br /> - Branchez le scanner, allez dans "HVAC" (Chauffage/Climatisation) ou dans l'ECU Moteur.
+  <br /> - Cherchez la valeur "Pression de réfrigérant" (A/C Pressure Sensor).
+  <br /> - Moteur éteint, un circuit chargé (selon la température extérieure) affichera environ **4 à 6 bars**.
+  <br /> - S'il affiche **0 bar ou 0.5 bar**, votre circuit a une grosse fuite (condenseur percé par un caillou, joint torique). Faire une recharge sans réparer la fuite ne servira à rien, le gaz repartira.
+</TestStepCard>
+
+## Si la pression est bonne mais pas de "Clic"
+
+<TestStepCard step={2} title="L'embrayage magnétique">
+  Si la valise indique 5 bars mais que le compresseur ne s'enclenche pas :
+  <br /> - Débranchez le connecteur à un ou deux fils sur le compresseur.
+  <br /> - Lancez un Active Test "Relais de Climatisation" depuis le scanner, ou activez simplement l'A/C dans l'habitacle.
+  <br /> - Mesurez s'il y a **12V** au connecteur.
+  <br /> - Si le 12V arrive, c'est la bobine (l'électro-aimant) de l'embrayage du compresseur qui est grillée. Vous pouvez souvent la remplacer sans démonter ni vider tout le compresseur.
+</TestStepCard>
+
+<ConfirmationBox>
+  Attention au piège des volets de mixage ! S'il fait très chaud à gauche et froid à droite (ou inversement), le problème vient du bloc chauffage à l'intérieur du tableau de bord. Les micromoteurs (actuateurs) qui bougent les volets chaud/froid sont cassés. Le compresseur fait bien du froid, mais l'air est dévié vers le radiateur de chauffage à cause du volet coincé !
+</ConfirmationBox>

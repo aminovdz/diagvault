@@ -1,0 +1,51 @@
+---
+title: "Fumée noire à l'accélération (essence ou diesel)"
+description: "Moteur qui fume noir à l'accélération : mélange trop riche. Comment identifier une durite de turbo percée, un injecteur qui pisse ou un capteur MAP en défaut."
+pillar: "diagnostic"
+category: "symptomes"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner", "machine_a_fumee"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+La fumée noire n'a qu'une seule cause fondamentale : **un mélange trop riche**. Il y a soit trop de carburant injecté, soit pas assez d'air pour brûler ce carburant. Cela produit de la suie (carbone imbrûlé).
+
+
+## Moteur Diesel : La Fuite de Suralimentation (90% des cas)
+
+Sur un diesel turbo, la cause numéro un d'une fumée noire à l'accélération franche est une fuite d'air sous pression (Boost Leak). 
+
+<DiagnosticTree symptom="Pourquoi l'air manque-t-il ?">
+  <li>**Durite de turbo fendue / Échangeur percé :** Le débitmètre (MAF) voit rentrer 100g d'air et dit à l'ECU d'injecter du gasoil pour 100g. Mais à cause de la fuite, seuls 60g arrivent réellement dans le moteur. Le gasoil en surplus se transforme en suie noire.</li>
+  <li>**Vanne EGR bloquée ouverte :** L'EGR remplace l'air frais par des gaz d'échappement. En pleine accélération, l'EGR doit être fermée à 100%. Si elle reste ouverte, le moteur s'étouffe et fume noir.</li>
+  <li>**Injecteur qui "pisse" :** L'aiguille de l'injecteur ne ferme plus de manière étanche. Du gasoil coule en continu.</li>
+</DiagnosticTree>
+
+## Diagnostiquer le manque d'air (Turbo)
+
+<TestStepCard step={1} title="Test d'étanchéité du circuit de suralimentation">
+  Le test visuel ne suffit pas toujours (une fissure peut ne s'ouvrir que sous pression).
+  <br /> - Si vous n'avez pas de **Machine à Fumée haute pression**, branchez votre scanner et regardez la "Pression de Suralimentation Consigne" vs "Pression Réelle".
+  <br /> - En pleine accélération, si la consigne demande 2.5 bars mais que le capteur MAP ne lit que 1.8 bars, vous avez une fuite massive. Cherchez des traces d'huile noire autour des durites d'échangeur (Intercooler). L'huile suinte par les fissures.
+</TestStepCard>
+
+## Moteur Essence : Les Sondes et Régulateurs
+
+Un moteur essence moderne ne doit jamais fumer noir. S'il le fait, la consommation doit être astronomique.
+
+<TestStepCard step={2} title="Analyse des Fuel Trims et Sondes">
+  Branchez le scanner OBD.
+  <br /> - Vérifiez les **Fuel Trims (STFT / LTFT)**. S'ils sont à -20%, le calculateur sait qu'il est trop riche et essaie désespérément de retirer du carburant, mais n'y arrive pas. C'est souvent un injecteur qui fuit physiquement ou un régulateur de pression d'essence bloqué.
+  <br /> - Vérifiez la **Sonde de Température d'Eau (ECT)**. Si elle indique -40°C alors que le moteur est chaud, l'ECU croira qu'il est en Sibérie et balancera un starter massif en permanence.
+</TestStepCard>
+
+<ConfirmationBox>
+  Un capteur MAP (Pression d'admission) encrassé ou dont le tuyau de dépression est fendu indiquera une fausse "pleine charge" au calculateur. L'ECU injectera un maximum d'essence alors que le papillon est à peine ouvert, provoquant une fumée noire épaisse instantanée.
+</ConfirmationBox>

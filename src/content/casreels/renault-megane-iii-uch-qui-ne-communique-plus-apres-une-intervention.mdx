@@ -1,0 +1,50 @@
+---
+title: "Renault Mégane III — UCH qui ne communique plus après une intervention"
+description: "Remplacement d'un lève-vitre ou débranchement de batterie ayant mené à un réseau CAN bloqué ? Cas réel sur Mégane 3 et l'Unité de Contrôle Habitacle (UCH)."
+pillar: "diagnostic"
+category: "casreels"
+system: "bcm"
+difficulty: "avance"
+risk: "eleve"
+requiredTools: ["scanner", "multimetre", "oscilloscope"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Une Renault Mégane III est remorquée à l'atelier. Après le remplacement d'un moteur de lève-vitre avant gauche par un mécanicien, la voiture ne démarre plus, la carte n'est plus reconnue, et le tableau de bord est sapin de Noël. Le scanner indique que l'UCH (Unité de Contrôle Habitacle) ne communique pas.
+
+
+## Diagnostic du réseau multiplexé
+
+L'UCH gère l'antidémarrage et fait passerelle (Gateway) entre les réseaux. S'il plante, rien ne marche.
+
+<TestStepCard step={1} title="Test des fusibles et de la prise OBD">
+  Avant d'accuser l'UCH d'avoir grillé à cause d'un court-circuit :
+  <br /> - Vérifiez les fusibles habitacle ET le boîtier fusible moteur (UPC). 
+  <br /> - Mesurez la résistance du réseau CAN sur la prise OBD (entre les broches 6 et 14, contact coupé, batterie débranchée).
+  <br /> - On doit trouver 60 Ohms. Si on trouve **120 Ohms**, un des calculateurs de terminaison (généralement ECU Moteur) est déconnecté du réseau. Si on trouve **0 Ohms**, le réseau est en court-circuit.
+</TestStepCard>
+
+## Le Piège du Lève-Vitre (Réseau LIN / CAN)
+
+<DiagnosticTree symptom="Ce qu'il s'est passé">
+  <li>Le mécanicien a installé un moteur de lève-vitre "adaptable" de mauvaise qualité ou n'ayant pas le module confort (Temic) adéquat.</li>
+  <li>Ce module de porte communique avec l'UCH via le réseau LIN ou un CAN secondaire.</li>
+  <li>Le module défectueux sature le réseau de signaux parasites (Jabbering). L'UCH s'est mis en mode sécurité par "déni de service" (DoS) et refuse de communiquer avec tout le monde, y compris l'ECU moteur.</li>
+</DiagnosticTree>
+
+<TestStepCard step={2} title="Isolation du problème (Ping Test inverse)">
+  La solution la plus rapide quand un calculateur ajouté ou touché récemment fait tomber le réseau :
+  <br /> - Débranchez physiquement la prise de la portière avant gauche (au niveau de la charnière).
+  <br /> - Remettez le contact.
+  <br /> - Refaites un Auto Scan. L'UCH répond-t-il ?
+  <br /> - Magie : Le tableau de bord s'allume correctement, la carte est lue, et l'UCH communique. Le coupable était le circuit imprimé du moteur de lève-vitre neuf.
+</TestStepCard>
+
+<ConfirmationBox>
+  Dans les architectures modernes (Renault UCH, Peugeot BSI, VAG BCM), un court-circuit sur un capteur secondaire (comme un capteur de pluie ou un bouton lève-vitre) fonctionnant en réseau LIN peut paralyser le "maître" du réseau. Toujours débrancher la dernière pièce modifiée avant de déclarer un calculateur principal HS.
+</ConfirmationBox>

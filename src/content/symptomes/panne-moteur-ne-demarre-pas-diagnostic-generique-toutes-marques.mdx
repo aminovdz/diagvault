@@ -1,0 +1,53 @@
+---
+title: "Panne moteur ne démarre pas : diagnostic générique toutes marques"
+description: "Le moteur ne démarre pas ? Suivez cette méthode générique pour isoler la panne : batterie, démarreur, allumage, carburant ou antidémarrage."
+pillar: "diagnostic"
+category: "symptomes"
+system: "moteur"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["scanner", "multimetre"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Faire face à un moteur qui refuse de démarrer peut sembler intimidant, mais il n'y a que quatre piliers fondamentaux pour qu'un moteur thermique fonctionne : de l'air, du carburant, de la compression et une étincelle (pour l'essence).
+
+
+## Les 3 Catégories de "No Start"
+
+Avant de brancher quoi que ce soit, écoutez ce qui se passe quand vous tournez la clé :
+
+<DiagnosticTree symptom="Ce que fait le moteur à la clé">
+  <li>**Rien ne se passe (No Crank, No Start) :** Le démarreur ne tourne pas. Les voyants s'éteignent ou font un "clic-clic" rapide. C'est un problème de puissance (Batterie, Masse, Démarreur) ou d'antidémarrage.</li>
+  <li>**Le démarreur tourne dans le vide (Crank, No Start) :** Le moteur "mouline" mais ne tousse pas. Le démarreur fait son travail. Il manque du carburant, de l'allumage, de la compression ou le calculateur ne donne pas l'ordre (Capteur PMH).</li>
+  <li>**Le moteur démarre puis cale instantanément :** L'anti-démarrage (IMMO) coupe l'injection, ou il y a une prise d'air massive (débitmètre débranché).</li>
+</DiagnosticTree>
+
+## Le Scan Rapide (Global OBD)
+
+<TestStepCard step={1} title="Interrogation des calculateurs">
+  Branchez votre scanner OBD. Ne vous limitez pas au calculateur moteur (ECU).
+  <br /> - Si l'ECU **ne communique pas**, vérifiez ses alimentations et fusibles. Un ECU éteint ne démarrera jamais le moteur.
+  <br /> - Lisez les tours/minute (RPM) dans les paramètres en direct pendant que vous lancez le démarreur. Si le scanner lit **0 RPM** alors que le moteur tourne, le capteur PMH (Crankshaft) est mort.
+  <br /> - Vérifiez la "Pression de rampe" (Rail Pressure) sur les diesels. Si elle n'atteint pas 250 bars, les injecteurs ne s'ouvriront pas.
+</TestStepCard>
+
+## Vérifications Mécaniques Rapides
+
+Si l'électronique semble en ordre, passez aux basiques.
+
+<TestStepCard step={2} title="Carburant et Allumage">
+  **Pour les moteurs essence :**
+  <br /> - Pulvérisez une seconde de Start Pilot ou de nettoyant frein dans l'admission.
+  <br /> - Lancez le démarreur. Si le moteur démarre quelques secondes puis cale, vous avez un problème d'alimentation en carburant (pompe, relais, filtre).
+  <br /> - S'il ne démarre toujours pas, sortez une bobine, mettez une vieille bougie au bout, plaquez-la contre le bloc moteur (Masse) et vérifiez la présence d'une étincelle bleue lors du démarrage.
+</TestStepCard>
+
+<ConfirmationBox>
+  Si vous avez de l'allumage et du carburant, mais que le moteur tourne "trop vite" au bruit (comme un moulin à café), prenez les compressions. Une courroie de distribution cassée empêchera tout démarrage, et aucun scanner ne vous donnera de code défaut explicite pour ça.
+</ConfirmationBox>

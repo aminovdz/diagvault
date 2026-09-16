@@ -1,0 +1,54 @@
+---
+title: "Comment diagnostiquer un problème Immo avant remplacement de calculateur"
+title_short: "Diagnostic Antidémarrage (Immo)"
+description: "La voiture refuse de démarrer. Est-ce vraiment l'ECU ? Apprenez à vérifier l'antenne transpondeur, le BSI et la clé avant de cloner un calculateur."
+pillar: "diagnostic"
+category: "methodologie"
+system: "immo"
+difficulty: "avance"
+risk: "eleve"
+requiredTools: ["scanner", "outil_diag_constructeur"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le démarreur tourne (parfois même pas), le voyant de cadenas clignote au tableau de bord, et le scanner affiche `ECU verrouillé` ou `Clé non reconnue`. C'est le réflexe classique de beaucoup de garagistes : "L'ECU a perdu la programmation, il faut l'envoyer à réparer ou le cloner". **Faux.** L'ECU est la *victime* du système Immo, pas forcément le coupable.
+
+
+## Comment fonctionne la chaîne Immo (Antidémarrage)
+
+Pour qu'un moteur démarre, un dialogue sécurisé (Handshake) doit réussir entre plusieurs acteurs :
+1. **La puce de la clé (Transpondeur)**
+2. **La bague de lecture (Antenne Neiman)**
+3. **Le boîtier habitacle (BSI / UCH / CAS)** qui valide la clé.
+4. **L'ECU Moteur** qui reçoit l'autorisation (PIN / Rolling Code) pour déverrouiller l'injection.
+
+Si la chaîne est coupée à l'étape 1, 2 ou 3, l'ECU restera "Verrouillé". Cloner un nouvel ECU ne règlera RIEN.
+
+<TestStepCard step={1} title="Test de la Clé et de l'Antenne (La Base)">
+  - **Essayez le double des clés.** Si la voiture démarre, c'est la puce de la clé principale qui est morte (ou tombée par terre). L'ECU va très bien.
+  <br /> - Si aucune clé ne marche, testez l'antenne (la bague noire autour du neiman). Utilisez un petit testeur d'antenne RFID (un anneau avec une LED). Approchez-le du neiman, mettez le contact. Si la LED ne clignote pas, l'antenne n'émet pas de champ magnétique ! Sans antenne, la voiture ne peut pas lire la clé.
+</TestStepCard>
+
+## Interroger le bon calculateur
+
+<DiagnosticTree symptom="Où chercher l'erreur au scanner ?">
+  <li>**Lire les Live Data du BSI / UCH :** Cherchez les valeurs "Clé insérée", "Clé reconnue", "ECU Moteur Autorisé".</li>
+  <li>**Si "Clé Reconnue = NON" :** Le problème est la clé, l'antenne, ou le BSI qui a perdu sa mémoire (corruption EEPROM suite à une chute de batterie). L'ECU Moteur attend sagement qu'on lui dise "Go".</li>
+  <li>**Si "Clé Reconnue = OUI" MAIS "ECU Autorisé = NON" :** Le BSI valide la clé, mais le fil de communication (réseau CAN ou ligne immo dédiée) entre le BSI et l'ECU Moteur est coupé !</li>
+</DiagnosticTree>
+
+<TestStepCard step={2} title="Le test du Rolling Code Désynchronisé">
+  Très fréquent chez BMW (DME/CAS) et PSA.
+  <br /> - Suite à un changement de batterie ou un démarrage aux pinces, l'ECU et le BSI se sont "désynchronisés". Leurs mots de passe ne correspondent plus.
+  <br /> - Le scanner affichera `Défaut de code tournant` ou `Défaut communication antidémarrage`.
+  <br /> - Il suffit souvent d'une simple manipulation "Synchronisation CAS/DME" à la valise pour que le moteur démarre au quart de tour. Zéro pièce à changer.
+</TestStepCard>
+
+<ConfirmationBox>
+  Quand est-ce qu'un clonage d'ECU est justifié ? Uniquement si l'ECU lui-même est physiquement détruit (eau, feu, court-circuit interne) et ne répond plus au diagnostic, OU si son EEPROM interne est corrompue et affiche "Défaut interne calculateur". Pour tout le reste, la panne Immo est *à l'extérieur* de l'ECU Moteur.
+</ConfirmationBox>

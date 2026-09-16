@@ -1,0 +1,55 @@
+---
+title: "Comment diagnostiquer une panne de démarrage étape par étape"
+title_short: "Panne de démarrage : La méthode"
+description: "Moteur qui refuse de démarrer : la checklist ultime. Différencier problème de démarreur, antidémarrage, capteur PMH, ou pression de carburant."
+pillar: "diagnostic"
+category: "methodologie"
+system: "moteur"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["scanner", "multimetre"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Se retrouver devant une voiture qui ne démarre pas peut être intimidant devant le nombre de causes possibles. En mécanique, on ne tire pas au hasard, on isole les systèmes par élimination.
+
+
+## Étape 1 : Le comportement au coup de clé
+
+La première chose à écouter, c'est le démarreur (Crank). La méthode de diagnostic change du tout au tout selon qu'il tourne ou non.
+
+<DiagnosticTree symptom="Écoute du démarrage">
+  <li>**Le démarreur ne tourne pas du tout (ou fait juste 'Clic') :** Le problème est Électrique (Batterie HS, Démarreur mort, Fusible, Câble de masse, ou Anti-démarrage bloquant le lanceur). Le moteur physique n'est pas en cause.</li>
+  <li>**Le démarreur tourne vite, mais le moteur ne se lance pas (Crank no Start) :** Le problème est la Gestion Moteur (Carburant, Air, Allumage, Compression, Synchronisation PMH/AAC).</li>
+</DiagnosticTree>
+
+## Étape 2 : L'Antidémarrage et le Scanner
+
+Si le démarreur tourne dans le vide, avant de démonter des bougies, regardez le tableau de bord.
+
+<TestStepCard step={1} title="Vérification de l'Immo et des Tours/Minute (Live Data)">
+  - Un voyant de clé ou un cadenas clignote-t-il au tableau de bord ? Si oui, cherchez un problème de clé (Puce perdue, antenne neiman).
+  <br /> - Branchez le scanner (ECU Moteur). Regardez la valeur **"Régime Moteur" (Engine RPM)** tout en essayant de démarrer.
+  <br /> - Si l'outil affiche 0 RPM (ou aucune valeur) pendant que le démarreur tourne, c'est que l'ECU ne "voit" pas le moteur tourner. **Le capteur PMH (Crankshaft Sensor) est HS.** Sans lui, l'ECU n'enverra jamais d'étincelle ni de carburant.
+</TestStepCard>
+
+## Étape 3 : Carburant ou Étincelle ? (Le test du Spray)
+
+Si le capteur PMH lit bien les RPM (environ 250 Tr/min sous démarreur).
+
+<TestStepCard step={2} title="Le Start-Pilote / Nettoyant Frein">
+  C'est un test binaire puissant :
+  <br /> - Enlevez la durite d'admission d'air après le filtre.
+  <br /> - Pendant qu'un ami essaie de démarrer, vaporisez un peu de nettoyant frein (ou Start Pilot) directement dans l'admission.
+  <br /> - **Si le moteur démarre 2 secondes et cale :** L'allumage (étincelles) et la compression sont PARFAITS. Votre panne est un **Manque de carburant** (Pompe de gavage cramée, injecteurs bloqués, filtre bouché, ou pression rampe trop faible en Diesel).
+  <br /> - **Si le moteur ne tousse même pas :** Le carburant n'est pas le problème. Il n'y a **Pas d'étincelle** (Bobines, Bougies, Faisceau), un antidémarrage actif, ou un problème mécanique grave (courroie de distri cassée = pas de compression).
+</TestStepCard>
+
+<ConfirmationBox>
+  En 3 étapes (Écoute, Scanner RPM, Test au Start Pilot), vous avez éliminé 80% des fausses pistes en moins de 10 minutes, sans vous salir les mains. Vous savez exactement vers quel système orienter vos tests poussés (Multimètre sur la pompe, ou oscilloscope sur les bobines).
+</ConfirmationBox>

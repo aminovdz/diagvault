@@ -1,0 +1,55 @@
+---
+title: "Fumée blanche à l'échappement au démarrage"
+description: "Fumée blanche au démarrage ? Ne concluez pas tout de suite au joint de culasse. Comment faire la différence entre condensation, LDR et gasoil imbrûlé."
+pillar: "diagnostic"
+category: "symptomes"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "eleve"
+requiredTools: ["scanner", "multimetre"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+La fumée blanche au démarrage est l'une des pannes les plus mal diagnostiquées. Beaucoup s'alarment en pensant immédiatement à un joint de culasse, alors qu'il s'agit souvent, surtout sur les diesels, d'un problème de préchauffage ou d'injection.
+
+
+## Différencier les types de "Fumée Blanche"
+
+La couleur est une chose, l'odeur et le comportement en sont une autre.
+
+<DiagnosticTree symptom="Analyse de la fumée">
+  <li>**Fumée blanche fine, inodore, qui disparaît à chaud :** C'est simplement de la condensation (vapeur d'eau) dans l'échappement. C'est 100% normal par temps froid.</li>
+  <li>**Fumée blanche épaisse, odeur sucrée/chimique :** Du liquide de refroidissement (LDR) passe dans la chambre de combustion (Joint de culasse, refroidisseur EGR percé). Le niveau de LDR baisse dans le bocal.</li>
+  <li>**Fumée grisâtre/blanche, odeur piquante (gazeuse) de carburant :** (Très fréquent sur Diesel). C'est du gasoil pulvérisé mais **non brûlé**. Typique d'une bougie de préchauffage HS ou d'un manque de compression à froid.</li>
+</DiagnosticTree>
+
+## Le Diagnostic (Cas du Gasoil Imbrûlé)
+
+Si le niveau d'eau ne baisse pas, le problème vient de la combustion à froid. Un diesel a besoin de chaleur pour enflammer le mélange.
+
+<TestStepCard step={1} title="Test du circuit de préchauffage">
+  Sur un diesel, si une bougie est morte, le cylindre va recracher le gasoil sous forme de brouillard blanc pendant les 30 premières secondes de fonctionnement (le moteur boite).
+  <br /> - Débranchez le connecteur des bougies de préchauffage.
+  <br /> - Avec un **multimètre en mode Ohmmètre (Résistance)**, mesurez entre la tête de chaque bougie et la masse (culasse).
+  <br /> - Une bougie saine affiche environ **0.5 à 1.5 Ohms**.
+  <br /> - Si l'écran affiche "OL" (Open Loop - Résistance infinie), la bougie est coupée et doit être remplacée.
+</TestStepCard>
+
+## Le Diagnostic (Cas du Liquide de Refroidissement)
+
+Si la fumée a une odeur sucrée et que vous rajoutez souvent de l'eau.
+
+<TestStepCard step={2} title="Éliminer le Refroidisseur EGR">
+  Avant de déculasser pour un joint de culasse, pensez au refroidisseur EGR (très courant sur les TDI/HDI modernes).
+  <br /> - Le liquide de refroidissement passe autour des gaz d'échappement dans la vanne EGR. Si l'échangeur perce en interne, le LDR est aspiré dans le moteur et ressort en fumée blanche.
+  <br /> - Shuntez (bypass) les deux durites d'eau du refroidisseur EGR pour un test. Si la fumée s'arrête le lendemain matin, le joint de culasse est intact, c'est l'EGR qui fuit !
+</TestStepCard>
+
+<ConfirmationBox>
+  Pour confirmer un joint de culasse à 100%, utilisez un "Testeur de CO2" (liquide bleu qui vire au jaune) au-dessus du bocal de liquide de refroidissement moteur tournant. S'il vire au jaune, des gaz d'échappement passent dans l'eau.
+</ConfirmationBox>

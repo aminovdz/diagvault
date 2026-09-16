@@ -1,0 +1,51 @@
+---
+title: "Odeur de carburant sans fuite visible"
+description: "Ça sent l'essence ou le gasoil dans l'habitacle sans tache ? Diagnostic du système EVAP, puits de jauge et retours d'injecteurs."
+pillar: "diagnostic"
+category: "symptomes"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "eleve"
+requiredTools: ["scanner", "machine_a_fumee"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Une odeur forte de carburant dans l'habitacle est un danger d'incendie et d'intoxication. S'il n'y a pas de flaque sous la voiture, la fuite se présente sous forme de vapeurs (essence) ou de micro-pulvérisation sur une pièce chaude (diesel).
+
+
+## Diesel vs Essence : Les coupables sont différents
+
+<DiagnosticTree symptom="D'où vient l'odeur ?">
+  <li>**Odeur d'Essence pure à l'arrière :** Puits de jauge sous la banquette arrière fêlé, ou joint de pompe de gavage mal monté.</li>
+  <li>**Odeur d'Essence sous le capot (après avoir roulé) :** Fuite du système EVAP (recyclage des vapeurs), canister saturé ou durite poreuse.</li>
+  <li>**Odeur de Gasoil sous le capot avec petite fumée :** Fuite sur les tuyaux de retour des injecteurs, ou fuite haute pression qui "vaporise" le gasoil sur le collecteur d'échappement brûlant.</li>
+</DiagnosticTree>
+
+## Diagnostic Moteur Essence (Le système EVAP)
+
+Le système EVAP capte les vapeurs d'essence du réservoir et les réinjecte dans le moteur pour être brûlées.
+
+<TestStepCard step={1} title="Test de la Vanne de Purge Canister">
+  La "Purge Valve" (Électrovanne de purge) contrôle l'envoi des vapeurs dans le moteur.
+  <br /> - Si elle reste bloquée ouverte, le moteur aspire trop de vapeurs au ralenti (Mélange riche, ralenti instable, odeur forte).
+  <br /> - **Débranchez le tuyau** qui relie la vanne au moteur (côté réservoir).
+  <br /> - Moteur au ralenti, mettez votre doigt sur l'orifice de la vanne. Vous ne devriez ressentir **aucune aspiration**. La vanne doit être fermée au ralenti.
+  <br /> - Si ça aspire fort, la vanne est fuyarde. À remplacer.
+</TestStepCard>
+
+<TestStepCard step={2} title="Machine à Fumée dans le réservoir">
+  S'il y a un code "Small Leak" (ex: P0456) et une odeur d'essence persistante :
+  <br /> - Moteur éteint, injectez de la fumée (basse pression, spéciale EVAP) par l'orifice de diagnostic du canister.
+  <br /> - Cherchez d'où sort la fumée : autour du bouchon de réservoir (joint mort), sous la voiture (tuyau rigide frotté contre le châssis), ou au-dessus du réservoir.
+</TestStepCard>
+
+## Diagnostic Moteur Diesel
+
+<ConfirmationBox>
+  L'odeur de gasoil non brûlé dans l'habitacle vient à 90% des petits tuyaux en caoutchouc tressé de "retour d'injecteurs". Avec la chaleur, ils deviennent durs et poreux. Ils fuient très légèrement au goutte-à-goutte, le gasoil tombe sur le bloc moteur chaud, s'évapore et l'odeur est aspirée par la prise d'air de la ventilation d'habitacle. Remplacez ces 50 cm de durite !
+</ConfirmationBox>

@@ -1,0 +1,53 @@
+---
+title: "Défaut de communication entre calculateurs après une réparation"
+description: "Défauts 'U-Codes' (U0100) juste après avoir réparé la voiture ? Méthode pour trouver la prise débranchée, le fil coincé ou la masse oubliée."
+pillar: "diagnostic"
+category: "symptomes"
+system: "can"
+difficulty: "intermediaire"
+risk: "eleve"
+requiredTools: ["scanner", "multimetre"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+C'est un scénario classique : vous changez un embrayage, vous remontez la boîte, et quand vous tournez la clé, le tableau de bord clignote comme un sapin de Noël avec des erreurs "U0100 - Perte de communication avec l'ECU Moteur". La voiture refuse de démarrer.
+
+
+## Règle N°1 : Qu'avez-vous touché ?
+
+Les pannes n'apparaissent pas par magie pendant que la voiture est sur le pont. Si un défaut CAN (U-Code) survient pile après une réparation mécanique, la cause est presque toujours d'origine humaine (erreur de remontage).
+
+<DiagnosticTree symptom="Les erreurs de remontage classiques">
+  <li>**Masse châssis oubliée :** La tresse de masse entre la boîte de vitesses et le châssis, ou le fil de masse vissé sur la culasse. Sans masse, le calculateur ne s'allume pas.</li>
+  <li>**Faisceau pincé :** Lors de la repose du moteur ou de la boîte, un faisceau de fils s'est retrouvé coincé entre le bloc et la cloche d'embrayage. Les fils CAN High / CAN Low sont écrasés et en court-circuit.</li>
+  <li>**Connecteur mal clipsé :** Une grosse prise (sur l'ECU, la boîte ou l'ABS) semble branchée, mais le verrouillage en plastique n'a pas fait le "clic" final.</li>
+</DiagnosticTree>
+
+## La méthode de recherche
+
+Ne commencez pas à changer des calculateurs.
+
+<TestStepCard step={1} title="Le rapport de scan complet (Topology)">
+  Branchez le scanner et faites un scan de TOUS les modules (Auto Scan).
+  <br /> - Notez EXACTEMENT qui refuse de communiquer.
+  <br /> - **Si seul l'ABS ne communique pas :** Cherchez la prise de l'ABS. Avez-vous oublié de rebrancher le capteur de vitesse de roue en remontant un cardan ? Avez-vous arraché un fil ?
+  <br /> - **Si l'ECU, l'ABS et l'Airbag ne communiquent pas (Réseau complet HS) :** Vous avez pincé ou court-circuité la ligne CAN principale. 
+</TestStepCard>
+
+<TestStepCard step={2} title="Vérification des Masses (Voltage Drop)">
+  La cause la plus fréquente après une dépose moteur.
+  <br /> - Mettez le multimètre en Volts (DC). 
+  <br /> - Mettez la pointe NOIRE sur le Moins (-) de la batterie.
+  <br /> - Mettez la pointe ROUGE directement sur la carcasse en aluminium du moteur.
+  <br /> - Demandez à quelqu'un d'essayer de démarrer.
+  <br /> - Si le multimètre affiche plus de **0.5V (voire 8V ou 10V !)**, votre moteur n'est plus relié à la masse. Le courant essaie de revenir à la batterie en passant par les petits fils du réseau CAN, ce qui fait planter tous les calculateurs. Cherchez le gros câble de masse oublié !
+</TestStepCard>
+
+<ConfirmationBox>
+  Les prises "Gateway" ou connecteurs intermédiaires sont piégeux. Souvent, pour sortir un moteur, on débranche une grosse prise carrée (ex: prise C101, ou connecteur de tablier). Assurez-vous qu'aucun pin (broche métallique) n'a été tordu ou repoussé vers l'arrière au moment du rebranchement en force.
+</ConfirmationBox>

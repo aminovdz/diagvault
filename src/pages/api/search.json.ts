@@ -1,7 +1,7 @@
 import { getCollection } from 'astro:content';
 
 export async function GET() {
-  const collections = ['diagnostic', 'capteurs', 'actionneurs', 'electricite', 'can', 'dtc', 'programmation', 'ecu', 'eeprom', 'immo', 'outils'];
+  const collections = ['diagnostic', 'capteurs', 'actionneurs', 'electricite', 'can', 'dtc', 'programmation', 'ecu', 'eeprom', 'immo', 'outils', 'casreels', 'symptomes', 'methodologie'];
   
   let allData: any[] = [];
   

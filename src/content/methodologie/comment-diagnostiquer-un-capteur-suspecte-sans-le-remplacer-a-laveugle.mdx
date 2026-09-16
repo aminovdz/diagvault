@@ -1,0 +1,56 @@
+---
+title: "Comment diagnostiquer un capteur suspecté sans le remplacer à l'aveugle"
+title_short: "Tester un capteur sans le changer"
+description: "Arrêtez de changer les capteurs au hasard. La méthode des '3 Fils' pour valider le 5V, la masse et mesurer le signal de retour vers l'ECU."
+pillar: "diagnostic"
+category: "methodologie"
+system: "moteur"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["multimetre"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Un capteur a un seul rôle : transformer un phénomène physique (Pression, Température, Position) en un signal électrique mesurable par le calculateur. C'est le traducteur du moteur. Si le traducteur ment, le moteur broute.
+
+
+## L'Anatomie du capteur "3 Fils" (Le standard)
+
+La majorité des capteurs modernes (MAP, Pression de rail, Position Papillon, Capteur d'Arbre à Cames Hall) utilisent 3 fils. Pour tester un capteur, il faut mesurer ces 3 fils SANS le débrancher.
+
+1. **Le 5V de référence (VREF) :** L'énergie fournie par l'ECU pour alimenter la puce du capteur.
+2. **La Masse Capteur (Sensor Ground) :** Le retour du courant vers l'ECU (et non vers le châssis !).
+3. **Le Signal :** Le fil qui varie (entre 0.5V et 4.5V) selon ce que mesure le capteur.
+
+<TestStepCard step={1} title="Vérification de l'alimentation du capteur">
+  Le capteur doit être branché (utilisez des aiguilles de backprobe pour piquer derrière le connecteur, dans le joint en silicone). Mettez le contact.
+  <br /> - Fil 1 (VREF) : Doit afficher exactement 5.0V (ou 4.95V à 5.05V). S'il y a 0V, le capteur ne risque pas de fonctionner. Cherchez un fil coupé ou un court-circuit sur un autre capteur.
+  <br /> - Fil 2 (Masse) : Placez votre multimètre entre ce fil et le Moins de la batterie. Il doit y avoir moins de 0.1V (Test de Voltage Drop). S'il affiche 1.5V, la masse est mauvaise, le signal du capteur sera totalement faussé !
+</TestStepCard>
+
+## Mesurer la réalité physique
+
+Si le 5V et la Masse sont parfaits, le capteur est "nourri". Fait-il son travail ?
+
+<DiagnosticTree symptom="Exemple avec un capteur MAP (Pression Admission)">
+  <li>**Moteur éteint (Pression atmosphérique) :** Le signal doit être autour de 4.0V.</li>
+  <li>**Moteur au ralenti (Dépression forte) :** Le signal doit chuter vers 1.0V ou 1.5V (le capteur "aspire" la membrane).</li>
+  <li>**Moteur en pleine accélération franche :** Le signal doit remonter en flèche vers 4.0V.</li>
+</DiagnosticTree>
+
+<TestStepCard step={2} title="Créer une fausse condition (Le test ultime)">
+  Vous soupçonnez que le capteur MAP est bloqué en interne ?
+  <br /> - Démontez-le du collecteur mais laissez-le branché électriquement.
+  <br /> - Branchez votre multimètre sur le fil de Signal.
+  <br /> - Branchez une pompe à dépression manuelle (Mityvac) sur le nez du capteur.
+  <br /> - Pompez pour créer le vide (Vacuum). Si la tension sur votre multimètre diminue proportionnellement à vos coups de pompe, le capteur fonctionne **PARFAITEMENT**. S'il reste bloqué à 4.0V, la puce piézoélectrique est morte : remplacez-le.
+</TestStepCard>
+
+<ConfirmationBox>
+  Appliquez cette logique (Alim, Masse, Signal variable) à n'importe quel capteur. Capteur de température ? Pointez un décapeur thermique dessus et regardez la tension du signal chuter ou monter. Capteur TPS (Papillon) ? Poussez le clapet à la main. Le multimètre ne ment jamais.
+</ConfirmationBox>

@@ -1,0 +1,51 @@
+---
+title: "Comment diagnostiquer un ralenti instable méthodiquement"
+title_short: "Ralenti instable : La méthode"
+description: "Moteur qui pompe, qui tremble au feu rouge ou qui cale ? La méthodologie pour traquer les prises d'air, tester la régulation de ralenti et les sondes."
+pillar: "diagnostic"
+category: "methodologie"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner", "machine_a_fumee"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le ralenti est la condition la plus difficile à gérer pour un calculateur moteur. Le mélange air/carburant doit être absolument parfait. La moindre perturbation entraîne des secousses (misfires), des pompages (surging), ou un calage au feu rouge.
+
+
+## L'Air Non Mesuré (La Prise d'Air)
+
+Dans 90% des cas sur un moteur essence, un ralenti instable est causé par de l'air qui entre dans le moteur *après* le débitmètre (MAF). L'ECU ne voit pas cet air, il n'injecte donc pas assez d'essence. Le mélange devient trop pauvre, le moteur s'étouffe, l'ECU réagit en ouvrant le papillon (pompage).
+
+<TestStepCard step={1} title="Lecture des Fuel Trims (Ajustement Carburant)">
+  Branchez le scanner.
+  <br /> - Affichez le "Short Term Fuel Trim" (STFT) et "Long Term Fuel Trim" (LTFT).
+  <br /> - Si le total (STFT + LTFT) est très positif (ex: +25%), l'ECU enrichit à mort pour compenser une prise d'air (Code P0171).
+  <br /> - **Le test décisif :** Accélérez à 2500 tr/min stabilisés. Si le Fuel Trim revient proche de 0%, c'est la preuve absolue d'une prise d'air. (Au ralenti, le vide d'admission est très fort, aspirant beaucoup d'air par la fuite. À haut régime, le papillon est ouvert, la fuite devient négligeable).
+</TestStepCard>
+
+## Traquer la Fuite (Vacuum Leak)
+
+<DiagnosticTree symptom="Où chercher l'air parasite ?">
+  <li>**Durites de dépression (Vacuum lines) :** Fissurées, débranchées. Souvent cachées derrière le collecteur d'admission.</li>
+  <li>**Vanne PCV (Recyclage des vapeurs d'huile) :** Si sa membrane est percée, elle crée une prise d'air massive depuis le carter moteur.</li>
+  <li>**Joints de collecteur d'admission :** Durcis par la chaleur.</li>
+</DiagnosticTree>
+
+<TestStepCard step={2} title="La Machine à Fumée (Test Infaillible)">
+  Ne perdez pas de temps avec du nettoyant frein pour trouver la fuite.
+  <br /> - Moteur éteint et froid.
+  <br /> - Branchez la machine à fumée sur l'admission (par le tuyau de mastervac de frein, par exemple).
+  <br /> - Bouchez l'entrée d'air (au niveau du filtre).
+  <br /> - Observez sous le capot. La moindre volute de fumée indique votre prise d'air. Remplacez le joint ou la durite incriminée.
+</TestStepCard>
+
+<ConfirmationBox>
+  **Si les Fuel Trims sont parfaits (proches de 0%) mais que le ralenti tremble :** Le problème n'est pas une fuite d'air. Pensez au nettoyage physique du papillon motorisé (Throttle Body encrassé empêchant le micro-ajustement de l'air), ou à un problème d'allumage léger (bougies usées causant des micro-ratés de combustion non détectés).
+</ConfirmationBox>

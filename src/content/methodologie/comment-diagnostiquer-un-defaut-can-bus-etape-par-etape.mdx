@@ -1,0 +1,53 @@
+---
+title: "Comment diagnostiquer un défaut CAN Bus étape par étape"
+title_short: "Diagnostic Réseau CAN Bus"
+description: "Réseau CAN HS (U0100) ? Guide complet : mesurer la résistance de 60 Ohms, pinger les modules et isoler un calculateur défectueux sur le Bus."
+pillar: "diagnostic"
+category: "methodologie"
+system: "can"
+difficulty: "avance"
+risk: "eleve"
+requiredTools: ["multimetre", "oscilloscope"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Un réseau CAN (Controller Area Network) est comme un grand fil de discussion WhatsApp où tous les calculateurs (ECU, ABS, BSI, Boîte) discutent. Si un calculateur "crie" trop fort (court-circuit) ou si le câble est coupé, la communication s'effondre. Résultat : tableau de bord allumé, antidémarrage actif, voiture bloquée.
+
+
+## L'Étape 1 : Le test des 60 Ohms (Le diagnostic en 1 minute)
+
+Le réseau CAN High Speed principal est composé de deux fils torsadés (CAN-H et CAN-L). À chaque extrémité de ce réseau, un calculateur possède une résistance de terminaison de 120 Ohms. 120 Ohms en parallèle avec 120 Ohms = **60 Ohms**. C'est LA valeur que vous devez trouver.
+
+<TestStepCard step={1} title="Mesure depuis la prise OBD">
+  - **Coupez le contact** et **débranchez la batterie** (OBLIGATOIRE, on ne mesure pas de résistance sur un circuit sous tension).
+  <br /> - Prenez votre multimètre en mode Ohmmètre (Ω).
+  <br /> - Insérez délicatement vos pointes de touche dans les broches **6 (CAN-H)** et **14 (CAN-L)** de la prise de diagnostic OBD2.
+  <br /> - Regardez la valeur :
+</TestStepCard>
+
+<DiagnosticTree symptom="Interprétation de la résistance">
+  <li>**60 Ohms :** Le réseau physique principal est INTACT. Aucun fil n'est coupé, les deux calculateurs de bout de chaîne sont branchés. La panne est logicielle, d'alimentation ou sur une branche secondaire.</li>
+  <li>**120 Ohms :** Le réseau est COUPÉ quelque part. Un des deux calculateurs de terminaison (souvent l'ECU Moteur ou le BCM) est débranché, ou son fil est sectionné.</li>
+  <li>**0 Ohms (ou moins de 10 Ohms) :** Court-circuit ! Les fils CAN-H et CAN-L se touchent. Souvent dû à un faisceau écrasé (cloche de boîte, rongeurs).</li>
+  <li>**Infini (O.L) :** Coupure totale très proche de la prise OBD, les fils sont coupés avant même d'arriver au réseau central.</li>
+</DiagnosticTree>
+
+## L'Étape 2 : Isoler le composant en court-circuit
+
+Si votre réseau est planté (U-Codes sur toute la voiture), c'est souvent un seul calculateur qui met la pagaille.
+
+<TestStepCard step={2} title="Débranchement séquentiel (L'élimination)">
+  Le principe est de trouver "qui" court-circuite le réseau.
+  <br /> - Rebranchez la batterie. Connectez un oscilloscope (idéal) ou un voltmètre sur les broches 6 et 14. Un CAN sain tourne autour de 2.5V de moyenne.
+  <br /> - Débranchez physiquement les calculateurs un par un, en commençant par les plus exposés (Module ABS près des roues, capteurs radar de pare-choc, module de direction assistée).
+  <br /> - Dès que vous débranchez LE module en court-circuit (par exemple inondé par l'eau), la tension du réseau reviendra instantanément à 2.5V, et les autres calculateurs se remettront à dialoguer. Vous avez trouvé le coupable.
+</TestStepCard>
+
+<ConfirmationBox>
+  Un des plus grands pièges du réseau CAN est le calculateur ABS. S'il est HS, il bloque souvent le passage de l'information de vitesse et d'antidémarrage. Un ABS débranché empêchera certaines voitures (ex: Renault, Mercedes) de démarrer car le réseau passe "à travers" lui pour aller à l'ECU moteur (Daisy Chain).
+</ConfirmationBox>

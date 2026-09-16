@@ -1,0 +1,50 @@
+---
+title: "Comment diagnostiquer un défaut qui apparaît uniquement en roulant"
+title_short: "Défaut en roulant uniquement"
+description: "Moteur qui se coupe à 130 km/h ou vibrations en charge ? L'art d'utiliser la fonction 'Record/Snapshot' du scanner OBD pour capturer une panne fantôme."
+pillar: "diagnostic"
+category: "methodologie"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+"Quand je roule à 110km/h et que j'accélère fort, le voyant s'allume 3 secondes et la voiture donne des à-coups. Mais dès que je m'arrête, tout redevient normal". Diagnostiquer dans le vide (à l'arrêt) est inutile. Il faut capturer la panne au vol.
+
+
+## Pourquoi la panne n'apparaît qu'en roulant ?
+
+Le moteur est soumis à des contraintes physiques qui n'existent pas à l'arrêt, appelées la **Charge (Engine Load)**.
+
+<DiagnosticTree symptom="Les facteurs de charge">
+  <li>**Besoin en carburant :** À 3000 tr/min à vide, le moteur consomme très peu. En côte à 3000 tr/min, les injecteurs s'ouvrent 4 fois plus longtemps. Une pompe faible ne se remarquera qu'en côte.</li>
+  <li>**Pression Turbo :** Un turbo ne génère de la pression que si le moteur "force". Une durite percée ne fuira pas si vous accélérez au point mort.</li>
+  <li>**Vibrations et Balancement :** Le moteur bouge sur ses silentblocs lors des accélérations, tirant sur les faisceaux électriques (faux contacts).</li>
+</DiagnosticTree>
+
+<TestStepCard step={1} title="La préparation de l'enregistrement (Flight Recorder)">
+  Ne regardez pas l'écran de la valise en conduisant. Utilisez la fonction d'enregistrement !
+  <br /> - Branchez le scanner et allez dans les "Live Data" (Données en direct).
+  <br /> - **CRITIQUE : Ne sélectionnez pas TOUS les paramètres.** Si vous choisissez 50 valeurs, le taux de rafraîchissement sera trop lent (1 valeur par seconde). Vous allez rater la micro-coupure.
+  <br /> - Sélectionnez uniquement 4 à 6 valeurs logiques liées au symptôme (Ex pour un raté d'allumage : *RPM, Pression Admission, Avance Allumage, Compteur de Misfires*). Le scanner se rafraîchira 10 fois par seconde.
+</TestStepCard>
+
+## L'Analyse Post-Test
+
+<TestStepCard step={2} title="Le déclenchement du Snapshot">
+  - Appuyez sur "Record" et allez reproduire le problème sur route.
+  <br /> - Dès que l'à-coup se produit, demandez au passager d'appuyer sur le bouton "Snapshot" (Capture) ou de noter l'heure exacte à la seconde près.
+  <br /> - Revenez à l'atelier, asseyez-vous, et lisez le graphique (Graph View).
+  <br /> - Cherchez la fraction de seconde où le graphique plonge : Le capteur PMH (RPM) tombe-t-il à Zéro pendant que vous rouliez à 110km/h ? C'est lui le coupable ! La Pression Rail chute-t-elle brusquement juste avant l'à-coup ? C'est la pompe.
+</TestStepCard>
+
+<ConfirmationBox>
+  Dans certains cas (ex: coupure de faisceau), c'est la perte de communication entière (Data Link) qui survient au moment de l'à-coup. Le scanner se fige et affiche "Perte de connexion OBD". C'est un indice majeur : le balancement du moteur tire sur le faisceau principal et coupe l'alimentation de l'ECU !
+</ConfirmationBox>

@@ -1,0 +1,52 @@
+---
+title: "Comment diagnostiquer un code défaut récurrent qui revient après effacement"
+title_short: "Code défaut récurrent (Hard Code)"
+description: "Vous effacez le défaut P0XXX à la valise mais il revient en 5 secondes ? Différencier un défaut statique (circuit électrique) d'un défaut dynamique (mécanique)."
+pillar: "diagnostic"
+category: "methodologie"
+system: "moteur"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["scanner", "multimetre"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+"J'ai effacé le défaut, mais il est revenu". C'est normal. Un outil de diagnostic ne répare rien, il ne fait qu'effacer l'historique. Si le calculateur voit que le problème est toujours là, il rallume le voyant instantanément. 
+
+
+## Les 2 Types de Défauts (Hard Code vs Soft Code)
+
+La vitesse à laquelle le défaut revient vous donne la solution.
+
+<DiagnosticTree symptom="Quand le défaut revient-il ?">
+  <li>**Instantanément au contact (Moteur Éteint) :** C'est un problème ÉLECTRIQUE PUR (Circuit ouvert, court-circuit, capteur débranché ou grillé). L'ECU fait un "Check" de la résistance électrique des composants avant même de démarrer.</li>
+  <li>**Uniquement quand le moteur tourne ou après avoir roulé :** C'est un problème PHYSIQUE ou MÉCANIQUE (Mauvaise pression, prise d'air, débit incorrect). L'ECU a besoin de voir le composant "en action" pour comprendre qu'il ment ou dysfonctionne.</li>
+</DiagnosticTree>
+
+<TestStepCard step={1} title="Traiter un défaut qui revient au contact (Défaut statique)">
+  Exemple : *P0113 - Capteur de température d'air (IAT), tension haute (circuit ouvert).*
+  <br /> Vous l'effacez moteur coupé, il revient à la seconde même.
+  <br /> - Inutile de démarrer la voiture. Le problème est électrique.
+  <br /> - Vérifiez si la prise du capteur est bien branchée. 
+  <br /> - Vérifiez si un fil n'est pas cassé à ras du connecteur.
+  <br /> - Mesurez la résistance du capteur. Si elle est infinie (O.L), le capteur est mort en interne.
+</TestStepCard>
+
+## Traiter un défaut qui revient en roulant (Défaut dynamique)
+
+<TestStepCard step={2} title="Le test des paramètres en direct (Live Data)">
+  Exemple : *P0234 - Suralimentation turbo, limite dépassée (Overboost).*
+  <br /> Vous l'effacez au contact, il ne revient pas. Vous démarrez, il ne revient pas. Vous accélérez sur l'autoroute, BAM, mode dégradé et le code revient.
+  <br /> - Le capteur de pression et les fils sont EN PARFAIT ÉTAT (sinon le code reviendrait au contact).
+  <br /> - Le problème est que la géométrie variable du turbo est grippée mécaniquement. L'ECU voit une vraie surpression physique et l'enregistre.
+  <br /> - **Ne changez pas le capteur !** Affichez sa valeur en Live Data pour confirmer qu'il lit bien une pression beaucoup trop haute par rapport à la consigne.
+</TestStepCard>
+
+<ConfirmationBox>
+  Un code défaut ne dit jamais "Ce capteur est mort, change-le". Il dit : "L'information que je reçois sur ce fil est illogique par rapport à ce que j'attends". L'information illogique peut venir du capteur, du fil, ou d'une vraie panne mécanique !
+</ConfirmationBox>

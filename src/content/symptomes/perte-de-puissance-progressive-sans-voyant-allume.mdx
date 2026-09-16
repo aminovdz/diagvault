@@ -1,0 +1,43 @@
+---
+title: "Perte de puissance progressive sans voyant allumé"
+description: "Comment trouver une perte de puissance sans code défaut : FAP colmaté, catalyseur bouché, débitmètre faussé ou pompe à essence faible."
+pillar: "diagnostic"
+category: "symptomes"
+system: "moteur"
+difficulty: "avance"
+risk: "moyen"
+requiredTools: ["scanner", "multimetre"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Rien n'est plus frustrant qu'une voiture qui "rame" pour monter une côte sans qu'aucun voyant moteur ne s'allume. Sans code défaut (DTC), les pièces ne sont pas cassées électriquement, mais elles mentent ou subissent une contrainte physique.
+
+
+## Les Menteurs Silencieux
+
+Si le calculateur ne voit pas de défaut, c'est que les valeurs lues restent dans les tolérances plausibles, bien qu'elles soient fausses pour la situation réelle.
+
+<DiagnosticTree symptom="Pistes sans voyant">
+  <li>**L'Échappement Bouché :** Le Catalyseur ou le FAP (Filtre à Particules) est progressivement bouché. Le moteur ne peut pas expirer, donc il ne peut pas inspirer.</li>
+  <li>**Le Débitmètre (MAF) fatigué :** Il n'est pas coupé (sinon voyant), mais il est sale. Il lit 50 g/s alors qu'il rentre en réalité 100 g/s. L'ECU injecte moitié moins d'essence.</li>
+  <li>**Pression de carburant en charge :** La pompe faiblit ou le filtre se bouche. Au ralenti la pression est bonne, mais à pleine charge (pied au plancher), la pression s'effondre.</li>
+</DiagnosticTree>
+
+## Les Tests en Charge (Live Data)
+
+Vous devez faire un essai routier (avec un passager qui lit la valise) pour voir le défaut.
+
+<TestStepCard step={1} title="Vérification de la Respiration (MAF et Pression Turbo)">
+  Allez sur une route dégagée. Mettez-vous en 3ème à 2000 tr/min, et accélérez pied au plancher (WOT - Wide Open Throttle) jusqu'à 4000 tr/min.
+  <br /> - **Débitmètre (MAF) :** En grammes par seconde (g/s), la valeur maximale à 4000 tr/min (pour un moteur atmosphérique) doit correspondre environ à `(Cylindrée en Litres) x 40`. Ex: un 2.0L devrait lire environ 80 g/s. S'il lit 40 g/s, nettoyez-le ou changez-le.
+  <br /> - **Pression FAP / Catalyseur :** Lisez la "Pression Différentielle d'Échappement". Si elle dépasse 200 mbar (voire 500 mbar) en forte charge, l'échappement est colmaté.
+</TestStepCard>
+
+<ConfirmationBox>
+  Si le MAF et l'échappement sont bons, vérifiez la valeur de charge moteur "Calculated Load". À pleine accélération, elle doit s'approcher de 90-100%. Si elle bloque à 60%, le calculateur bride le moteur intentionnellement ou n'a pas détecté que vous accélérez à fond (Capteur de pédale APP désynchronisé).
+</ConfirmationBox>

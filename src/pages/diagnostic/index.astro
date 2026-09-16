@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/layout/Breadcrumbs.astro';
+
+const paths = [
+  { label: 'Diagnostic', url: '/diagnostic' }
+];
+
+const categories = [
+  { slug: 'symptomes', title: 'Symptômes Génériques', desc: 'Arbres de diagnostic logiques pour les pannes courantes (ne démarre pas, broute, etc.)' },
+  { slug: 'casreels', title: 'Cas Réels', desc: 'Véhicules spécifiques, codes précis, et méthode de résolution complète.' },
+  { slug: 'methodologie', title: 'Méthodologie Pas-à-Pas', desc: 'Comment structurer un diagnostic, chercher une panne intermittente ou une perte de communication.' },
+  { slug: 'capteurs', title: 'Capteurs', desc: 'Comment tester les capteurs (PMH, MAP, MAF, Lambda) avec précision.' },
+  { slug: 'actionneurs', title: 'Actionneurs', desc: 'Test d\'injecteurs, bobines, vannes EGR, alternateurs et démarreurs.' },
+  { slug: 'electricite', title: 'Électricité & Faisceaux', desc: 'Chute de tension, test d\'alimentation ECU, recherche de court-circuit.' },
+  { slug: 'can', title: 'Réseaux CAN', desc: 'Diagnostic des pannes de réseau (CAN High/Low, CAN LIN).' },
+  { slug: 'dtc', title: 'Codes Défauts (DTC)', desc: 'Explication détaillée et étapes de contrôle pour les codes OBD courants.' },
+  { slug: 'livedata', title: 'Données en Direct (Live Data)', desc: 'Interprétation des Fuel Trims, pressions et valeurs d\'apprentissage.' },
+  { slug: 'oscilloscope', title: 'Oscilloscope', desc: 'Compression relative, synchronisation arbre à cames/vilebrequin, signal PWM.' }
+];
+---
+
+<BaseLayout title="Hub Diagnostic - DiagVault">
+  <div class="max-w-5xl mx-auto">
+    <Breadcrumbs paths={paths} />
+    
+    <header class="mb-12 text-center max-w-3xl mx-auto">
+      <h1 class="text-4xl md:text-5xl font-heading font-bold text-white mb-4">
+        Le Hub du Diagnostic
+      </h1>
+      <p class="text-xl text-slate-400">
+        Choisissez votre point d'entrée. Que vous partiez d'un symptôme, d'un code défaut ou que vous vouliez tester un capteur précis, voici les guides.
+      </p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {categories.map(cat => (
+        <a href={`/diagnostic/${cat.slug}`} class="group block p-6 bg-surface border border-slate-800 rounded-xl hover:border-accent-diagnostic transition-colors h-full flex flex-col">
+          <h2 class="text-xl font-bold text-white mb-2 group-hover:text-accent-diagnostic transition-colors">{cat.title}</h2>
+          <p class="text-slate-400 text-sm mt-auto">{cat.desc}</p>
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

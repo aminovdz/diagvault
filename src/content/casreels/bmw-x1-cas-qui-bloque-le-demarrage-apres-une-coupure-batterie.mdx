@@ -1,0 +1,50 @@
+---
+title: "BMW X1 — CAS qui bloque le démarrage après une coupure batterie"
+description: "DDE et CAS désynchronisés après avoir fait les câbles sur une BMW (E84/E90) ? Erreur 4A63 et méthode de synchronisation CAS-DME."
+pillar: "diagnostic"
+category: "casreels"
+system: "immo"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Un classique de l'hiver. Le propriétaire d'un BMW X1 (E84, moteur N47) a eu du mal à démarrer le matin à cause du froid et d'une batterie fatiguée. Un ami est venu l'aider avec des câbles de démarrage. Une petite étincelle s'est produite. La voiture ne démarre plus du tout : le démarreur tourne dans le vide infiniment.
+
+
+## L'architecture BMW (DME/DDE et CAS)
+
+Chez BMW, la sécurité antivol repose sur la communication entre le CAS (Car Access System - le lecteur de clé) et le DME (Moteur essence) ou DDE (Moteur diesel). Ils s'envoient un code crypté tournant de 128 bits appelé ISN (Individual Serial Number).
+
+<DiagnosticTree symptom="L'effet du pic de tension (Jump Start)">
+  <li>Lors du branchement brutal des câbles, un pic de tension a provoqué un micro-reboot du calculateur moteur (DDE) pendant qu'il écrivait sa dernière valeur de code.</li>
+  <li>Le DDE s'est décalé par rapport au CAS. Le CAS attend le mot de passe N°42, mais le DDE lui envoie le mot de passe N°41.</li>
+  <li>L'antidémarrage est actif. Chez BMW, l'antidémarrage **ne coupe pas le démarreur**, il coupe simplement l'injection de carburant. Le démarreur tournera jusqu'à vider la batterie.</li>
+</DiagnosticTree>
+
+<TestStepCard step={1} title="Vérification du code défaut (4A63)">
+  - Branchez un scanner (ISTA-D, ou n'importe quel multimarque pro).
+  <br /> - Allez dans le calculateur Moteur (DDE).
+  <br /> - Vous verrez ce code mythique : **4A63 - EWS Tampering** (Manipulation EWS / CAS-DDE désynchronisés). 
+</TestStepCard>
+
+## La résolution logicielle (Synchro)
+
+Il n'y a aucune pièce à changer, c'est purement logiciel.
+
+<TestStepCard step={2} title="Synchronisation CAS / DDE">
+  - Allez dans les fonctions spéciales de service de votre scanner.
+  <br /> - Cherchez le menu "Drive / Engine Management" ou "Immobilizer".
+  <br /> - Lancez la fonction **"Synchronisation CAS - DDE"** (ou EWS-DME Sync).
+  <br /> - L'outil vous demandera de mettre le contact (sans démarrer). Il réinitialisera les compteurs de mots de passe à Zéro sur les deux calculateurs. Coupez le contact 15 secondes.
+</TestStepCard>
+
+<ConfirmationBox>
+  Une fois le délai passé, appuyez sur le bouton Start. La voiture démarrera instantanément. **Prévention :** Recommandez toujours de brancher les câbles de démarrage sur les bornes déportées SOUS LE CAPOT (avec la croix rouge) et **jamais directement sur la batterie dans le coffre**, car cela court-circuite le capteur IBS (Intelligent Battery Sensor).
+</ConfirmationBox>

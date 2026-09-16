@@ -1,0 +1,44 @@
+---
+title: "Démarreur qui tourne dans le vide sans lancer le moteur"
+description: "Symptôme Crank No Start : le démarreur tourne mais le moteur ne se lance pas. Méthode pour tester le capteur PMH, la pression et l'allumage."
+pillar: "diagnostic"
+category: "symptomes"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "moyen"
+requiredTools: ["scanner", "multimetre"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le symptôme "Crank, No Start" (le démarreur entraîne le moteur, mais aucune combustion ne se produit) élimine d'emblée la batterie, le démarreur et le circuit de puissance principal. Votre attention doit se porter sur la "décision" du calculateur.
+
+
+## L'information de base : Le Capteur PMH
+
+Le calculateur moteur (ECU) est aveugle. Tant qu'il ne sait pas à quelle vitesse et dans quelle position se trouve le vilebrequin, il ne déclenchera JAMAIS l'allumage ni l'injection.
+
+<TestStepCard step={1} title="Test de lecture des RPM">
+  Branchez votre valise de diagnostic et allez dans les "Données en Direct" (Live Data) du calculateur moteur.
+  <br /> - Affichez le paramètre "Régime Moteur" (Engine Speed / RPM).
+  <br /> - Lancez le démarreur pendant 3 à 5 secondes.
+  <br /> - Le scanner doit afficher environ **200 à 250 tr/min**.
+  <br /> - S'il affiche **0 tr/min** ou que la valeur saute (0.. 150.. 0.. 500), votre capteur Point Mort Haut (PMH) est HS, ou son câblage est coupé.
+</TestStepCard>
+
+## Isoler : Essence ou Allumage ?
+
+Si le capteur PMH remonte bien 250 RPM, l'ECU sait que le moteur tourne. Pourquoi ne déclenche-t-il pas la combustion ?
+
+<DiagnosticTree symptom="Injection ou Étincelle ?">
+  <li>**Essence :** Vérifiez la pression. Sur une rampe à injection indirecte, branchez un manomètre (attendu : 3 à 4 bars). Sur un Common Rail diesel ou Injection Directe essence, lisez la "Pression de Rampe" à la valise. Si un diesel n'atteint pas au moins **250 bars** sous l'action du démarreur, le calculateur refusera d'ouvrir les injecteurs.</li>
+  <li>**Antidémarrage :** Lisez le paramètre "Antidémarrage / Immobilizer" dans la valise. S'il est sur "Actif" ou "Bloqué", c'est la clé ou la bague réceptrice qui est en cause, pas le moteur !</li>
+</DiagnosticTree>
+
+<ConfirmationBox>
+  Un test rapide sur les moteurs essence (injection indirecte) consiste à tapoter doucement sur le réservoir pendant qu'un collègue lance le démarreur. Si la pompe de gavage est grippée, la vibration peut la débloquer temporairement et le moteur va tousser. Cela confirme instantanément que la pompe est en fin de vie.
+</ConfirmationBox>

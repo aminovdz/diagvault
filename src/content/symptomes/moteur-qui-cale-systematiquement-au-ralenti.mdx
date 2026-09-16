@@ -1,0 +1,42 @@
+---
+title: "Moteur qui cale systématiquement au ralenti"
+description: "Votre moteur démarre puis cale dès que vous relâchez l'accélérateur ? Voici comment diagnostiquer l'actuateur de ralenti, les prises d'air et l'EGR."
+pillar: "diagnostic"
+category: "symptomes"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner", "machine_a_fumee"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Un moteur qui démarre correctement mais s'étouffe et cale dès qu'il retombe au ralenti souffre généralement d'un problème de gestion d'air. Au ralenti, le papillon des gaz est quasiment fermé, le moteur est donc extrêmement sensible à la moindre anomalie de flux.
+
+
+## Les Coupables Fréquents
+
+Si le moteur tient le ralenti quand vous gardez le pied légèrement sur l'accélérateur, l'allumage et la pression d'essence sont bons. Le problème est l'air.
+
+<DiagnosticTree symptom="Pourquoi l'air manque-t-il ou est-il faussé ?">
+  <li>**Le Papillon Encrassé :** Sur les véhicules récents (papillon motorisé), la crasse et la calamine autour du volet empêchent l'air minimum de passer. Le calculateur n'arrive pas à compenser assez vite.</li>
+  <li>**Prise d'air (Vacuum Leak) :** De l'air entre APRÈS le débitmètre (MAF). Le mélange devient extrêmement pauvre. L'ECU ne comprend pas pourquoi la sonde Lambda crie "Pauvre" alors que le papillon est fermé.</li>
+  <li>**Vanne EGR bloquée ouverte :** Les gaz d'échappement retournent dans l'admission. Au ralenti, cela étouffe l'explosion.</li>
+</DiagnosticTree>
+
+## La Méthode de Diagnostic
+
+<TestStepCard step={1} title="Test de la Vanne EGR et des Fuel Trims">
+  Branchez le scanner OBD.
+  <br /> - Si l'EGR est affichée "Ouverte" (ou à plus de 5%) alors que le moteur est au ralenti (ou tente de l'être), c'est votre panne.
+  <br /> - Regardez le **STFT (Short Term Fuel Trim)** juste avant que le moteur cale. S'il monte en flèche vers +20%, le calculateur détecte un excès d'air massif. 
+  <br /> - Branchez une **Machine à Fumée** sur l'admission (moteur éteint). Toute fuite de fumée indique une prise d'air (durite percée, joint de collecteur fendu).
+</TestStepCard>
+
+<ConfirmationBox>
+  Si le papillon est propre, sans prise d'air, et l'EGR fermée, faites un "Apprentissage du Papillon" (Throttle Body Alignment) avec la valise. Si la batterie a été débranchée récemment ou morte, l'ECU a pu perdre les valeurs d'adaptation de butée du ralenti.
+</ConfirmationBox>

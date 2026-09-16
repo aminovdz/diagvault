@@ -1,0 +1,50 @@
+---
+title: "Direction assistée qui devient dure ou intermittente"
+description: "Le volant est lourd ? Diagnostic des pompes hydrauliques (courroie/fuite) et des directions électriques EPS (capteur de couple, moteur, alimentation)."
+pillar: "diagnostic"
+category: "symptomes"
+system: "bcm"
+difficulty: "intermediaire"
+risk: "eleve"
+requiredTools: ["scanner", "multimetre"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Perdre la direction assistée en plein virage est extrêmement dangereux. Avant d'accuser la crémaillère de direction, il faut d'abord identifier le type d'assistance : est-elle Hydraulique (pompe entraînée par courroie), Électro-hydraulique (pompe électrique), ou 100% Électrique (EPS / Moteur sur la colonne) ?
+
+
+## Direction Hydraulique Classique (Liquide ATF)
+
+Si vous avez un bocal de liquide de direction assistée sous le capot.
+
+<TestStepCard step={1} title="Test visuel et mécanique">
+  Le problème est souvent mécanique.
+  <br /> - **Niveau de liquide :** S'il est vide, cherchez la fuite (souvent au niveau des soufflets de crémaillère). Ne rajoutez pas de liquide sans réparer.
+  <br /> - **Courroie d'accessoire :** Moteur tournant, vérifiez que la courroie entraîne bien la poulie de la pompe sans patiner ni crier.
+  <br /> - **La Pompe :** Si le niveau est bon et la courroie tendue, mais qu'aucun flux ne se fait ressentir en braquant, les ailettes internes de la pompe sont usées.
+</TestStepCard>
+
+## Direction 100% Électrique (EPS)
+
+Il n'y a plus de liquide. Un moteur électrique aide à tourner la colonne de direction.
+
+<DiagnosticTree symptom="Pannes électriques EPS">
+  <li>**Plus d'assistance du tout (Voyant Volant Rouge) :** Coupure d'alimentation de puissance (Maxi-Fusible 60A/80A) ou moteur électrique de colonne grillé.</li>
+  <li>**Le volant donne des "coups" ou tourne tout seul :** Le "Capteur d'angle de couple" (Torque Sensor) est désétalonné ou endommagé. Il croit que vous forcez sur le volant.</li>
+  <li>**Assistance faible uniquement au ralenti :** Problème d'alternateur ! La direction électrique consomme énormément de courant (jusqu'à 70 Ampères). Si l'alternateur est faible, le calculateur coupe la direction pour sauver la batterie.</li>
+</DiagnosticTree>
+
+<TestStepCard step={2} title="Analyse au Scanner (Module EPS)">
+  Lisez les codes défauts dans le calculateur de direction (EPS / Steering).
+  <br /> - **Code Capteur de Couple :** Tentez une "Calibration du capteur de couple" (Torque Sensor Calibration) via la valise. Les roues doivent être parfaitement droites et ne pas être touchées pendant l'opération.
+  <br /> - **Vérification de la vitesse (VSS) :** L'assistance varie selon la vitesse de la voiture. Si l'EPS ne reçoit pas l'information de vitesse (depuis l'ABS), il se met en mode sécurité (direction lourde). Vérifiez dans les Live Data que le module lit bien les km/h.
+</TestStepCard>
+
+<ConfirmationBox>
+  Un claquement sourd quand vous braquez à gauche et à droite à l'arrêt n'est généralement pas un problème d'assistance, mais un jeu mécanique dans les biellettes de direction ou les coupelles d'amortisseurs.
+</ConfirmationBox>

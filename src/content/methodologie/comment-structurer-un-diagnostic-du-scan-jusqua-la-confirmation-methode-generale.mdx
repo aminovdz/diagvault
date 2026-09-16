@@ -1,0 +1,56 @@
+---
+title: "Comment structurer un diagnostic (du scan jusqu'à la confirmation)"
+title_short: "La Méthode Générale de Diagnostic"
+description: "Arrêtez de changer des pièces au hasard. Appliquez ce protocole pro en 5 étapes pour trouver la panne de façon logique et rentable."
+pillar: "diagnostic"
+category: "methodologie"
+system: "ecu"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["scanner", "multimetre"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le diagnostic automobile n'est pas de la magie, c'est un processus éliminatoire strict. Les mécaniciens qui changent des pièces au hasard (Parts Cannon) finissent toujours par faire perdre du temps et de l'argent au client. Voici la méthode universelle, utilisée par les Master Techs, applicable à une Twingo de 1999 comme à une Tesla moderne.
+
+
+## Étape 1 : Vérifier la Plainte du Client
+
+Ne prenez jamais la plainte pour argent comptant. Le client dit : "Mon démarreur est mort". En réalité, le démarreur tourne, mais la courroie de distribution est cassée. 
+<br /> **Action :** Montez dans le véhicule et reproduisez le symptôme (bruit, voyant, calage). Si vous ne le constatez pas, vous ne pouvez pas le diagnostiquer.
+
+## Étape 2 : Le Scan Global (Health Check)
+
+Ne scannez pas que le calculateur moteur.
+<br /> **Action :** Lisez TOUS les calculateurs. Un défaut d'ABS ou un capteur d'angle de braquage défaillant (U-Codes) peut obliger l'ECU Moteur à brider sa puissance. Imprimez ou sauvegardez le rapport complet avant d'effacer quoi que ce soit. Notez quels codes sont Actifs, et lesquels sont Mémorisés/Historiques.
+
+<DiagnosticTree symptom="Étape 3 : Isoler le Système">
+  <li>Si vous avez un code P0301 (Raté d'allumage Cylindre 1) : Le système en cause est soit l'Allumage (Bougie/Bobine), soit l'Injection (Injecteur), soit la Mécanique (Compression/Soupape).</li>
+  <li>L'isolation consiste à exclure rapidement des pistes : Échangez la bobine 1 avec la bobine 2. Effacez le code et roulez. Si le code devient P0302 (Raté Cylindre 2), la panne a "suivi" la bobine. Le diagnostic est presque terminé. S'il reste en P0301, l'allumage est hors de cause !</li>
+</DiagnosticTree>
+
+## Étape 4 : Le Test Localisé (Pinpoint Test)
+
+C'est là que le vrai diagnostic commence, celui qui différencie un lecteur de codes d'un technicien.
+
+<TestStepCard step={4} title="Valider le composant et son circuit">
+  Le scanner accuse le capteur PMH ? 
+  <br /> - Ne le changez pas. Vérifiez d'abord si sa prise est bien enfoncée et propre.
+  <br /> - Utilisez le multimètre pour vérifier que le capteur reçoit bien son Alimentation (5V ou 12V) et sa Masse.
+  <br /> - Si l'alimentation manque, la panne est le faisceau. Si le capteur est bien alimenté mais que son fil de signal (vers l'ECU) reste mort à l'oscilloscope, ALORS le composant physique est HS.
+</TestStepCard>
+
+## Étape 5 : La Réparation et la Confirmation
+
+La confirmation est l'étape la plus négligée. Si vous avez réparé un court-circuit ou remplacé une pompe :
+
+<ConfirmationBox>
+  1. Effacez tous les codes défauts.
+  <br /> 2. Faites un "Apprentissage / Reset" de la pièce si nécessaire (très important pour les boîtiers papillon, débitmètres, et sondes lambda).
+  <br /> 3. Allez rouler en recréant LES MÊMES CONDITIONS que l'étape 1. Surveillez vos Live Data. Si la valeur reste dans la norme et que le code ne revient pas, la réparation est validée. Vous pouvez rendre la clé.
+</ConfirmationBox>

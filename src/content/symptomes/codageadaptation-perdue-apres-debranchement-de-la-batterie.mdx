@@ -1,0 +1,48 @@
+---
+title: "Codage ou adaptation perdue après débranchement de la batterie"
+description: "Vitres qui ne remontent plus, ralenti instable ou ESP allumé après un changement de batterie ? Comment refaire les apprentissages basiques (Throttle, SAS)."
+pillar: "diagnostic"
+category: "symptomes"
+system: "bcm"
+difficulty: "debutant"
+risk: "faible"
+requiredTools: ["scanner"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Débrancher une batterie sur un véhicule moderne n'est plus un acte anodin. De nombreux calculateurs perdent leur "mémoire volatile" (les valeurs d'adaptation qu'ils ont apprises au fil du temps). Il en résulte des comportements bizarres juste après le rebranchement.
+
+
+## Les "Pertes de Mémoire" Classiques
+
+Inutile de paniquer ou de chercher une panne physique. Ce sont simplement des calibrages à refaire.
+
+<DiagnosticTree symptom="Ce qui ne marche plus">
+  <li>**Les vitres ne remontent plus automatiquement (Anti-pincement) :** Le module de porte a oublié où se trouve la butée haute de la vitre.</li>
+  <li>**Le ralenti est instable ou le moteur cale :** L'ECU moteur a oublié la quantité de crasse accumulée sur le boîtier papillon. Il essaie d'utiliser les valeurs "Usine", mais le papillon est sale.</li>
+  <li>**Le voyant ESP / Angle de braquage s'allume :** Le calculateur ABS/ESP (ou la colonne de direction) a oublié où se trouve le point "Zéro" (volant droit).</li>
+</DiagnosticTree>
+
+## Comment refaire les Apprentissages
+
+<TestStepCard step={1} title="Apprentissage des Vitres (Sans Outil)">
+  Cette procédure fonctionne sur 95% des véhicules :
+  <br /> - Mettez le contact.
+  <br /> - Descendez la vitre à fond en gardant le bouton appuyé, maintenez 3 secondes en bas.
+  <br /> - Remontez la vitre à fond, maintenez le bouton tiré vers le haut pendant 3 secondes après la fermeture complète.
+  <br /> - Répétez pour chaque porte. La fonction impulsionnelle ("One Touch") doit refonctionner.
+</TestStepCard>
+
+<TestStepCard step={2} title="Capteur d'Angle de Braquage (SAS) et Boîtier Papillon">
+  **Pour l'Angle de Braquage :** Sur beaucoup de véhicules (comme le groupe VAG), démarrez le moteur, braquez le volant complètement à gauche (en butée), puis complètement à droite (en butée), puis ramenez-le au centre. Roulez à 15 km/h en ligne droite sur 20 mètres. Le voyant ESP devrait s'éteindre.
+  <br /> **Pour le Boîtier Papillon (Throttle Body Alignment) :** Branchez votre scanner. Allez dans Fonctions Spéciales / Adaptations dans l'ECU Moteur. Lancez la procédure d'apprentissage du papillon (le moteur ne doit pas tourner, juste le contact).
+</TestStepCard>
+
+<ConfirmationBox>
+  Si, malgré les apprentissages à la valise, le ralenti reste affreux, démontez physiquement la grosse durite d'air et nettoyez le volet papillon avec du nettoyant frein et un chiffon. Refaites l'adaptation ensuite.
+</ConfirmationBox>

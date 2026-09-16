@@ -1,0 +1,49 @@
+---
+title: "Dacia Duster — clé qui ne synchronise plus après changement de batterie"
+description: "Dacia ou Renault qui refuse de démarrer avec la clé (anti-démarrage actif) suite à une batterie déchargée ? Méthode de resynchronisation."
+pillar: "diagnostic"
+category: "casreels"
+system: "immo"
+difficulty: "debutant"
+risk: "moyen"
+requiredTools: ["scanner"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le client a laissé les phares allumés. Le lendemain, la batterie de son Dacia Duster 1.5 dCi est à 6 Volts. Il change la batterie, le démarreur tourne parfaitement, mais le petit voyant rouge d'antidémarrage au centre du tableau de bord clignote rapidement. La voiture refuse de démarrer.
+
+
+## L'UCH et la perte d'apprentissage
+
+Sur les systèmes Renault/Dacia classiques (clés à lame et UCH Continental/Johnson Controls), une chute de tension très lente (Under-voltage prolongé) est le pire ennemi de l'EEPROM de l'UCH.
+
+<DiagnosticTree symptom="Ce qui est perdu">
+  <li>L'UCH n'a pas "oublié" l'ID de la puce de la clé (Transpondeur PCF7936), car c'est gravé en mémoire morte.</li>
+  <li>Mais l'UCH a perdu la synchronisation "Code Tournant" (Rolling Code) entre la clé et le module de bague de lecture.</li>
+  <li>Résultat : il voit que c'est une clé Renault, mais il pense que c'est une copie non synchronisée.</li>
+</DiagnosticTree>
+
+<TestStepCard step={1} title="Test de la deuxième clé">
+  Demandez toujours au client s'il a le double.
+  <br /> - Si le double démarre la voiture, l'UCH va bien, c'est juste la clé principale qui est désynchronisée (fréquent si le client a appuyé sur le bouton d'ouverture 100 fois dans le vide pendant que la batterie était à plat).
+  <br /> - Si AUCUNE des deux clés ne fonctionne, c'est l'UCH qui a "sauté" (Data corruption).
+</TestStepCard>
+
+## La procédure de "Resync" ou ré-apprentissage
+
+<TestStepCard step={2} title="Effacement et Réapprentissage (Valise)">
+  Inutile d'essayer les vieilles astuces de forum (rester appuyé 10s sur le bouton d'ouverture). Sur ces générations (Phase 2), il faut un outil.
+  <br /> - Branchez le scanner, entrez dans l'UCH, fonction **Antidémarrage / Clés**.
+  <br /> - Le code défaut "Code Clé non reconnu" (B100B) sera présent.
+  <br /> - Lancez la fonction "Apprentissage Clé". Le scanner va se connecter (il faut souvent internet pour extraire le Pin Code Renault, ou l'outil le calcule en direct).
+  <br /> - Re-passez les clés dans le neiman selon les instructions de l'outil.
+</TestStepCard>
+
+<ConfirmationBox>
+  Dans ce cas précis, la reprogrammation des clés a fonctionné du premier coup, preuve que la puce n'était pas morte. S'il y a un message d'erreur "Clé déjà allouée" ou "Code Pin erroné", cela signifie que l'EEPROM de l'UCH est corrompu (Dumping EEPROM et réparation au programmateur nécessaires, type Renolink).
+</ConfirmationBox>

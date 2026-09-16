@@ -94,6 +94,7 @@ export const collections = {
   marques: defineCollection({ loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/marques" }), schema: articleSchema }),
   casreels: defineCollection({ loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/casreels" }), schema: articleSchema }),
   symptomes: defineCollection({ loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/symptomes" }), schema: articleSchema }),
+  methodologie: defineCollection({ loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/methodologie" }), schema: articleSchema }),
   outils: defineCollection({ loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/outils" }), schema: toolSchema }),
   comparatifs: defineCollection({ loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/comparatifs" }), schema: comparisonSchema }),
 };

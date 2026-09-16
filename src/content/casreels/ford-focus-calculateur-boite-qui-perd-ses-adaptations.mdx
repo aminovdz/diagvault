@@ -1,0 +1,51 @@
+---
+title: "Ford Focus — calculateur boîte qui perd ses adaptations"
+description: "Boîte Powershift (DPS6) qui patine ou broute ? Erreurs de perte d'apprentissage des fourchettes. Cas réel de batterie faible affectant le TCM."
+pillar: "diagnostic"
+category: "casreels"
+system: "transmission"
+difficulty: "avance"
+risk: "eleve"
+requiredTools: ["scanner", "multimetre"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Une Ford Focus (Mk3) 1.6 Ti-VCT équipée de la tristement célèbre boîte automatique à double embrayage à sec PowerShift (DPS6) arrive avec un broutage violent au démarrage et des passages de vitesses sautés (la 2, la 4 et la 6 ne passent pas). Le client précise que le problème apparaît surtout le matin.
+
+
+## L'analyse TCM
+
+La boîte DPS6 (6DCT250) gère ses passages de vitesses via deux actionneurs électriques (qui remplacent le pied gauche du conducteur) et deux moteurs pour les fourchettes (qui remplacent le levier de vitesse). 
+
+<TestStepCard step={1} title="Lecture des codes défauts">
+  Le scanner révèle :
+  <br /> - **P07A5 :** Élément de friction de la transmission B - Performances ou coincé.
+  <br /> - **P2832 :** Fourchette de passage de rapport "A" - Circuit de contrôle.
+  <br /> - **P090C :** Tension basse du circuit de l'actionneur d'embrayage.
+</TestStepCard>
+
+## Le piège de la tension "Low Voltage"
+
+Beaucoup de garages remplaceraient immédiatement les moteurs d'embrayage ou le TCM entier. 
+
+<DiagnosticTree symptom="Tension d'alimentation du TCM">
+  <li>L'erreur P090C indique une tension basse. Les moteurs de fourchette (Shift Motors) consomment plus de 30 Ampères lors des changements de rapports.</li>
+  <li>Le problème apparaît "surtout le matin" au premier démarrage.</li>
+  <li>L'ECU moteur peut compenser une batterie faible pour le démarrage, mais le TCM (calculateur de boîte) est extrêmement sensible à la chute de tension (Voltage Drop) sous les 10 Volts.</li>
+</DiagnosticTree>
+
+<TestStepCard step={2} title="Le test du point de masse (G104)">
+  Sur ces Ford Focus, la masse principale du TCM (G104) est vissée sur la cloche de boîte, souvent peinte d'usine, ce qui crée une mauvaise conductivité au fil du temps (corrosion galvanique).
+  <br /> - **Test de chute de tension :** Multimètre en Volts DC, une pointe sur le pôle négatif de la batterie, une pointe sur la carcasse métallique du TCM. Actionnez une procédure de test des embrayages via le scanner.
+  <br /> - Si vous lisez plus de 0.5V, la masse est mauvaise.
+  <br /> - **Solution :** Dévissez la masse TCM. Poncez la peinture sur la cloche de boîte pour mettre le métal à nu. Nettoyez la cosse. Resserrez fermement et protégez avec de la graisse cuivrée.
+</TestStepCard>
+
+<ConfirmationBox>
+  Après avoir corrigé la masse (et/ou remplacé une batterie vieille de 6 ans qui chutait à 9V au démarrage), vous DEVEZ refaire la procédure "TCM Adaptive Learning" (Apprentissage adaptatif complet : embrayages et fourchettes) avec le scanner. Sans cet apprentissage, la boîte continuera de brouter horriblement.
+</ConfirmationBox>

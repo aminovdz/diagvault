@@ -1,0 +1,53 @@
+---
+title: "À-coups à l'accélération, tous types de motorisation"
+description: "Diagnostic des à-coups moteur (Misfires/Ratés d'allumage) : bobines, bougies, injecteurs, faisceaux ou prise d'air. Méthode pour essence et diesel."
+pillar: "diagnostic"
+category: "symptomes"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "moyen"
+requiredTools: ["scanner", "multimetre", "oscilloscope"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Les à-coups à l'accélération (communément appelés ratés de combustion ou "misfires") se produisent lorsqu'un ou plusieurs cylindres ne fournissent pas leur puissance au bon moment. Sur un moteur essence, c'est presque toujours un problème d'allumage. Sur un diesel, c'est l'injection ou l'air.
+
+
+## Identifier le Cylindre Fautif
+
+Avant de changer quoi que ce soit, vous devez savoir quel cylindre pose problème. Si vous changez 4 bougies alors que c'était l'injecteur n°2, vous perdez votre temps.
+
+<DiagnosticTree symptom="Lecture des codes (DTC)">
+  <li>**P0300 (Ratés aléatoires) :** Le problème touche plusieurs cylindres. Cherchez une cause commune : Pression d'essence trop faible, prise d'air (Vacuum Leak), ou capteur PMH défaillant.</li>
+  <li>**P030X (ex: P0301, P0304) :** Le problème est isolé sur le cylindre X (1 ou 4). La cause est spécifique à ce cylindre : Bobine, Bougie, Injecteur, ou Soupape grillée.</li>
+</DiagnosticTree>
+
+## La Méthode de la Permutation (Essence)
+
+<TestStepCard step={1} title="Permutation des composants (Swap Test)">
+  Si votre valise indique "P0302" (Raté Cylindre 2) :
+  <br /> - Effacez les codes défauts.
+  <br /> - Prenez la bobine du cylindre 2 et mettez-la sur le cylindre 3.
+  <br /> - Prenez la bougie du cylindre 2 et mettez-la sur le cylindre 1.
+  <br /> - Allez rouler jusqu'à provoquer les à-coups et relisez les codes.
+  <br /> - Si le code devient P0303, la **bobine** est morte. Si c'est P0301, la **bougie** est HS. Si le code reste P0302, c'est soit l'injecteur n°2, soit le faisceau, soit un problème de compression.
+</TestStepCard>
+
+## Cas du Moteur Diesel (ou si la permutation ne donne rien)
+
+Sur un diesel, il n'y a pas de bobine. Un à-coup est souvent lié à un injecteur qui grippe ou une vanne EGR qui s'ouvre brutalement.
+
+<TestStepCard step={2} title="Correction des injecteurs (Live Data)">
+  Branchez le scanner et affichez la valeur "Correction de débit d'injection" (Injection Quantity Deviation) pour chaque cylindre au ralenti puis en accélérant.
+  <br /> - La valeur normale est autour de 0 mg/coup (généralement entre -1.0 et +1.0).
+  <br /> - Si un injecteur affiche **+3.0 ou plus**, l'ECU essaie de compenser un cylindre faible. Cet injecteur (ou ce cylindre) est probablement défaillant.
+</TestStepCard>
+
+<ConfirmationBox>
+  Si toutes les pièces (bobine, bougie, injecteur) ont été interverties et que le défaut reste obstinément sur le même cylindre (ex: Cylindre 2), le problème est mécanique. Prenez les compressions. Une soupape fêlée ou un joint de culasse claqué entre deux cylindres provoquera un raté permanent impossible à corriger électroniquement.
+</ConfirmationBox>

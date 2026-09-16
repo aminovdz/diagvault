@@ -1,0 +1,48 @@
+---
+title: "Audi Q5 — défaut CAN après remplacement d'un rétroviseur électrique"
+description: "Plus de vitres électriques et voyant batterie allumé après avoir réparé un rétro arraché ? Explication de l'architecture LIN-Bus des portes Audi/VW."
+pillar: "diagnostic"
+category: "casreels"
+system: "bcm"
+difficulty: "intermediaire"
+risk: "moyen"
+requiredTools: ["scanner", "multimetre"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Un Audi Q5 a eu le rétroviseur gauche arraché par un camion. Un carrossier l'a remplacé par une pièce d'occasion. Depuis, le tableau de bord affiche "Problème gestion énergie", les lève-vitres sont lents, et la porte droite ne se verrouille plus.
+
+
+## L'architecture LIN-Bus des portières VAG
+
+Dans le groupe Volkswagen/Audi, le module de porte conducteur (J386) est un module "Maître" sur le réseau CAN. Les autres portes et les rétroviseurs sont des "Esclaves" qui communiquent via un fil unique : le réseau LIN (Local Interconnect Network).
+
+<DiagnosticTree symptom="Ce que provoque un LIN en court-circuit">
+  <li>Si le réseau LIN est mis à la masse (court-circuit), le module Maître ne peut plus parler à personne.</li>
+  <li>Le module de porte bloque certaines fonctions pour se protéger.</li>
+  <li>Le module de gestion d'énergie (Gateway) détecte une anomalie de consommation et coupe les gros consommateurs de confort.</li>
+</DiagnosticTree>
+
+<TestStepCard step={1} title="Lecture des erreurs VCDS">
+  Branchez VCDS, allez dans [42 - Porte Conducteur].
+  <br /> - Code affiché : **01331 - Door Control Module; Driver Side (J386) / 004 - No Signal/Communication (Intermittent)**.
+  <br /> - Ou un code indiquant un défaut sur le "LIN Databus".
+</TestStepCard>
+
+## Le piège du rétroviseur "incompatible"
+
+<TestStepCard step={2} title="Analyse de la pièce de remplacement">
+  Le carrossier a pris un rétroviseur de Q5 à la casse. Physiquement, c'est le même. Électriquement, non.
+  <br /> - Le véhicule d'origine possédait un rétroviseur "basique" (réglage + dégivrage), qui n'est que du filaire (analogue).
+  <br /> - Le rétroviseur de la casse provient d'un Q5 full options (rabattable électriquement, mémoire de position, Side Assist). Ce rétro possède un **module électronique intégré** qui attend un signal LIN !
+  <br /> - En branchant cette prise (qui rentre parfaitement), le pin "Alimentation" a envoyé du 12V directement dans la ligne LIN du module de porte, plantant totalement le réseau.
+</TestStepCard>
+
+<ConfirmationBox>
+  La réparation est simple : on a débranché le nouveau rétroviseur. Le réseau LIN est revenu, les vitres et portes ont refonctionné. Le carrossier a dû commander la référence EXACTE du rétroviseur, en vérifiant les codes PR d'équipement VAG (ex: 6XD = réglable/dégivrant sans mémoire). 
+</ConfirmationBox>

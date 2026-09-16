@@ -1,0 +1,51 @@
+---
+title: "Comment diagnostiquer une panne intermittente non reproductible en atelier"
+title_short: "Panne non reproductible"
+description: "Bug rare ('une fois par mois') et scanner à Zéro Défaut ? Les techniques d'investigation pour ne pas rendre le véhicule avec la mention RAS."
+pillar: "diagnostic"
+category: "methodologie"
+system: "bcm"
+difficulty: "avance"
+risk: "faible"
+requiredTools: ["scanner", "outil_diag_constructeur"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+"Je vous jure, hier le tableau de bord est devenu noir et la direction est devenue très dure pendant 5 secondes !". Vous avez roulé avec la voiture pendant 1 heure, vous l'avez scannée, et... rien. Tout est parfait. Rendre le véhicule avec la mention "Panne non constatée" est un échec professionnel. Voici comment mener l'enquête.
+
+
+## L'interrogatoire du client (La clé du mystère)
+
+Une panne n'est jamais "aléatoire". Elle répond à des conditions environnementales précises que le client ne réalise pas toujours.
+
+<TestStepCard step={1} title="Les bonnes questions à poser">
+  Posez un cadre strict. Le client doit se souvenir des détails :
+  <br /> - **Météo :** Pleuvait-il ? (Infiltration d'eau BCM). Faisait-il 35°C ? (Relais ou ECU qui surchauffe et dilate ses soudures).
+  <br /> - **Topographie :** Sur un dos d'âne ? Dans un virage serré à gauche ? (Faisceau qui frotte contre la colonne de direction, capteur ABS arraché).
+  <br /> - **Accessoires :** Est-ce que la clim ou les essuie-glaces étaient allumés à ce moment précis ? (Appel de courant massif faisant chuter le Voltage d'une masse oxydée).
+</TestStepCard>
+
+## Fouiller les mémoires fantômes
+
+Si le scanner générique OBD2 dit "Pas de codes", c'est qu'il ne cherche qu'au mauvais endroit (l'ECU Moteur).
+
+<DiagnosticTree symptom="Où chercher les preuves invisibles ?">
+  <li>**Les Codes Historiques / Mémorisés :** Allez dans tous les calculateurs annexes (Radio, ABS, Climatisation, Portières). Même si le voyant moteur est éteint, le module de la porte conducteur a peut-être enregistré `U0100 - Perte de com. BCM - Il y a 35 cycles de démarrage`.</li>
+  <li>**Le Freeze Frame Data (Données Gelées) :** Si vous trouvez un code mémorisé, regardez son Freeze Frame. Il vous dira exactement ce que faisait la voiture (Vitesse, Température, Tr/min) à la seconde exacte où le code est apparu il y a 2 mois.</li>
+  <li>**Bulletins de Service (TSB) :** Tapez le modèle et l'année + le symptôme dans une base de données pro (Alldata, Autodata). Si 500 autres clients dans le monde ont eu cette "direction qui coupe 5 secondes", le constructeur a publié un correctif (souvent une mise à jour logicielle de l'EPS).</li>
+</DiagnosticTree>
+
+<TestStepCard step={2} title="L'Inspection Visuelle Ciblée">
+  Si tout semble parfait, vous devez chercher des défauts de conception connus.
+  <br /> - Ouvrez le capot, regardez les cosses de batterie. Sont-elles serrées à la main ? L'alternateur a-t-il des traces d'huile dessus (fuite fuyant pile sur le régulateur de tension) ?
+  <br /> - Regardez sous les tapis passager et conducteur. Sentez l'humidité. Une moquette mouillée indique une fuite de radiateur de chauffage ou d'évacuation de baie de pare-brise, noyant le BCM ou les faisceaux de plancher.
+</TestStepCard>
+
+<ConfirmationBox>
+  Si vous ne trouvez absolument aucune preuve physique et que le défaut est introuvable, proposez au client de lui prêter un petit "Flight Recorder" OBD (petit boîtier d'enregistrement de type CRecorder) qu'il garde branché. Lorsqu'il vivra le bug, il appuiera sur le bouton, et vous aurez la capture complète de la panne.
+</ConfirmationBox>

@@ -1,0 +1,54 @@
+---
+title: "Comment diagnostiquer un actionneur qui répond mal à un Active Test"
+title_short: "Diagnostic d'un actionneur (Active Test)"
+description: "Test Actionneur (valise) : le clapet ou la vanne ne bouge pas ? Comment savoir si l'ECU est grillé ou si le moteur électrique est simplement coincé."
+pillar: "diagnostic"
+category: "methodologie"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner", "multimetre", "alimentation_labo"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+L'Active Test (ou Test Actionneur) est la fonction la plus puissante d'un outil de diagnostic bidirectionnel. Il permet de contourner les capteurs et de donner un ordre direct à l'ECU : "Allume ce ventilateur" ou "Ouvre cette vanne EGR à 50%". Mais que faire quand l'actionneur ne réagit pas ?
+
+
+## Actionneur vs Calculateur vs Faisceau
+
+Si le ventilateur ne tourne pas pendant le test, vous avez 3 coupables possibles :
+1. L'ECU n'envoie pas le courant (Driver de puissance interne grillé).
+2. Le fil entre l'ECU et le ventilateur est coupé.
+3. Le moteur électrique du ventilateur est mort.
+
+<TestStepCard step={1} title="Test de la Commande (Le multimètre en parallèle)">
+  Laissez l'actionneur branché.
+  <br /> - Piquez par l'arrière de la prise (Backprobe) sur les deux fils d'alimentation de l'actionneur.
+  <br /> - Branchez votre multimètre en mode Volts.
+  <br /> - Lancez le test actionneur à la valise.
+  <br /> - **Si le multimètre affiche 12V (ou un signal PWM oscillant) :** L'ECU fait parfaitement son travail. Le faisceau est intact. C'est l'actionneur (le ventilateur, la vanne) qui est mort mécaniquement ou électriquement.
+</TestStepCard>
+
+## Remplacer la valise par vous-même (By-pass)
+
+<DiagnosticTree symptom="Si le multimètre affiche 0V pendant le test">
+  <li>Le fil de commande est coupé entre l'ECU et la prise de l'actionneur.</li>
+  <li>L'alimentation principale de l'actionneur manque (fusible grillé, relais HS). *Note: L'ECU commande souvent par la masse (Ground Side Switch), le 12V doit donc être présent en permanence dès le contact.*</li>
+  <li>L'ECU est endommagé en interne (Transistor/Mosfet grillé).</li>
+</DiagnosticTree>
+
+<TestStepCard step={2} title="Alimentation en direct (Power Probe ou Labo)">
+  L'ECU ne commande pas ? Commandez vous-même !
+  <br /> - Débranchez la prise de l'actionneur (pour protéger l'ECU).
+  <br /> - Avec des câbles volants, envoyez 12V et une Masse directement dans les broches du composant (Attention au sens de polarité si c'est un moteur DC !).
+  <br /> - **S'il s'active avec un "CLAC" franc :** L'actionneur fonctionne parfaitement. Vous venez de prouver que la panne se situe en amont (Faisceau ou ECU).
+</TestStepCard>
+
+<ConfirmationBox>
+  Certains actionneurs motorisés (Papillon, Vanne EGR électrique) nécessitent un signal complexe (PWM - Modulation de largeur d'impulsion) et non un simple 12V continu, sous peine de les faire fondre. Pour ces composants, l'oscilloscope est indispensable pour "voir" l'onde carrée de commande envoyée par l'ECU pendant l'Active Test.
+</ConfirmationBox>

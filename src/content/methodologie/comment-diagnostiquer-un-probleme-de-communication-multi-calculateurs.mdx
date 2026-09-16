@@ -1,0 +1,53 @@
+---
+title: "Comment diagnostiquer un problème de communication multi-calculateurs"
+title_short: "Com. multi-calculateurs (Réseau planté)"
+description: "ECU, ABS, et Boîte en panne en même temps ? Méthodologie pour lire le Topology Map, comprendre l'architecture Gateway et trouver le nœud corrompu."
+pillar: "diagnostic"
+category: "methodologie"
+system: "can"
+difficulty: "avance"
+risk: "eleve"
+requiredTools: ["scanner", "oscilloscope"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Lorsque vous branchez le scanner et que 5 calculateurs différents (ABS, Moteur, Airbag, Boîte Auto, Angle de braquage) sont remplis de codes en rouge indiquant `Perte de communication avec [Module X]`, il est facile de paniquer.
+
+
+## L'Architecture "Topology" (La carte du réseau)
+
+Les calculateurs ne sont pas tous branchés sur le même fil. Ils sont répartis en "sous-réseaux" (High Speed CAN pour le moteur, Low Speed CAN pour le confort, LIN pour les petits accessoires), reliés par un "Gateway" (Passerelle).
+
+<TestStepCard step={1} title="Lire le Topology Map">
+  Si votre scanner propose la vue "Topologie" (comme Autel, Launch, ou ODIS) :
+  <br /> - Regardez visuellement quel "tronçon" du réseau est en rouge (Modules injoignables).
+  <br /> - **Si un seul module est rouge :** C'est ce module qui est débranché, grillé, ou a perdu son alimentation/masse.
+  <br /> - **Si TOUTE une ligne est rouge (ex: tout le réseau HS-CAN) :** La ligne physique est en court-circuit, OU un des modules de cette ligne crache des parasites et bloque les autres.
+  <br /> - **Si TOUTE la carte est rouge (aucun réseau ne marche) :** Le Gateway principal (souvent le BCM/BSI) est mort ou sans alimentation, empêchant le scanner de router ses requêtes.
+</TestStepCard>
+
+<DiagnosticTree symptom="Qui est la vraie victime ?">
+  <li>Si le calculateur Moteur affiche "Perte de com avec ABS".</li>
+  <li>Si le calculateur Boîte affiche "Perte de com avec ABS".</li>
+  <li>Si le calculateur Airbag affiche "Perte de com avec ABS".</li>
+  <li>**Conclusion :** C'est l'ABS qui est en panne ! Tous les autres se plaignent qu'il ne répond plus à l'appel.</li>
+</DiagnosticTree>
+
+## Le Module Parasite (Jabbering Node)
+
+Parfois, le réseau n'est pas coupé électriquement, mais un calculateur a un bug logiciel sévère. Il envoie des trames (messages) en continu et sature la bande passante du réseau à 100%. Les autres modules ne peuvent plus placer un mot.
+
+<TestStepCard step={2} title="Débrancher pour voir qui revit">
+  - Regardez l'oscillogramme du réseau (CAN-H et CAN-L). Au lieu de belles trames carrées et d'espaces vides, l'écran est un mur de signaux denses et déformés.
+  <br /> - Allez débrancher physiquement les modules les plus exposés aux infiltrations d'eau ou aux chocs (Module Radar avant, Capteurs d'angle morts dans le pare-choc arrière, ABS, Calculateur de pompe AdBlue sous le châssis).
+  <br /> - Remettez le contact et relancez le scan à chaque débranchement. Dès que le réseau revit et que les autres communiquent à nouveau, le module parasite est trouvé.
+</TestStepCard>
+
+<ConfirmationBox>
+  Faites très attention avec l'eau. Une simple infiltration d'eau dans le connecteur d'un radar de recul ou d'une caméra de pare-brise peut mettre en court-circuit les pins CAN. L'eau conduit l'électricité, met la ligne à la masse, et fait tomber toute la branche confort du véhicule. Soufflez les prises à l'air comprimé !
+</ConfirmationBox>

@@ -1,0 +1,50 @@
+---
+title: "Comment diagnostiquer une panne avant une programmation ECU"
+title_short: "Le diagnostic pré-programmation"
+description: "Faire un Off Immo, une reprog EGR ou DPF ne répare pas la mécanique. La checklist de diagnostic absolue avant d'accepter un véhicule en programmation."
+pillar: "diagnostic"
+category: "methodologie"
+system: "ecu"
+difficulty: "intermediaire"
+risk: "eleve"
+requiredTools: ["scanner", "oscilloscope"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+"Bonjour, mon turbo siffle et ma voiture fume noir. Pouvez-vous me faire un EGR Off et un Stage 1 pour régler le problème ?" 
+La réponse d'un bon programmateur doit être un **NON** catégorique. Une reprogrammation d'ECU modifie le logiciel. Elle ne réparera jamais une durite percée, un turbo mort ou un capteur en court-circuit.
+
+
+## La Règle d'Or : On ne programme qu'un moteur sain
+
+Injecter un fichier modifié (Stage 1, DPF Off) dans une voiture en panne ne fera que masquer les symptômes ou aggraver les dégâts mécaniques. Le diagnostic pré-reprogrammation (Pre-Tune Inspection) est obligatoire pour protéger le moteur du client, et votre responsabilité.
+
+<DiagnosticTree symptom="Ce qu'une programmation NE PEUT PAS réparer">
+  <li>**EGR Off sur une vanne coincée ouverte :** Si la soupape mécanique est bloquée par la calamine en position ouverte, la désactiver dans le logiciel éteindra le voyant, mais l'air d'échappement continuera d'étouffer le moteur. Il faut mettre une plaque d'obturation physique en plus de la programmation.</li>
+  <li>**FAP Off sur un FAP totalement bouché :** Désactiver les régénérations ne videra pas la céramique bouchée. La contre-pression fera exploser le turbo. Le FAP doit être physiquement vidé (Défap).</li>
+  <li>**Immo Off sur un faisceau coupé :** Si l'ECU n'est pas alimenté électriquement à cause d'un faisceau coupé, l'Immo Off ne servira à rien. L'ECU restera éteint.</li>
+</DiagnosticTree>
+
+<TestStepCard step={1} title="Le Scan Global et les Logs Dynamiques">
+  Avant de toucher à la prise OBD avec votre KESS, Autotuner ou Flex :
+  <br /> - Faites un Autoscan complet de TOUS les calculateurs. Sauvegardez le rapport PDF. C'est votre preuve de l'état d'arrivée du véhicule (S'il y avait un défaut ABS avant votre reprog moteur, le client ne pourra pas vous accuser).
+  <br /> - Effacez tous les codes moteur.
+  <br /> - Allez rouler en enregistrant les Live Data (Pression Turbo, Débitmètre, Corrections Injecteurs, Pression Rail).
+</TestStepCard>
+
+## Les paramètres bloquants (No-Go)
+
+<TestStepCard step={2} title="Analyse des tolérances">
+  Vérifiez les corrections d'injecteurs (Injector Balance Rates). 
+  <br /> - Si un injecteur compense à **+3.0 mg/coup**, il est encrassé ou fatigué. Lui demander d'injecter 20% de carburant supplémentaire (Stage 1) le fera fondre le piston.
+  <br /> - Pression turbo : Si elle met 3 secondes à atteindre la consigne d'origine (lag), la géométrie variable est grippée ou il y a une fuite. Un Stage 1 demandant +0.3 Bar ne sera jamais atteint et le turbo cassera.
+</TestStepCard>
+
+<ConfirmationBox>
+  Un bon Chiptuner est avant tout un excellent Diagnosticien. Refusez toujours une modification logicielle si la base matérielle n'est pas parfaite. Réparez (ou faites réparer) la fuite de suralimentation, remplacez l'injecteur faible, FAITES PAYER LE DIAGNOSTIC, et seulement après, procédez à la reprogrammation.
+</ConfirmationBox>

@@ -4,12 +4,13 @@ import { getCollection } from 'astro:content';
 
 // Fetch a few articles to display on the homepage
 const symptomes = await getCollection('symptomes');
+const methodologie = await getCollection('methodologie');
 const casreels = await getCollection('casreels');
 const capteurs = await getCollection('capteurs');
 const electricite = await getCollection('electricite');
 const actionneurs = await getCollection('actionneurs');
 
-const allArticles = [...symptomes, ...casreels, ...capteurs, ...electricite, ...actionneurs]
+const allArticles = [...symptomes, ...casreels, ...methodologie, ...capteurs, ...electricite, ...actionneurs]
   .sort((a, b) => new Date(b.data.published_date || 0).getTime() - new Date(a.data.published_date || 0).getTime())
   .slice(0, 8); // get latest 8
 ---
@@ -25,12 +26,12 @@ const allArticles = [...symptomes, ...casreels, ...capteurs, ...electricite, ...
       <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent-diagnostic to-blue-400">Pas au Hasard.</span>
     </h1>
     <p class="text-xl text-slate-400 mb-10">
-      Ne remplacez pas une pièce simplement parce que le scanner indique un défaut. Mesurez, testez et confirmez grâce à nos procédures étape par étape.
+      L'outil de référence pour les professionnels. Diagnostics pas-à-pas, Live Data, et contrôles électriques pour trouver la vraie panne.
     </p>
     
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
       <form action="/recherche" class="relative max-w-md w-full">
-        <input name="q" type="text" placeholder="Rechercher un symptôme, un code, un capteur..." class="w-full bg-surface border border-slate-700 rounded-lg py-3 px-5 text-white focus:outline-none focus:border-accent-diagnostic focus:ring-1 focus:ring-accent-diagnostic transition-all" />
+        <input name="q" type="text" placeholder="Ex: P0301, Capteur PMH, U0100..." class="w-full bg-surface border border-slate-700 rounded-lg py-3 px-5 text-white focus:outline-none focus:border-accent-diagnostic focus:ring-1 focus:ring-accent-diagnostic transition-all" />
         <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-accent-diagnostic">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         </button>
@@ -38,11 +39,122 @@ const allArticles = [...symptomes, ...casreels, ...capteurs, ...electricite, ...
     </div>
   </section>
 
-  <!-- NOUVEAUX GUIDES SECTION (Dynamic) -->
+  <!-- NOUVELLE SECTION : Quel est votre problème ? (Parcours Symptôme) -->
+  <section class="py-12 border-t border-slate-800">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-2xl md:text-3xl font-heading font-bold text-white mb-6 flex items-center gap-3">
+        <span>🔎</span> Quel est votre problème ?
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <a href="/diagnostic/symptomes/panne-moteur-ne-demarre-pas-diagnostic-generique-toutes-marques" class="flex items-center gap-3 p-4 bg-slate-800/50 hover:bg-slate-800 rounded-lg border border-slate-700 hover:border-accent-diagnostic transition-colors">
+          <span class="text-accent-diagnostic text-xl">⚡</span>
+          <span class="text-slate-200 font-medium">La voiture ne démarre pas</span>
+        </a>
+        <a href="/diagnostic/symptomes/moteur-qui-cale-systematiquement-au-ralenti" class="flex items-center gap-3 p-4 bg-slate-800/50 hover:bg-slate-800 rounded-lg border border-slate-700 hover:border-accent-diagnostic transition-colors">
+          <span class="text-accent-diagnostic text-xl">🛑</span>
+          <span class="text-slate-200 font-medium">Le moteur cale au ralenti</span>
+        </a>
+        <a href="/diagnostic/methodologie/comment-diagnostiquer-une-perte-de-puissance-sans-se-tromper-de-piste" class="flex items-center gap-3 p-4 bg-slate-800/50 hover:bg-slate-800 rounded-lg border border-slate-700 hover:border-accent-diagnostic transition-colors">
+          <span class="text-accent-diagnostic text-xl">🐢</span>
+          <span class="text-slate-200 font-medium">Perte de puissance</span>
+        </a>
+        <a href="/diagnostic/symptomes/voyant-moteur-sans-perte-performance" class="flex items-center gap-3 p-4 bg-slate-800/50 hover:bg-slate-800 rounded-lg border border-slate-700 hover:border-accent-diagnostic transition-colors">
+          <span class="text-accent-diagnostic text-xl">🚨</span>
+          <span class="text-slate-200 font-medium">Voyant Moteur allumé</span>
+        </a>
+        <a href="/diagnostic/methodologie/comment-diagnostiquer-un-ecu-inaccessible-avant-de-le-remplacer" class="flex items-center gap-3 p-4 bg-slate-800/50 hover:bg-slate-800 rounded-lg border border-slate-700 hover:border-accent-diagnostic transition-colors">
+          <span class="text-accent-diagnostic text-xl">💻</span>
+          <span class="text-slate-200 font-medium">ECU Inaccessible</span>
+        </a>
+        <a href="/diagnostic/methodologie/comment-diagnostiquer-un-defaut-can-bus-etape-par-etape" class="flex items-center gap-3 p-4 bg-slate-800/50 hover:bg-slate-800 rounded-lg border border-slate-700 hover:border-accent-diagnostic transition-colors">
+          <span class="text-accent-diagnostic text-xl">📡</span>
+          <span class="text-slate-200 font-medium">Plusieurs calculateurs absents (CAN)</span>
+        </a>
+        <a href="/diagnostic/methodologie/comment-diagnostiquer-une-consommation-parasite-de-batterie" class="flex items-center gap-3 p-4 bg-slate-800/50 hover:bg-slate-800 rounded-lg border border-slate-700 hover:border-accent-diagnostic transition-colors">
+          <span class="text-accent-diagnostic text-xl">🔋</span>
+          <span class="text-slate-200 font-medium">La batterie se décharge</span>
+        </a>
+        <a href="/diagnostic/symptomes/moteur-broute-a-chaud" class="flex items-center gap-3 p-4 bg-slate-800/50 hover:bg-slate-800 rounded-lg border border-slate-700 hover:border-accent-diagnostic transition-colors">
+          <span class="text-accent-diagnostic text-xl">💥</span>
+          <span class="text-slate-200 font-medium">Ratés moteur / Broutements</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Piliers Section (12 Catégories) -->
+  <section class="py-12 border-t border-slate-800">
+    <h2 class="text-2xl md:text-3xl font-heading font-bold text-white mb-8 text-center">Les 12 Hubs Techniques</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-7xl mx-auto">
+      
+      <a href="/diagnostic/symptomes" class="group block p-6 bg-surface border border-slate-800 rounded-xl hover:border-accent-diagnostic transition-colors shadow-sm">
+        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-accent-diagnostic transition-colors flex items-center gap-2"><span>🔍</span> Diagnostic</h3>
+        <p class="text-sm text-slate-400">Diagnostic par symptômes (calage, broutement, pertes de puissance).</p>
+      </a>
+
+      <a href="/diagnostic/methodologie" class="group block p-6 bg-surface border border-slate-800 rounded-xl hover:border-accent-diagnostic transition-colors shadow-sm">
+        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-accent-diagnostic transition-colors flex items-center gap-2"><span>🧪</span> Guides de Test</h3>
+        <p class="text-sm text-slate-400">Comment tester un PMH, un relais, un actionneur, une masse ECU.</p>
+      </a>
+
+      <a href="/diagnostic/livedata" class="group block p-6 bg-surface border border-slate-800 rounded-xl hover:border-accent-diagnostic transition-colors shadow-sm">
+        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-accent-diagnostic transition-colors flex items-center gap-2"><span>📊</span> Live Data</h3>
+        <p class="text-sm text-slate-400">Interpréter STFT/LTFT, MAF, MAP, pressions et corrections d'injecteurs.</p>
+      </a>
+
+      <a href="/diagnostic/electricite" class="group block p-6 bg-surface border border-slate-800 rounded-xl hover:border-accent-diagnostic transition-colors shadow-sm">
+        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-accent-diagnostic transition-colors flex items-center gap-2"><span>🔌</span> Électricité & Faisceaux</h3>
+        <p class="text-sm text-slate-400">Voltage drop, chutes de tension, masses et défauts d'alimentation.</p>
+      </a>
+
+      <a href="/diagnostic/can" class="group block p-6 bg-surface border border-slate-800 rounded-xl hover:border-accent-diagnostic transition-colors shadow-sm">
+        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-accent-diagnostic transition-colors flex items-center gap-2"><span>📡</span> CAN Bus</h3>
+        <p class="text-sm text-slate-400">Mesure des 60 Ω, U-codes, réseaux ouverts ou en court-circuit.</p>
+      </a>
+
+      <a href="/diagnostic/capteurs" class="group block p-6 bg-surface border border-slate-800 rounded-xl hover:border-accent-diagnostic transition-colors shadow-sm">
+        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-accent-diagnostic transition-colors flex items-center gap-2"><span>🎛️</span> Capteurs</h3>
+        <p class="text-sm text-slate-400">Mesure des alimentations, masses, signaux 5V, et courbes à l'oscilloscope.</p>
+      </a>
+
+      <a href="/diagnostic/actionneurs" class="group block p-6 bg-surface border border-slate-800 rounded-xl hover:border-accent-diagnostic transition-colors shadow-sm">
+        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-accent-diagnostic transition-colors flex items-center gap-2"><span>⚙️</span> Actionneurs</h3>
+        <p class="text-sm text-slate-400">Résistance, commande PWM, et diagnostics via Active Test.</p>
+      </a>
+
+      <a href="/programmation/ecu" class="group block p-6 bg-surface border border-slate-800 rounded-xl hover:border-accent-programmation transition-colors shadow-sm">
+        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-accent-programmation transition-colors flex items-center gap-2"><span>💻</span> ECU & Programmation</h3>
+        <p class="text-sm text-slate-400">OBD, Bench, Boot, Flash, clonage de calculateurs et codage.</p>
+      </a>
+
+      <a href="/programmation/immo" class="group block p-6 bg-surface border border-slate-800 rounded-xl hover:border-accent-programmation transition-colors shadow-sm">
+        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-accent-programmation transition-colors flex items-center gap-2"><span>🔐</span> EEPROM / IMMO / Clés</h3>
+        <p class="text-sm text-slate-400">Désynchronisation, perte de clés, Virginisation, et BSI/UCH/CAS.</p>
+      </a>
+
+      <a href="/outils" class="group block p-6 bg-surface border border-slate-800 rounded-xl hover:border-accent-programmation transition-colors shadow-sm">
+        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-accent-programmation transition-colors flex items-center gap-2"><span>🛠️</span> Outils & Matériel</h3>
+        <p class="text-sm text-slate-400">Scanners, oscilloscopes, programmateurs. Bien s'équiper.</p>
+      </a>
+
+      <a href="/diagnostic/casreels" class="group block p-6 bg-surface border border-slate-800 rounded-xl hover:border-accent-diagnostic transition-colors shadow-sm">
+        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-accent-diagnostic transition-colors flex items-center gap-2"><span>📚</span> Cas Réels</h3>
+        <p class="text-sm text-slate-400">Études de cas pointues. Le symptôme, les hypothèses et la réparation.</p>
+      </a>
+
+      <a href="/diagnostic/dtc" class="group block p-6 bg-surface border border-slate-800 rounded-xl hover:border-accent-diagnostic transition-colors shadow-sm">
+        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-accent-diagnostic transition-colors flex items-center gap-2"><span>⚠️</span> DTC</h3>
+        <p class="text-sm text-slate-400">Codes défauts décortiqués : causes profondes et tests spécifiques.</p>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- Ajouts Récents -->
   <section class="py-12 border-t border-slate-800">
     <div class="flex justify-between items-end mb-8">
-      <h2 class="text-2xl md:text-3xl font-heading font-bold text-white">Ajouts Récents ({allArticles.length} guides)</h2>
-      <a href="/recherche" class="text-sm text-accent-diagnostic hover:underline">Voir toute la base →</a>
+      <h2 class="text-2xl md:text-3xl font-heading font-bold text-white">Guides Récents</h2>
+      <a href="/recherche" class="text-sm text-accent-diagnostic hover:underline">Recherche avancée →</a>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {allArticles.map(article => (
@@ -55,53 +167,4 @@ const allArticles = [...symptomes, ...casreels, ...capteurs, ...electricite, ...
     </div>
   </section>
 
-  <!-- Piliers Section -->
-  <section class="py-12 border-t border-slate-800">
-    <h2 class="text-2xl md:text-3xl font-heading font-bold text-white mb-8 text-center">Toutes les Catégories</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      
-      <!-- New categories from user prompt -->
-      <a href="/diagnostic/symptomes" class="group block p-6 bg-surface border border-slate-800 rounded-xl hover:border-accent-diagnostic transition-colors">
-        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-accent-diagnostic transition-colors">Symptômes</h3>
-        <p class="text-sm text-slate-400">Voiture ne démarre pas, ralenti instable, voyants allumés. Arbres de diagnostic logiques.</p>
-      </a>
-
-      <a href="/diagnostic/casreels" class="group block p-6 bg-surface border border-slate-800 rounded-xl hover:border-accent-diagnostic transition-colors">
-        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-accent-diagnostic transition-colors">Cas Réels</h3>
-        <p class="text-sm text-slate-400">Études de cas réels. Symptôme, codes défauts, pièges et méthode de résolution.</p>
-      </a>
-
-      <a href="/diagnostic/capteurs" class="group block p-6 bg-surface border border-slate-800 rounded-xl hover:border-accent-diagnostic transition-colors">
-        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-accent-diagnostic transition-colors">Capteurs & Actionneurs</h3>
-        <p class="text-sm text-slate-400">PMH, Lambda, MAP, MAF. Valeurs de test et procédures au multimètre/oscilloscope.</p>
-      </a>
-
-      <a href="/diagnostic/electricite" class="group block p-6 bg-surface border border-slate-800 rounded-xl hover:border-accent-diagnostic transition-colors">
-        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-accent-diagnostic transition-colors">Électricité & Faisceaux</h3>
-        <p class="text-sm text-slate-400">Tests de masses, alimentations, chutes de tension et courts-circuits.</p>
-      </a>
-
-      <a href="/diagnostic/can" class="group block p-6 bg-surface border border-slate-800 rounded-xl hover:border-accent-diagnostic transition-colors">
-        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-accent-diagnostic transition-colors">Réseaux CAN Bus</h3>
-        <p class="text-sm text-slate-400">Diagnostic des pannes de communication, résistance 60 ohms, signal CAN High/Low.</p>
-      </a>
-
-      <a href="/diagnostic/dtc" class="group block p-6 bg-surface border border-slate-800 rounded-xl hover:border-accent-diagnostic transition-colors">
-        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-accent-diagnostic transition-colors">Codes Défauts (DTC)</h3>
-        <p class="text-sm text-slate-400">Plus qu'une simple définition : les causes réelles et les contrôles à effectuer par code.</p>
-      </a>
-
-      <!-- Programmation -->
-      <a href="/programmation/ecu" class="group block p-6 bg-surface border border-slate-800 rounded-xl hover:border-accent-programmation transition-colors">
-        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-accent-programmation transition-colors">Programmation ECU</h3>
-        <p class="text-sm text-slate-400">OBD, Bench, Boot. Clonage de calculateurs et codage des modules.</p>
-      </a>
-
-      <a href="/outils" class="group block p-6 bg-surface border border-slate-800 rounded-xl hover:border-accent-programmation transition-colors">
-        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-accent-programmation transition-colors">Matériel & Outils</h3>
-        <p class="text-sm text-slate-400">Tests, avis et comparatifs de scanners, oscilloscopes et programmateurs. Ce qu'ils font vraiment.</p>
-      </a>
-
-    </div>
-  </section>
 </BaseLayout>

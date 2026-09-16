@@ -1,0 +1,56 @@
+---
+title: "Comment diagnostiquer une consommation parasite de batterie"
+title_short: "Consommation parasite (Batterie)"
+description: "Batterie vide tous les matins ? La méthode incontournable du 'Voltage Drop' sur les fusibles pour trouver le calculateur qui refuse de s'endormir."
+pillar: "diagnostic"
+category: "methodologie"
+system: "bcm"
+difficulty: "intermediaire"
+risk: "moyen"
+requiredTools: ["multimetre", "pince_amperemetrique"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le client vient d'acheter sa troisième batterie en un an. "Si je ne la roule pas pendant 3 jours, la voiture est complètement morte". Vous avez un "Parasitic Draw" : un composant électronique reste allumé et pompe le courant en cachette.
+
+
+## L'Erreur classique : Débrancher les fusibles un par un
+
+L'ancienne méthode consistait à mettre un ampèremètre en série avec la batterie, puis à retirer les fusibles un par un jusqu'à ce que la consommation chute. **NE FAITES PLUS JAMAIS ÇA SUR UNE VOITURE MODERNE.**
+Le fait de débrancher un fusible et de le remettre va "réveiller" (Wake-up) le réseau CAN. La voiture va consommer 10 Ampères, vous obligeant à attendre 45 minutes qu'elle se rendorme à chaque fusible testé !
+
+<TestStepCard step={1} title="Le test du sommeil (Sleep Mode)">
+  D'abord, prouvez qu'il y a une consommation.
+  <br /> - Ouvrez le capot et bloquez le capteur de fermeture (pour faire croire à la voiture que le capot est fermé).
+  <br /> - Verrouillez les portes avec la télécommande. Éloignez la clé Keyless à plus de 10 mètres.
+  <br /> - Placez une Pince Ampèremétrique (DC Millivolts) autour du câble Négatif de la batterie.
+  <br /> - Attendez 30 à 45 minutes sans toucher à la voiture. Le BSI doit s'endormir.
+  <br /> - Lisez la pince. **Une voiture normale consomme entre 0.02A et 0.05A (20 à 50 milliampères).** Si vous lisez 0.8A (800mA) ou 3.0A, vous avez une énorme consommation parasite.
+</TestStepCard>
+
+## La méthode moderne : Le Voltage Drop sur Fusible
+
+Au lieu de retirer les fusibles, on va mesurer le courant qui passe *à travers* eux sans les toucher.
+
+<DiagnosticTree symptom="Principe de la chute de tension sur fusible">
+  <li>Un fusible est un petit morceau de métal. Il a une résistance électrique (infime, mais réelle).</li>
+  <li>Si aucun courant ne traverse le fusible (composant éteint), la tension mesurée entre les deux petits trous au-dessus du fusible sera de **0.0mV**.</li>
+  <li>Si du courant traverse le fusible (composant allumé en cachette), il y aura une micro chute de tension (ex: **1.5mV**).</li>
+</DiagnosticTree>
+
+<TestStepCard step={2} title="Traquer le circuit voleur">
+  - Mettez votre multimètre sur l'échelle **Millivolts (mV)**.
+  <br /> - Ne débranchez aucun fusible ! Posez les pointes rouges et noires sur les deux petits trous de test métalliques au dos de CHAQUE fusible.
+  <br /> - Si le multimètre lit 0.0 mV, passez au suivant.
+  <br /> - Dès que vous trouvez un fusible affichant par exemple 2.4 mV, vous avez trouvé le voleur !
+  <br /> - Regardez le schéma de la boîte à fusibles pour savoir ce qu'alimente ce fusible (Exemple : "Fusible F12 - Autoradio / Amplificateur"). Vous savez maintenant qui vide la batterie.
+</TestStepCard>
+
+<ConfirmationBox>
+  Causes très fréquentes de consommation : Un relais collé (ex: relais de compresseur de clim), un autoradio Android 2DIN mal branché (le fil ACC est relié au (+) Permanent), un module Bluetooth d'origine qui cherche un téléphone en boucle, ou une alarme seconde monte en court-circuit.
+</ConfirmationBox>

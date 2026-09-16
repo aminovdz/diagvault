@@ -1,0 +1,48 @@
+---
+title: "Volkswagen Passat — DPF colmaté malgré régénérations forcées"
+description: "Voyant FAP allumé sur 2.0 TDI. Pourquoi les régénérations forcées échouent ? Cas réel : capteur différentiel, sonde EGT et masse de cendres."
+pillar: "diagnostic"
+category: "casreels"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "moyen"
+requiredTools: ["scanner"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Sur une VW Passat 2.0 TDI (CR), le client se plaint que le voyant du filtre à particules (DPF) s'allume sans arrêt, suivi de la spirale de préchauffage qui clignote et du mode dégradé. Il a déjà payé 3 "nettoyages hydrogène" et des régénérations forcées, mais le problème revient après 100 km.
+
+
+## Pourquoi le DPF se bouche-t-il ?
+
+Un filtre à particules ne se bouche jamais "sans raison". Il est la victime d'un problème en amont, ou il est simplement arrivé en fin de vie mécanique (cendres).
+
+<TestStepCard step={1} title="Analyse des paramètres vitaux du FAP (Live Data)">
+  Branchez VCDS ou un scanner avancé et lisez les Groupes de Mesure (ou Advanced Measuring Values) :
+  <br /> - **Soot Mass (Masse de Suie Calculée / Mesurée) :** La suie est brûlable. Si elle dépasse 40g, la voiture refuse la régénération par sécurité (risque d'incendie).
+  <br /> - **Oil Ash Volume (Volume de Cendres) :** Les cendres sont INBRÛLABLES (résidu d'huile et de régénérations passées). Si la valeur dépasse 0.175 l (ou la limite spécifiée), le FAP est physiquement plein de cendres. Le nettoyer à l'hydrogène ne sert à RIEN.
+  <br /> - **Pression Différentielle (DPF Pressure) :** Au ralenti, on attend environ 5 à 15 mbar. Si vous lisez 0 mbar (ou -5 mbar), le capteur G450 est HS.
+</TestStepCard>
+
+## Le piège du capteur de pression différentielle (G450)
+
+<DiagnosticTree symptom="Le Vrai Problème de ce Cas">
+  <li>Le capteur G450 mesure la pression avant et après le filtre pour deviner son taux de colmatage.</li>
+  <li>Sur ce cas précis, la masse de suie montait artificiellement très vite, forçant des régénérations inutiles.</li>
+  <li>En observant la pression différentielle contact mis (moteur éteint), le capteur affichait 25 mbar. **Moteur éteint, la pression doit être exactement de 0 mbar.**</li>
+</DiagnosticTree>
+
+<TestStepCard step={2} title="Remplacement et Adaptation du G450">
+  Le capteur dérivait, faisant croire à l'ECU que le FAP était plein.
+  <br /> - Remplacez le capteur G450 (situé derrière le moteur, près du tablier).
+  <br /> - **Étape Cruciale :** Il faut faire l'"Adaptation du capteur de pression échappement 1" via la valise. Cela apprend à l'ECU la valeur "Zéro" du nouveau capteur. Sans cela, le défaut reviendra.
+</TestStepCard>
+
+<ConfirmationBox>
+  Après adaptation, la pression différentielle moteur coupé est de 0 mbar. Au ralenti, 7 mbar. Lancez une régénération en roulant. Le taux de suie baisse normalement, et le véhicule retrouve toute sa puissance sans s'encrasser. Fin de l'histoire.
+</ConfirmationBox>

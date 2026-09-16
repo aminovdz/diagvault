@@ -1,0 +1,50 @@
+---
+title: "Boîte automatique qui passe en mode dégradé"
+description: "Boîte bloquée en 3ème (Limp Mode) ? Comment lire les codes TCM, tester le niveau d'huile ATF, et repérer un défaut de capteur de vitesse ou d'électrovanne."
+pillar: "diagnostic"
+category: "symptomes"
+system: "transmission"
+difficulty: "avance"
+risk: "eleve"
+requiredTools: ["scanner"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Lorsqu'une boîte de vitesses automatique (BVA, DSG, CVT) détecte une anomalie grave, elle se met en sécurité (Limp Mode). Elle se bloque généralement sur le 3ème rapport pour vous permettre de rouler lentement jusqu'au garage, tout en protégeant les embrayages internes.
+
+
+## L'huile, le sang de la transmission
+
+90% des pannes de BVA non-électroniques proviennent d'un problème d'huile (ATF).
+
+<DiagnosticTree symptom="Les causes physiques">
+  <li>**Manque d'huile (Fuite) :** La pression hydraulique n'est plus suffisante pour presser les disques d'embrayage. Ça "patine", l'ECU voit une différence de vitesse anormale et coupe tout.</li>
+  <li>**Huile brûlée / Trop vieille :** Elle a perdu ses propriétés de friction ou est chargée en limaille, ce qui bouche les électrovannes (solénoïdes) du bloc hydraulique (Mécatronique).</li>
+</DiagnosticTree>
+
+<TestStepCard step={1} title="Vérification du Niveau et de la Température (Live Data)">
+  Le niveau d'une BVA se fait TOUJOURS moteur tournant, et à une température précise (généralement entre 35°C et 45°C).
+  <br /> - Branchez le scanner sur le module TCM (Transmission Control Module).
+  <br /> - Affichez la "Température d'huile de boîte" (Transmission Fluid Temperature).
+  <br /> - Laissez chauffer jusqu'à 40°C, ouvrez le bouchon de niveau (ou regardez la jauge s'il y en a une). Un manque d'un demi-litre suffit à provoquer des à-coups et un mode dégradé en virage.
+</TestStepCard>
+
+## Les capteurs et l'électronique
+
+Si le niveau et la qualité de l'huile sont parfaits, le problème est dans le cerveau de la boîte.
+
+<TestStepCard step={2} title="Lecture des Vitesses d'Arbre (Input/Output Speed Sensors)">
+  Le TCM décide de changer de vitesse en comparant la vitesse à laquelle le moteur tourne (Input) et la vitesse à laquelle les roues tournent (Output).
+  <br /> - Affichez les paramètres `Input Speed` et `Output Speed` en roulant doucement.
+  <br /> - Si l'un des deux affiche 0 RPM alors que vous roulez, le capteur est HS. L'ECU est aveugle et se met en mode dégradé instantanément.
+  <br /> - **Défaut de solénoïde :** Si le code défaut indique "Shift Solenoid A - Circuit Open", c'est une bobine grillée dans le bloc hydraulique (Mécatronique). Sur beaucoup de DSG/S-Tronic, la platine électronique baigne dans l'huile et ses fils finissent par fondre.
+</TestStepCard>
+
+<ConfirmationBox>
+  Un problème de moteur peut mettre la boîte en mode dégradé ! Si le calculateur moteur voit un problème grave (ex: Débitmètre HS, Ratés d'allumage), il enverra un message CAN au calculateur de boîte pour lui interdire de passer la vitesse supérieure afin de ne pas forcer sur le moteur. Réglez toujours les codes défauts MOTEUR avant de condamner la BOÎTE !
+</ConfirmationBox>

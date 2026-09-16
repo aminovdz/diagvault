@@ -1,0 +1,51 @@
+---
+title: "Citroën C4 Picasso — BSI qui coupe l'alimentation par intermittence"
+description: "Phares qui clignotent, essuie-glaces fous et coupures moteur ? Cas d'école sur le BSI PSA, le boîtier BPGA (batterie) et les soudures sèches."
+pillar: "diagnostic"
+category: "casreels"
+system: "bsi"
+difficulty: "avance"
+risk: "eleve"
+requiredTools: ["scanner", "multimetre"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Un Citroën C4 Picasso (Phase 2) arrive au garage. Le client décrit un comportement de "voiture hantée" : en roulant, l'écran s'éteint une seconde, les essuie-glaces donnent un coup, parfois le moteur micro-coupe, et de multiples voyants s'allument (ESP, Moteur, Frein de parking) avant de s'éteindre.
+
+
+## L'Analyse du réseau et du BSI
+
+Ce genre de symptôme généralisé pointe toujours vers le cœur du système électrique. Chez PSA, le chef d'orchestre est le BSI (Boîtier de Servitude Intelligent). S'il "reboot" en roulant, tous les accessoires deviennent fous.
+
+<TestStepCard step={1} title="Lecture de l'historique (Journal des Défauts)">
+  Le BSI garde une trace de tout.
+  <br /> - Allez dans le calculateur BSI, puis "Journal des Défauts" (JDD).
+  <br /> - Vous verrez des centaines de lignes : `Perte de communication avec ECU Moteur`, `Tension basse`, `Défaut réveil réseau`.
+  <br /> - Ces défauts fugitifs indiquent que le BSI s'éteint et se rallume (reset).
+</TestStepCard>
+
+## Le BPGA (Boîtier Protection Gestion Alimentation)
+
+Sur les véhicules PSA récents (C4 Picasso, 308 II), la batterie est équipée d'un boîtier noir très complexe sur sa borne positive : le BPGA.
+
+<DiagnosticTree symptom="Les coupables classiques du Reset BSI">
+  <li>**Masse BSI desserrée :** Rare, mais à vérifier. La tresse de masse près des pieds du conducteur.</li>
+  <li>**Le relais interne du BPGA :** C'est LA maladie de ce modèle. Le BPGA contient un gros relais bistable qui alimente le BSI. Avec le temps et les vibrations, les soudures de ce relais craquent (soudures sèches). Le relais s'ouvre une fraction de seconde sur une bosse, coupant l'alimentation de toute la voiture.</li>
+</DiagnosticTree>
+
+<TestStepCard step={2} title="Le test du choc (Shock Test)">
+  C'est rudimentaire mais imparable.
+  <br /> - Démarrez la voiture.
+  <br /> - Ouvrez le capot, repérez le BPGA (le gros boîtier noir fixé sur la batterie).
+  <br /> - Avec le manche en plastique d'un gros tournevis, tapotez modérément le boîtier BPGA.
+  <br /> - Si le moteur cale ou si les phares/essuie-glaces s'activent, le relais interne est défectueux.
+</TestStepCard>
+
+<ConfirmationBox>
+  Dans ce cas précis, le remplacement du BPGA a résolu le problème. Attention, lors du remplacement du BPGA, il faut souvent faire un télécodage (ou un reset) via Diagbox pour indiquer au BSI que le boîtier de protection a été remplacé, sinon l'alternateur risque de mal charger (système Stop & Start).
+</ConfirmationBox>

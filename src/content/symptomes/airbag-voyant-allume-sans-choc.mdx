@@ -1,0 +1,49 @@
+---
+title: "Airbag : voyant allumé sans choc"
+description: "Voyant SRS/Airbag allumé sans accident ? Comment lire les codes et inspecter les connecteurs sous les sièges ou le contacteur tournant du volant."
+pillar: "diagnostic"
+category: "symptomes"
+system: "bcm"
+difficulty: "intermediaire"
+risk: "moyen"
+requiredTools: ["scanner", "multimetre"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Un voyant Airbag (SRS - Supplemental Restraint System) allumé signifie que le calculateur a détecté une anomalie dans la résistance d'un composant pyrotechnique. Le système est désactivé par sécurité. **Ne travaillez jamais sur un airbag avec la batterie branchée.**
+
+
+## Toujours commencer par le Scanner
+
+Ne démontez rien au hasard. Le système SRS comporte des dizaines d'amorces (volant, passager, rideaux, genoux, prétensionneurs de ceintures). La valise vous dira exactement lequel pose problème.
+
+<DiagnosticTree symptom="Ce que la valise vous dit">
+  <li>**"Résistance trop haute" (High Resistance) :** Le circuit est ouvert (fil coupé, connecteur débranché ou faux contact). C'est la panne la plus fréquente.</li>
+  <li>**"Résistance trop basse" (Low Resistance) :** Il y a un court-circuit (les deux fils se touchent).</li>
+  <li>**"Erreur interne calculateur" :** Le module SRS a planté (problème d'EEPROM) ou a reçu un faux signal de choc.</li>
+</DiagnosticTree>
+
+## Les 2 causes les plus fréquentes
+
+<TestStepCard step={1} title="Les connecteurs sous les sièges (Prétensionneurs et Airbags Latéraux)">
+  Si le code défaut pointe vers un élément "Côté Conducteur" ou "Côté Passager" (ex: Seat Belt Pretensioner).
+  <br /> - Le fait d'avancer et reculer les sièges des centaines de fois finit par tirer sur les fils sous le siège.
+  <br /> - **Débranchez la batterie et attendez 10 minutes (Obligatoire).**
+  <br /> - Regardez sous le siège, trouvez le connecteur jaune ou orange (les connecteurs SRS sont souvent de ces couleurs).
+  <br /> - Débranchez-le, inspectez les pins pour l'oxydation. Vous pouvez appliquer du spray nettoyant contact et rebrancher. Effacez les codes et vérifiez si le voyant s'éteint.
+</TestStepCard>
+
+<TestStepCard step={2} title="Le contacteur tournant (Clock Spring)">
+  Si le code indique **"Airbag Conducteur - Stage 1/2"** ou si vous avez aussi perdu les commandes au volant et le klaxon.
+  <br /> - C'est la nappe spirale située derrière le volant (le Clock Spring) qui s'est déchirée à l'intérieur à force de braquer.
+  <br /> - La pièce entière (souvent intégrée au bloc comodo) doit être remplacée. Ne tentez pas de la réparer.
+</TestStepCard>
+
+<ConfirmationBox>
+  Attention, si vous voulez vérifier le faisceau avec un multimètre (test de continuité), **NE SONDEZ JAMAIS L'AIRBAG LUI-MÊME**. Le courant infime envoyé par le multimètre en mode Ohmmètre (pour mesurer la résistance) est parfois suffisant pour déclencher l'amorce pyrotechnique et vous faire exploser l'airbag au visage ! Mesurez toujours vers le faisceau de la voiture, pas vers le composant.
+</ConfirmationBox>

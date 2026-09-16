@@ -1,0 +1,55 @@
+---
+title: "Batterie qui se décharge en quelques jours sans usage"
+description: "Votre batterie est vide le lundi matin ? Comment utiliser une pince ampèremétrique pour trouver une consommation de courant parasite en veille."
+pillar: "diagnostic"
+category: "symptomes"
+system: "bcm"
+difficulty: "avance"
+risk: "faible"
+requiredTools: ["multimetre", "pince_amperemetrique"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+C'est l'un des diagnostics les plus longs et redoutés : le courant de fuite (Parasitic Draw). Vous éteignez la voiture, vous la fermez, mais un module électronique ou une ampoule "refuse de s'endormir" et draine la batterie pendant la nuit.
+
+
+## Avant d'accuser la voiture : La Batterie
+
+Beaucoup de gens cherchent une fuite fantôme alors que le problème est simplement une batterie en fin de vie, incapable de tenir sa charge.
+
+<DiagnosticTree symptom="La batterie ou la voiture ?">
+  <li>**Test simple :** Le soir, débranchez la cosse Négative de la batterie. Laissez la nuit passer. Le lendemain, rebranchez et essayez de démarrer. Si ça démarre au quart de tour, la voiture a bien une fuite. Si elle ne démarre pas, la batterie s'autodécharge car elle est morte. Changez-la.</li>
+</DiagnosticTree>
+
+## Mesurer la fuite (Le Courant de Repos)
+
+Une voiture moderne (multiplexée) met entre 15 et 45 minutes pour "s'endormir" complètement après le verrouillage des portes. Pendant ce temps, elle consomme ! Il faut attendre ce délai avant de mesurer.
+
+<TestStepCard step={1} title="Installation de la mesure">
+  Ouvrez le capot, fermez manuellement le verrouillage du capot avec un tournevis (pour faire croire à l'ECU que le capot est fermé), verrouillez les portes avec la télécommande.
+  <br /> - Attendez 30 minutes. Ne touchez plus à rien (surtout pas aux poignées de porte).
+  <br /> - Placez une **Pince Ampèremétrique** (calibrée sur Millivolts = Milliampères) autour du gros câble Négatif de la batterie.
+  <br /> - La consommation normale au repos doit être **inférieure à 50 milliampères (0.050 A)**.
+  <br /> - Si vous lisez 300 mA, 1.5 A ou plus... vous avez une fuite parasite.
+</TestStepCard>
+
+## La méthode de la Chute de Tension sur Fusible
+
+L'ancienne méthode consistait à arracher les fusibles un par un jusqu'à ce que la consommation chute. **Ne faites plus ça sur une voiture moderne !** Arracher un fusible réveille le réseau CAN et tous les calculateurs. 
+
+<TestStepCard step={2} title="Trouver le circuit coupable sans toucher aux fusibles">
+  Réglez votre multimètre sur Millivolts (mV).
+  <br /> - Posez vos deux pointes de touche sur les deux petits points métalliques exposés **sur le dessus** de chaque fusible de la boîte.
+  <br /> - Un fusible inactif affichera **0.0 mV**.
+  <br /> - Si un fusible affiche **0.4 mV ou 1.2 mV**, cela prouve que du courant est en train de le traverser !
+  <br /> - Regardez sur le schéma à quoi correspond ce fusible (ex: Autoradio, Module Bluetooth, Sièges chauffants).
+</TestStepCard>
+
+<ConfirmationBox>
+  Les coupables les plus fréquents sont les accessoires rajoutés en seconde monte (Autoradio Android mal câblé, Dashcam), les modules Bluetooth d'origine (très capricieux), les amplificateurs audio qui ne s'éteignent pas, et les interrupteurs de coffre/boîte à gants cassés qui laissent la petite ampoule allumée en permanence H24.
+</ConfirmationBox>

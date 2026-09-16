@@ -1,0 +1,55 @@
+---
+title: "Ventilateur de refroidissement qui ne se déclenche pas"
+description: "Le ventilateur ne tourne plus et le moteur chauffe dans les bouchons ? Comment tester le motoventilateur, le relais, les résistances et la sonde."
+pillar: "diagnostic"
+category: "symptomes"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "moyen"
+requiredTools: ["scanner", "multimetre"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le ventilateur (moto-ventilateur) sert à refroidir le radiateur lorsque le véhicule roule trop lentement pour créer un flux d'air naturel (embouteillages). S'il ne se déclenche pas, la température va grimper inévitablement.
+
+
+## Qui commande le ventilateur ?
+
+Sur les véhicules anciens, c'était un "thermocontact" (une sonde vissée sur le radiateur) qui agissait comme un simple interrupteur. Sur les voitures modernes, c'est le Calculateur Moteur (ECU) qui lit la température et commande un relais ou un module de puissance (PWM) pour allumer le ventilateur.
+
+<DiagnosticTree symptom="Où est la coupure ?">
+  <li>**Le moteur électrique du ventilateur est grillé :** Le courant arrive mais il ne tourne pas.</li>
+  <li>**Le relais ou la résistance petite vitesse est HS :** La commande est envoyée mais la puissance ne passe pas.</li>
+  <li>**La sonde de température (ECT) ment :** Le moteur est à 110°C, mais la sonde dit à l'ECU qu'il est à 70°C. L'ECU ne voit aucune raison d'allumer le ventilateur.</li>
+</DiagnosticTree>
+
+## Le test décisif : L'Active Test
+
+<TestStepCard step={1} title="Activation forcée via le Scanner OBD">
+  C'est le moyen le plus rapide d'isoler le problème.
+  <br /> - Branchez votre valise, allez dans l'ECU Moteur -> "Test des Actionneurs" (Active Tests).
+  <br /> - Lancez la commande "Ventilateur - Vitesse 1" puis "Vitesse 2".
+  <br /> - **Si le ventilateur tourne :** Tout le circuit électrique (Fusibles, Relais, Moteur, Câblage) est parfait. La panne vient de l'information (Sonde de température ECT qui donne une fausse valeur).
+  <br /> - **S'il ne tourne pas :** Le problème est électrique (Circuit de puissance ou ventilateur mort).
+</TestStepCard>
+
+## Test de la Puissance
+
+Si le test de la valise échoue, sortez le multimètre.
+
+<TestStepCard step={2} title="Alimentation du Ventilateur">
+  Débranchez le gros connecteur à deux fils directement sur le moteur du ventilateur.
+  <br /> - Relancez l'Active Test avec la valise.
+  <br /> - Mettez votre multimètre sur le connecteur du faisceau (côté voiture).
+  <br /> - Si vous avez **12V**, la commande passe ! C'est le moteur électrique du ventilateur qui est mort (charbons usés). 
+  <br /> - Si vous avez **0V**, vérifiez le Maxi-Fusible (généralement 40A ou 50A) et le relais du ventilateur.
+</TestStepCard>
+
+<ConfirmationBox>
+  Un test très simple sans outil : allumez la Climatisation (A/C) ! Le calculateur force systématiquement le démarrage du ventilateur (pour refroidir le condenseur) lorsque la clim est active. Si le ventilateur démarre avec la clim mais pas quand le moteur chauffe, votre moteur électrique est bon, c'est la sonde de température (ECT) qui est en cause.
+</ConfirmationBox>

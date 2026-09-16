@@ -1,0 +1,49 @@
+---
+title: "Fiat Ducato — Body Computer qui génère des défauts fantômes"
+description: "Défauts multiples (clignotants rapides, portes ouvertes, voyants inexpliqués) sur un utilitaire Fiat/Peugeot Boxer. Le problème des infiltrations d'eau au BCM."
+pillar: "diagnostic"
+category: "casreels"
+system: "bsi"
+difficulty: "intermediaire"
+risk: "eleve"
+requiredTools: ["scanner", "multimetre"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Un artisan vous apporte son Fiat Ducato (ou Peugeot Boxer / Citroën Jumper, même base). Le tableau de bord indique "Porte arrière ouverte" alors qu'elle est fermée, le clignotant gauche clignote trop vite (comme si une ampoule était grillée mais toutes fonctionnent), et la centralisation refuse de fermer le camion.
+
+
+## L'utilitaire : Un véhicule maltraité
+
+Les utilitaires souffrent de problèmes spécifiques : portes violemment claquées, poussière, et surtout, conception des écoulements d'eau de baie de pare-brise parfois douteuse.
+
+<DiagnosticTree symptom="Origine du problème électrique">
+  <li>**Les câbles de porte arrière :** Faisceau souvent cisaillé au niveau des charnières à force d'ouverture à 180°. Cela explique le défaut de centralisation.</li>
+  <li>**Le Body Computer (BCM / BSI) :** Situé sous la planche de bord côté conducteur, il gère tous ces accessoires. S'il cumule des pannes illogiques de circuits totalement séparés (Clignotant ET Portes), il est souvent la cause commune.</li>
+</DiagnosticTree>
+
+<TestStepCard step={1} title="Inspection visuelle du BCM">
+  Sur ces utilitaires, l'eau de pluie ruisselle sous la baie de pare-brise (la goulotte se bouche avec des feuilles) et tombe pile sur les gros câbles qui traversent le tablier moteur vers le BCM.
+  <br /> - Démontez la garniture sous le volant.
+  <br /> - Touchez les faisceaux qui arrivent au BCM. Sont-ils humides ?
+  <br /> - Débranchez les gros connecteurs du BCM (batterie débranchée bien sûr).
+  <br /> - **Constat fréquent :** Présence d'oxydation verte (vert-de-gris) dans les connecteurs bleus ou gris. L'eau a coulé par capillarité le long des fils directement dans le calculateur.
+</TestStepCard>
+
+## La Réparation
+
+<TestStepCard step={2} title="Sauvetage ou Remplacement">
+  Le vert-de-gris crée des micro-courts-circuits entre les broches. L'info "Clignotant" touche le fil "Porte ouverte".
+  <br /> - Si l'oxydation est superficielle : Nettoyant contact, brosse à dents, et soufflette. 
+  <br /> - **Si des pins sont cassées ou noires :** Il faut remplacer le BCM.
+  <br /> - Attention, le BCM Fiat contient l'antidémarrage (EEPROM 95160 ou équivalent). Si vous mettez un BCM d'occasion, il faudra faire un clonage intégral (lire la puce de l'ancien et l'écrire dans le nouveau) ou faire un Vierge (Virginize) et coder avec le PIN code Fiat.
+</TestStepCard>
+
+<ConfirmationBox>
+  Nettoyer le BCM ne suffit pas. Il faut impérativement trouver l'infiltration d'eau sous la grille d'auvent (pare-brise) et refaire l'étanchéité au mastic polyuréthane. Sinon, le client reviendra 3 mois plus tard avec le même BCM grillé à la prochaine grosse pluie.
+</ConfirmationBox>

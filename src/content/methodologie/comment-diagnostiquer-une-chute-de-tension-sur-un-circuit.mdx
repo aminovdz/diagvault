@@ -1,0 +1,53 @@
+---
+title: "Comment diagnostiquer une chute de tension sur un circuit"
+title_short: "Le Test de Chute de Tension (Voltage Drop)"
+description: "Oubliez le test de continuité (Ohmmètre) ! Apprenez la seule vraie méthode pour trouver un fil oxydé ou une mauvaise masse : le Voltage Drop Test."
+pillar: "diagnostic"
+category: "methodologie"
+system: "bcm"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["multimetre"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+C'est l'erreur numéro 1 en électricité auto : tester un gros câble (démarreur, phare) avec le mode "Continuité / Bip" du multimètre. Le multimètre bipera même s'il ne reste qu'un seul brin de cuivre intact. Mais dès qu'on demande de la puissance (30 Ampères), le courant ne passe plus. **Le Voltage Drop (Chute de Tension) est le seul test valable.**
+
+
+## Qu'est-ce que la Chute de Tension ?
+
+Imaginez un tuyau d'eau avec un léger pincement. Sans débit, la pression est la même partout. Mais si vous ouvrez le robinet à fond (en charge), la pression chute dramatiquement après le pincement. En électricité, c'est pareil. Le circuit DOIT ÊTRE EN CHARGE (allumé) pour faire ce test.
+
+<DiagnosticTree symptom="Les valeurs tolérées">
+  <li>**Moins de 0.2V :** Excellente connexion. C'est parfait.</li>
+  <li>**Entre 0.2V et 0.5V :** Connexion moyenne ou câble très long, acceptable pour des accessoires mineurs.</li>
+  <li>**Plus de 0.5V (ex: 2V ou 5V) :** Résistance énorme (fil à moitié coupé, tresse de masse rouillée, cosse fondue). L'énergie est perdue sous forme de chaleur à l'endroit précis du défaut.</li>
+</DiagnosticTree>
+
+## Comment exécuter le test pas-à-pas
+
+Prenons l'exemple d'un démarreur qui tourne au ralenti, comme si la batterie était vide (alors qu'elle est neuve).
+
+<TestStepCard step={1} title="Test du côté Positif (+)">
+  - Réglez le multimètre sur Volts (DC).
+  <br /> - Placez la pointe **ROUGE sur la borne POSITIVE de la batterie**.
+  <br /> - Placez la pointe **NOIRE sur la grosse cosse + du démarreur** (au bout du câble rouge).
+  <br /> - Demandez à quelqu'un de démarrer le moteur (Circuit en charge !).
+  <br /> - Lisez le multimètre. S'il affiche **0.3V**, le câble positif est bon. S'il affiche **3.5V**, cela veut dire que 3.5 Volts sont "bloqués" ou "perdus" en cours de route. Le câble ou les cosses sont oxydés.
+</TestStepCard>
+
+<TestStepCard step={2} title="Test du côté Négatif (-) / Masse">
+  - Placez la pointe **NOIRE sur la borne NÉGATIVE de la batterie**.
+  <br /> - Placez la pointe **ROUGE directement sur la carcasse en métal du démarreur** (ou sur le bloc moteur).
+  <br /> - Démarrez le moteur.
+  <br /> - Si le multimètre affiche **4.0V**, votre moteur a une masse horrible. La tresse de masse entre le châssis et le moteur est pourrie ou peinte !
+</TestStepCard>
+
+<ConfirmationBox>
+  Le "Voltage Drop" fonctionne pour absolument tout : une ampoule qui éclaire faiblement, une vitre électrique lente, une pompe à essence poussive. Mettez le circuit en marche, et mesurez la tension ENTRE le départ de la batterie et l'arrivée au composant (sur le même fil).
+</ConfirmationBox>

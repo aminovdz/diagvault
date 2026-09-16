@@ -1,0 +1,51 @@
+---
+title: "Surchauffe moteur récurrente"
+description: "Votre moteur monte dans le rouge ? Méthodologie pour diagnostiquer un thermostat bloqué, une pompe à eau HS, une purge d'air ou un joint de culasse."
+pillar: "diagnostic"
+category: "symptomes"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "eleve"
+requiredTools: ["scanner"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Une surchauffe moteur est destructrice. Avant de changer le joint de culasse, le radiateur ou la pompe à eau à l'aveugle, il faut comprendre OÙ le flux thermique s'arrête. Le liquide de refroidissement est censé transporter la chaleur du moteur vers le radiateur.
+
+
+## Isoler le blocage thermique
+
+Le liquide circule grâce à la pompe, est régulé par le thermostat (calorstat), et est refroidi par le radiateur (aidé du ventilateur).
+
+<DiagnosticTree symptom="Où est la chaleur ?">
+  <li>**Moteur bouillant, mais radiateur (et durite inférieure) froid :** Le liquide ne circule pas. C'est soit le thermostat bloqué fermé, soit la pompe à eau dont la turbine s'est désertie, soit une énorme bulle d'air dans le circuit.</li>
+  <li>**Moteur et radiateur bouillants, mais le ventilateur ne tourne pas :** Le circuit d'eau fonctionne, mais le système de refroidissement forcé (ventilateur) est en panne.</li>
+  <li>**Le liquide bout et refoule par le vase d'expansion :** La pression des cylindres passe dans le circuit d'eau. C'est un joint de culasse claqué (ou culasse fissurée).</li>
+</DiagnosticTree>
+
+## Vérification du Thermostat et de la Pompe
+
+<TestStepCard step={1} title="Test tactile des durites (Attention aux brûlures)">
+  Démarrez le moteur à froid et laissez-le chauffer en surveillant l'aiguille de température (ou la valeur Live Data sur le scanner).
+  <br /> - Touchez la grosse durite supérieure (qui va au radiateur). Elle doit chauffer progressivement.
+  <br /> - Touchez la grosse durite inférieure (qui sort du radiateur). Elle doit rester froide jusqu'à ce que le moteur atteigne environ 90°C.
+  <br /> - À ~90°C, le thermostat s'ouvre : la durite inférieure doit devenir brûlante soudainement. Si le moteur affiche 110°C au tableau de bord et que la durite du bas est toujours tiède, le thermostat est mort fermé.
+</TestStepCard>
+
+## Test de la Pompe à Eau
+
+<TestStepCard step={2} title="Test du jet de retour">
+  Ouvrez le bouchon du vase d'expansion (uniquement à froid !).
+  <br /> - Démarrez le moteur. Demandez à un assistant d'accélérer légèrement (2000 tr/min).
+  <br /> - Regardez le petit tuyau de retour en haut du vase d'expansion. Vous devez voir un jet de liquide continu qui crache dans le bocal.
+  <br /> - Si rien ne coule en accélérant, la turbine de la pompe à eau ne tourne plus (dessertie de son axe, fréquent sur les pompes avec ailettes en plastique).
+</TestStepCard>
+
+<ConfirmationBox>
+  N'oubliez pas de purger le circuit d'air ! Une poche d'air coincée autour du thermostat l'empêchera de ressentir la chaleur de l'eau, il ne s'ouvrira jamais et le moteur surchauffera même avec des pièces neuves.
+</ConfirmationBox>

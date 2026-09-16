@@ -1,0 +1,52 @@
+---
+title: "Comment diagnostiquer une perte de puissance sans se tromper de piste"
+title_short: "Perte de puissance : La méthode"
+description: "Moteur mou, manque de reprise ? La méthode pour tester le turbo, le débitmètre (MAF), la géométrie variable et l'encrassement (EGR/FAP)."
+pillar: "diagnostic"
+category: "methodologie"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "moyen"
+requiredTools: ["scanner"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Le client se plaint que sa voiture "n'a plus rien dans le sac" dans les montées. Une perte de puissance (sans voyant ou avec voyant) est généralement due à un manque d'air (Turbo/MAF), un excès de gaz d'échappement (EGR bloquée), ou un échappement bouché (FAP/Cata).
+
+
+## L'Étape Essentielle : Le Test Routier (Live Data)
+
+Vous ne pouvez pas diagnostiquer un manque de puissance à l'arrêt dans le garage. Le moteur a besoin de "charge" (Load) pour générer de la pression turbo et aspirer de l'air.
+
+<TestStepCard step={1} title="Enregistrement des Paramètres (Data Logging)">
+  Branchez le scanner. Sélectionnez ces 4 paramètres vitaux :
+  <br /> 1. **Pression de suralimentation (Boost Pressure)** - Consigne vs Valeur Réelle.
+  <br /> 2. **Masse d'air (MAF Sensor)** - Consigne vs Valeur Réelle.
+  <br /> 3. **Régime Moteur (RPM)**.
+  <br /> 4. **Position Pédale (APP)**.
+  <br /> - Allez sur une route dégagée. En 3ème vitesse, accélérez "Pédale au plancher" (WOT - Wide Open Throttle) de 1500 à 4000 tr/min.
+</TestStepCard>
+
+## Interprétation du Graphique
+
+<DiagnosticTree symptom="Ce que révèlent les courbes">
+  <li>**Le turbo n'atteint pas sa consigne (Underboost) :** La pression réelle plafonne à 1.2 bar alors que la consigne est à 2.0 bars. Cherchez une fuite sur une durite de suralimentation (sifflement d'air), une électrovanne de turbo (N75) HS, ou une géométrie variable grippée.</li>
+  <li>**Le turbo suit parfaitement la consigne, mais le MAF est trop bas :** L'air passe, mais n'est pas mesuré ! Le débitmètre est encrassé ou défectueux. L'ECU bride l'injection car il "croit" qu'il n'y a pas d'air.</li>
+  <li>**Le MAF est trop HAUT au ralenti et ne monte pas en charge :** L'EGR est bloquée ouverte. Le moteur avale de l'échappement en permanence au lieu de l'air frais.</li>
+</DiagnosticTree>
+
+<TestStepCard step={2} title="Le test de l'Échappement Bouché (Backpressure)">
+  Si le turbo s'effondre à haut régime et que le moteur semble "étouffé".
+  <br /> - Un FAP ou un Catalyseur bouché crée une contre-pression énorme. L'échappement ne peut pas sortir, donc l'air frais ne peut pas entrer.
+  <br /> - Retirez la sonde Lambda avant le catalyseur (pour créer un trou géant).
+  <br /> - Allez rouler (ça fera un bruit de tracteur). Si la puissance revient instantanément, votre ligne d'échappement est colmatée.
+</TestStepCard>
+
+<ConfirmationBox>
+  Ne remplacez JAMAIS un turbo avant d'avoir vérifié sa commande de dépression. Dans 50% des cas, un turbo qui ne "charge" pas est simplement dû à une petite durite de dépression percée (vacuum leak) qui empêche l'actionneur (Wastegate/VNT) de se fermer. Un bout de tuyau à 2€ peut sauver un turbo à 1000€.
+</ConfirmationBox>

@@ -1,0 +1,50 @@
+---
+title: "Surconsommation de carburant sans cause apparente"
+description: "Votre auto consomme trop sans afficher de voyant ? Analysez les Fuel Trims, la sonde Lambda et la température pour trouver le coupable."
+pillar: "diagnostic"
+category: "symptomes"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "faible"
+requiredTools: ["scanner"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Une augmentation soudaine ou progressive de la consommation de carburant, sans allumage du voyant moteur (Check Engine), indique que le calculateur est piégé par une sonde "menteuse". Les valeurs restent dans les limites de l'acceptable pour l'ECU, mais elles forcent un enrichissement injustifié.
+
+
+## Les 3 capteurs qui dictent la consommation
+
+Le calculateur calcule le temps d'injection en se basant principalement sur trois données : la température du moteur, la quantité d'air entrant, et la teneur en oxygène à l'échappement.
+
+<DiagnosticTree symptom="Les menteurs silencieux">
+  <li>**Le Thermostat (Calorstat) ou la sonde de température (ECT) :** Si le moteur n'atteint jamais ses 90°C, le calculateur reste indéfiniment en mode "Starter" (mélange riche pour moteur froid). C'est la cause N°1.</li>
+  <li>**La Sonde Lambda amont (O2 Sensor) :** Une sonde lambda vieillissante (paresseuse) a tendance à lire "Pauvre" par défaut. Le calculateur, croyant manquer d'essence, enrichit le mélange pour compenser.</li>
+  <li>**Le Débitmètre (MAF) :** S'il surestime la quantité d'air entrant (à cause d'une contamination), l'ECU ajoutera de l'essence en proportion.</li>
+</DiagnosticTree>
+
+## Vérifications à la Valise (Live Data)
+
+Vous devez interroger le calculateur sur ce qu'il "voit" réellement.
+
+<TestStepCard step={1} title="Test de la Température Moteur (ECT)">
+  Démarrez à froid et roulez 15 minutes.
+  <br /> - Regardez la valeur "Engine Coolant Temperature" sur le scanner OBD.
+  <br /> - Si elle plafonne à 70°C au lieu de 90°C sur l'autoroute, votre thermostat est bloqué ouvert. L'eau circule tout le temps dans le radiateur. 
+  <br /> - **Conséquence :** Le moteur ne chauffe pas, l'ECU enrichit, vous consommez 20% de plus.
+</TestStepCard>
+
+<TestStepCard step={2} title="Analyse de la Sonde Lambda (O2 Bank 1 Sensor 1)">
+  Moteur bien chaud, au ralenti : observez le graphique de la sonde Lambda Amont (avant cata).
+  <br /> - Elle doit osciller rapidement et continuellement entre **0.1V et 0.9V** (pour une sonde classique au Zirconium).
+  <br /> - Si elle stagne autour de 0.2V (pauvre) pendant plusieurs secondes avant de remonter, ou si la courbe est très plate/lente, la sonde est fatiguée. Remplacez-la.
+</TestStepCard>
+
+<ConfirmationBox>
+  N'oubliez jamais les causes mécaniques avant d'accuser l'électronique : un étrier de frein grippé qui frotte en permanence ou des pneus sous-gonflés peuvent facilement ajouter 1.5L à 2L/100km à votre consommation moyenne ! Soulevez chaque roue et faites-la tourner à la main.
+</ConfirmationBox>

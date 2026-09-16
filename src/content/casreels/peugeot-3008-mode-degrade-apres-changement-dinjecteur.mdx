@@ -1,0 +1,49 @@
+---
+title: "Peugeot 3008 — mode dégradé après changement d'injecteur"
+description: "P0201/P0263 après avoir remplacé un injecteur sur 1.6 HDI ? Cas réel : importance du codage IMA, fuite aux puits et apprentissage pilote."
+pillar: "diagnostic"
+category: "casreels"
+system: "moteur"
+difficulty: "intermediaire"
+risk: "eleve"
+requiredTools: ["scanner"]
+author: "DiagVault"
+published_date: 2024-07-01T00:00:00.000Z
+---
+
+import TestStepCard from '../../components/article/TestStepCard.astro';
+import ConfirmationBox from '../../components/article/ConfirmationBox.astro';
+import DiagnosticTree from '../../components/article/DiagnosticTree.astro';
+
+Un client arrive avec un Peugeot 3008 1.6 HDi. Il a remplacé lui-même l'injecteur n°3 à cause d'un claquement. Le moteur démarre mais tourne sur 3 cylindres, le voyant moteur est allumé, et le véhicule est en mode dégradé (limité à 3000 tr/min).
+
+
+## L'Analyse Initiale
+
+Un changement d'injecteur sur un système Common Rail n'est pas du "Plug and Play". Le calculateur moteur (ECU) doit connaître les caractéristiques d'injection exactes de ce nouvel injecteur pour compenser les tolérances de fabrication.
+
+<TestStepCard step={1} title="Lecture des codes et vérification du code IMA">
+  Branchez le scanner.
+  <br /> - Codes relevés : **P0269** (Cylindre 3 - Défaut de contribution/équilibrage).
+  <br /> - Allez dans les fonctions de codage injecteur. Lisez les codes IMA enregistrés dans l'ECU.
+  <br /> - Comparez le code affiché pour le Cylindre 3 avec le code alphanumérique gravé sur la tête du nouvel injecteur installé.
+  <br /> - **Constat :** Le code dans l'ECU est l'ancien code. Le nouvel injecteur n'a pas été télécédé.
+</TestStepCard>
+
+## Le Piège PSA : Numérotation des Cylindres
+
+<DiagnosticTree symptom="Erreur fréquente">
+  <li>**Le cylindre 1 est côté volant moteur :** Chez PSA (et Renault), le cylindre 1 se trouve côté boîte de vitesses, pas côté distribution.</li>
+  <li>**Le client a changé l'injecteur n°3 côté distribution :** En réalité, il a changé l'injecteur du cylindre 2. Il a donc une erreur d'équilibrage car il a remplacé le mauvais injecteur !</li>
+</DiagnosticTree>
+
+<TestStepCard step={2} title="Codage et Apprentissage Dynamique">
+  Si l'injecteur changé était bien le défectueux :
+  <br /> - Entrez le nouveau code IMA à l'aide du scanner. Validez et coupez le contact 3 minutes pour l'endormissement du réseau (Power Latch).
+  <br /> - Effacez les défauts.
+  <br /> - **La phase vitale :** Allez rouler. L'ECU doit faire son "apprentissage des petites quantités". Moteur à 90°C, accélérez en 3ème ou 4ème jusqu'à 3500 tr/min, puis relâchez complètement l'accélérateur et laissez la voiture décélérer jusqu'à 1500 tr/min sans toucher le frein. Répétez 5 fois.
+</TestStepCard>
+
+<ConfirmationBox>
+  Après cet apprentissage, le claquement doit disparaître et les corrections de débit (Live Data) doivent revenir dans la norme (+/- 1.5 mg/coup). Si ça claque toujours fort, l'injecteur de remplacement (surtout s'il est d'occasion ou reconditionné à bas coût) est probablement défectueux.
+</ConfirmationBox>

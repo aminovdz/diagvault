@@ -14,6 +14,7 @@ export async function getStaticPaths() {
   const symptomesEntries = await getCollection('symptomes');
   const casreelsEntries = await getCollection('casreels');
   const ecuEntries = await getCollection('ecu');
+  const methodologieEntries = await getCollection('methodologie');
 
   const allEntries = [
     ...diagnosticEntries,
@@ -26,7 +27,8 @@ export async function getStaticPaths() {
     ...oscilloscopeEntries,
     ...symptomesEntries,
     ...casreelsEntries,
-    ...ecuEntries
+    ...ecuEntries,
+    ...methodologieEntries
   ];
 
   return allEntries.map(entry => ({
